@@ -21,6 +21,8 @@ import {fontFamily} from '../utils/appStyles';
 import PaymentComponent from '../ScreenComponents/DashBoardScreens/PaymentComponent';
 import OrderDetailComponent from '../ScreenComponents/DashBoardScreens/OrderDetailComponent';
 import TransactionsComponent from '../ScreenComponents/DashBoardScreens/TransactionsComponent';
+import ChangePasswordComponent from '../ScreenComponents/DashBoardScreens/Profile/ChangePasswordComponent';
+import QRCodeComponent from '../ScreenComponents/DashBoardScreens/Profile/QRCodeComponent';
 
 const ProductsStack = createNativeStackNavigator<any>();
 
@@ -70,6 +72,11 @@ const ProfileStackNavigator = () => {
       screenOptions={{headerShown: false}}
       initialRouteName="PROFILE">
       <ProductsStack.Screen name="PROFILE" component={ProfileComponent} />
+      <ProductsStack.Screen
+        name="CHANGE_PWD"
+        component={ChangePasswordComponent}
+      />
+      <ProductsStack.Screen name="QRCODE" component={QRCodeComponent} />
     </ProductsStack.Navigator>
   );
 };
@@ -217,9 +224,9 @@ const styles = StyleSheet.create({
   },
   labelTxt: {
     color: '#1a0134',
-    fontSize: 13,
+    fontSize: 12,
     marginTop: 3,
-    fontFamily: fontFamily.poppins_bold,
+    fontFamily: fontFamily.poppins_semi_bold,
     marginBottom: 8,
   },
   selectedBack: {

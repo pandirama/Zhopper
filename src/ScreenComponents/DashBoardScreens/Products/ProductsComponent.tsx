@@ -1,6 +1,7 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-shadow */
 /* eslint-disable react-native/no-inline-styles */
-import React, {useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   Dimensions,
   FlatList,
@@ -16,44 +17,13 @@ import {
 import {SafeAreaView} from 'react-native-safe-area-context';
 import appStyles, {fontFamily} from '../../../utils/appStyles';
 import {colors} from '../../../utils/colors';
-import Feather from 'react-native-vector-icons/Feather';
 import Carousel from 'react-native-reanimated-carousel';
 import _ from 'lodash';
-
-const categories = [
-  {
-    categoryname: 'Men',
-    icon: require('../../../assets/men_category.png'),
-  },
-  {
-    categoryname: 'Women',
-    icon: require('../../../assets/women_category.png'),
-  },
-  {
-    categoryname: 'Kids',
-    icon: require('../../../assets/kids_category.png'),
-  },
-  {
-    categoryname: 'Eatery',
-    icon: require('../../../assets/eatery_category.png'),
-  },
-  {
-    categoryname: 'Gadgets',
-    icon: require('../../../assets/gadgets_category.png'),
-  },
-  {
-    categoryname: 'Bags',
-    icon: require('../../../assets/bags_category.png'),
-  },
-  {
-    categoryname: 'Interior',
-    icon: require('../../../assets/interior_category.png'),
-  },
-  {
-    categoryname: 'Appliances',
-    icon: require('../../../assets/appliances_category.png'),
-  },
-];
+import {Feather} from '../../../utils/IconUtils';
+import {useGetCategoriesQuery} from '../../../api/productsAPI';
+import {useFocusEffect} from '@react-navigation/native';
+import useCommon from '../../../hooks/useCommon';
+import {getErrorMessage} from '../../../utils/common';
 
 type PaginateProp = {
   count: number;
@@ -105,8 +75,42 @@ const PaginationDots = (props: PaginateProp) => {
 };
 
 const ProductsComponent = () => {
+  const {showToast, toggleBackdrop} = useCommon();
   const [activeDot, setActiveDot] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
+
+  const [categories, setCategories] = useState<any>(null);
+
+  const {isFetching, refetch} = useGetCategoriesQuery();
+
+  useEffect(() => {
+    toggleBackdrop(isFetching);
+  }, [isFetching]);
+
+  useFocusEffect(
+    useCallback(() => {
+      refetch()
+        .then((response: any) => {
+          const {data, status, message} = response;
+          console.log('data', data);
+          if (data[0]?.status === 1 && status) {
+            setCategories(data[0]?.data);
+          } else {
+            showToast({
+              type: 'error',
+              text1: getErrorMessage(message),
+            });
+          }
+        })
+        .catch(error => {
+          showToast({
+            type: 'error',
+            text1: getErrorMessage(error),
+          });
+        });
+      return () => {};
+    }, []),
+  );
 
   const renderItem = ({item}: any) => {
     return (
@@ -116,17 +120,22 @@ const ProductsComponent = () => {
           padding: 5,
           flex: 1,
         }}>
-        <Image source={item?.icon} style={{width: 80, height: 80}} />
+        <Image
+          source={{
+            uri: item?.image,
+          }}
+          style={{width: 70, height: 70, borderRadius: 10}}
+        />
 
         <Text
           style={{
             textAlign: 'center',
             fontFamily: fontFamily.poppins_semi_bold,
-            fontSize: 14,
+            fontSize: 12,
             marginTop: 5,
             color: colors.black,
           }}>
-          {item?.categoryname}
+          {item?.name}
         </Text>
       </TouchableOpacity>
     );

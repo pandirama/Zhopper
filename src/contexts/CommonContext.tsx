@@ -6,7 +6,6 @@ import {useAppDispatch} from '../store';
 import {localStorageKey, removeStorage} from '../utils/common';
 import {navigateAndSimpleReset} from '../navigators/Root';
 import {authAction} from '../reducer/auth/authSlice';
-import {useSelector} from 'react-redux';
 import {colors} from '../utils/colors';
 
 type ToastProp = {
@@ -32,8 +31,8 @@ const CommonProvider = ({children}: React.PropsWithChildren): JSX.Element => {
 
   const dispatch = useAppDispatch();
 
-  let {userInfo} = useSelector(({authReducer}: any) => authReducer);
-  console.log(userInfo);
+  // let {userInfo} = useSelector(({authReducer}: any) => authReducer);
+  // console.log(userInfo);
 
   const toggleBackdrop = (val?: boolean) => {
     if (typeof val === 'boolean') {
@@ -98,7 +97,7 @@ const CommonProvider = ({children}: React.PropsWithChildren): JSX.Element => {
       {showBackdrop && (
         <View style={styles.backDropView}>
           <ActivityIndicator
-            size={10}
+            size={20}
             color={colors.inputBorder}
             style={{transform: [{scaleX: 2}, {scaleY: 2}]}}
           />

@@ -1,17 +1,243 @@
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable react/no-unstable-nested-components */
 import React from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {
+  Dimensions,
+  FlatList,
+  Image,
   StatusBar,
   StyleSheet,
+  Text,
+  View,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import appStyles, {fontFamily} from '../../../utils/appStyles';
 import {colors} from '../../../utils/colors';
 import DashBoardHeaderComponent from '../../../components/DashBoardHeaderComponent';
+import LinearGradient from 'react-native-linear-gradient';
 
 type Props = NativeStackScreenProps<any, 'NEWS'>;
 
+const {width} = Dimensions.get('window');
+
+const clients = [
+  {
+    icon: require('../../../assets/merchant_offer.png'),
+    title: 'Start the Year With 50% off on Foods',
+    subTitle:
+      'In eget dui augue. Donec id sapien lectus. Maecenas nulla odio, copy',
+    date: 'Jan 2025',
+  },
+  {
+    icon: require('../../../assets/pizza_catagories.png'),
+    title: '30% off on every deals only this week',
+    subTitle:
+      'In eget dui augue. Donec id sapien lectus. Maecenas nulla odio, copy 2',
+    date: 'Jan 2025',
+  },
+  {
+    icon: require('../../../assets/merchant_offer.png'),
+    title: 'Start the Year With 50% off on Foods',
+    subTitle:
+      'In eget dui augue. Donec id sapien lectus. Maecenas nulla odio, copy',
+    date: 'Jan 2025',
+  },
+  {
+    icon: require('../../../assets/pizza_catagories.png'),
+    title: '30% off on every deals only this week',
+    subTitle:
+      'In eget dui augue. Donec id sapien lectus. Maecenas nulla odio, copy 2 In eget dui augue. Donec id sapien lectus. Maecenas nulla odio, copy 2 In eget dui augue. Donec id sapien lectus. Maecenas nulla odio, copy 2',
+    date: 'Jan 2025',
+  },
+  {
+    icon: require('../../../assets/merchant_offer.png'),
+    title: 'Start the Year With 50% off on Foods',
+    subTitle:
+      'In eget dui augue. Donec id sapien lectus. Maecenas nulla odio, copy',
+    date: 'Jan 2025',
+  },
+  {
+    icon: require('../../../assets/pizza_catagories.png'),
+    title: '30% off on every deals only this week',
+    subTitle:
+      'In eget dui augue. Donec id sapien lectus. Maecenas nulla odio, copy 2',
+    date: 'Jan 2025',
+  },
+];
+
 const NewsComponent = ({}: Props) => {
+  const renderItem = ({item}: any) => {
+    return (
+      <View style={{marginLeft: 15, marginTop: 15, marginRight: 15}}>
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <View
+            style={{
+              borderWidth: 1,
+              borderRadius: 100,
+              backgroundColor: '#550f91',
+              padding: 5,
+              width: 50,
+              height: 50,
+              marginLeft: 15,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <View
+              style={{
+                borderRadius: 100,
+                backgroundColor: '#9e4ef3',
+                width: 40,
+                height: 40,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <Image source={require('../../../assets/date-icon.png')} />
+            </View>
+          </View>
+          <Text
+            style={{
+              color: '#000000',
+              fontSize: 16,
+              marginLeft: 10,
+              fontFamily: fontFamily.poppins_semi_bold,
+            }}>
+            {item?.date}
+          </Text>
+        </View>
+        <View
+          style={[
+            appStyles.boxShadow,
+            {
+              flex: 1,
+              backgroundColor: colors.white,
+              borderRadius: 10,
+              marginRight: 10,
+              marginLeft: 5,
+              paddingTop: 15,
+              paddingLeft: 20,
+              paddingBottom: 10,
+              marginTop: 10,
+            },
+          ]}>
+          <Text
+            style={{
+              color: colors.black,
+              fontSize: 15,
+              fontFamily: fontFamily.poppins_semi_bold,
+            }}>
+            {item?.title}
+          </Text>
+
+          <Text
+            style={{
+              color: '#909090',
+              fontSize: 13,
+              fontFamily: fontFamily.poppins_semi_bold,
+            }}
+            numberOfLines={3}>
+            {item?.subTitle}
+          </Text>
+          <Text
+            style={{
+              color: '#5b159d',
+              fontSize: 13,
+              fontFamily: fontFamily.poppins_bold,
+              textDecorationLine: 'underline',
+            }}>
+            Read More
+          </Text>
+        </View>
+        <View style={{alignItems: 'center', marginTop: 25}}>
+          <Image source={item?.icon} />
+        </View>
+        <View
+          style={{
+            borderRadius: 100,
+            backgroundColor: '#eeecef',
+            padding: 5,
+            width: 95,
+            height: 95,
+            marginLeft: 15,
+            alignItems: 'center',
+            justifyContent: 'center',
+            position: 'absolute',
+            top: 140,
+            left: width / 3.5,
+          }}>
+          <Image source={require('../../../assets/deal_icon.png')} />
+        </View>
+      </View>
+    );
+  };
+
+  const ListHeader = () => {
+    return (
+      <LinearGradient
+        colors={['#9b6ec6', '#b386dc', '#c79bef']}
+        style={styles.container}>
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            marginLeft: 15,
+            marginTop: 25,
+            marginBottom: 25,
+          }}>
+          <Image
+            source={require('../../../assets/profile_user.png')}
+            style={{width: 60, height: 60}}
+          />
+          <View style={{marginLeft: 10, justifyContent: 'center', flex: 1}}>
+            <Text
+              style={{
+                color: '#310855',
+                fontSize: 16,
+                fontFamily: fontFamily.poppins_semi_bold,
+              }}>
+              JR Rosy
+            </Text>
+            <Text
+              style={{
+                color: colors.black,
+                fontSize: 14,
+                fontFamily: fontFamily.poppins_regular,
+              }}>
+              Package
+            </Text>
+          </View>
+          <View style={{marginRight: 15}}>
+            <Image
+              source={require('../../../assets/arrow_right.png')}
+              style={{width: 60, height: 60}}
+            />
+            <Text
+              style={{
+                color: colors.black,
+                fontSize: 16,
+                fontFamily: fontFamily.poppins_semi_bold,
+                position: 'absolute',
+                right: 22,
+                top: 16,
+              }}>
+              Pts
+            </Text>
+            <View style={styles.logout}>
+              <Text
+                style={{
+                  color: colors.white,
+                  fontSize: 16,
+                  fontFamily: fontFamily.poppins_semi_bold,
+                }}>
+                180
+              </Text>
+            </View>
+          </View>
+        </View>
+      </LinearGradient>
+    );
+  };
+
   return (
     <>
       <StatusBar
@@ -22,131 +248,24 @@ const NewsComponent = ({}: Props) => {
       />
       <SafeAreaView style={appStyles.container}>
         <DashBoardHeaderComponent title={'News'} />
+        <FlatList
+          data={clients}
+          renderItem={renderItem}
+          style={{marginBottom: 10}}
+          showsVerticalScrollIndicator={false}
+          keyExtractor={(item: any) => item?._id}
+          ListHeaderComponent={<ListHeader />}
+        />
       </SafeAreaView>
     </>
   );
 };
 
 const styles = StyleSheet.create({
-  loginFormView: {
-    marginLeft: 20,
-    marginRight: 20,
-  },
-  inputView: {
-    borderWidth: 1.5,
-    borderColor: colors.inputBorder,
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 8,
-    borderRadius: 20,
-    marginTop: 40,
-  },
-  icon: {
-    marginRight: 10,
-  },
-  inputHeadTxt: {
-    position: 'absolute',
-    top: -15,
-    left: 15,
-    backgroundColor: colors.background,
-    paddingLeft: 10,
-    paddingRight: 10,
-    paddingBottom: 2,
-    paddingTop: 2,
-    color: colors.inputBorder,
-    fontSize: 16,
-    fontFamily: fontFamily.poppins_semi_bold,
-  },
-  input: {
-    paddingLeft: 12,
-    paddingTop: 10,
-    paddingBottom: 10,
-    paddingRight: 15,
-    flex: 1,
-  },
-  passwordView: {
-    flexDirection: 'row',
-    marginTop: 15,
-    marginLeft: 5,
-    marginRight: 10,
-  },
-  rememberTxt: {
-    color: '#907ca2',
-    fontSize: 16,
-    marginLeft: 5,
-    fontFamily: fontFamily.poppins_regular,
-  },
-  passwordTxt: {
-    color: '#3e175f',
-    fontSize: 16,
-    textAlign: 'right',
-    fontFamily: fontFamily.poppins_semi_bold,
-  },
-  loginBtn: {
-    height: 45,
-    borderRadius: 20,
+  container: {
     justifyContent: 'center',
-    width: 160,
-    alignSelf: 'center',
-    marginTop: 40,
-  },
-  loginBtnTxt: {
-    color: colors.white,
-    fontSize: 20,
-    textAlign: 'center',
-    fontFamily: fontFamily.poppins_semi_bold,
-  },
-  signupView: {
-    flexDirection: 'row',
-    marginTop: 15,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  donttxt: {
-    color: colors.black,
-    fontSize: 14,
-    textAlign: 'center',
-    fontFamily: fontFamily.poppins_medium,
-  },
-  signupTxt: {
-    color: colors.inputBorder,
-    fontSize: 14,
-    fontFamily: fontFamily.poppins_semi_bold,
-  },
-  checkTouch: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  passTouch: {
-    flex: 1,
-  },
-  titleTxt: {
-    fontSize: 20,
-    color: '#000000',
-    fontFamily: fontFamily.poppins_semi_bold,
-  },
-  subtitleTxt: {
-    fontSize: 14,
-    color: '#8c8b8b',
-    fontFamily: fontFamily.poppins_medium,
-  },
-  walletContainer: {
-    paddingLeft: 5,
-    paddingRight: 5,
-    paddingBottom: 10,
-  },
-  walletSubContainer: {
-    backgroundColor: colors.white,
-    paddingLeft: 10,
-    borderRadius: 5,
-    marginTop: 10,
-  },
-  walletTouch: {
-    flexDirection: 'row',
-    paddingTop: 15,
-    paddingBottom: 15,
-    justifyContent: 'center',
-    alignItems: 'center',
+    width: '100%',
+    marginTop: 20,
   },
   borderView: {
     borderWidth: 0.5,
@@ -154,13 +273,16 @@ const styles = StyleSheet.create({
     marginRight: 10,
     paddingLeft: 0,
   },
-  walletTitleTxt: {
-    fontSize: 16,
-    color: '#333333',
-    flex: 1,
-    textAlignVertical: 'center',
-    marginLeft: 10,
-    fontFamily: fontFamily.poppins_semi_bold,
+  logout: {
+    height: 40,
+    width: 40,
+    borderRadius: 100,
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    right: 50,
+    top: 10,
+    backgroundColor: '#4c0992',
   },
 });
 

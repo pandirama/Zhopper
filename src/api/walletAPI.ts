@@ -8,11 +8,11 @@ export const walletAPI = createApi({
   reducerPath: WALLET_API_REDUCER_KEY,
   baseQuery: axiosBaseQuery(),
   endpoints: builder => ({
-    walletBalance: builder.mutation({
+    walletBalance: builder.mutation<any, any>({
       query: walletParams => ({
         url: WALLET_URLS.WALLET_BALANCE,
-        method: 'POST',
-        body: walletParams,
+        method: 'GET',
+        params: walletParams,
       }),
       transformResponse: (response: {data: any}) => response,
     }),

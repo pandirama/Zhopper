@@ -24,16 +24,16 @@ export const authAPI = createApi({
       }),
       transformResponse: (response: {data: any}) => response,
     }),
-    changePwd: builder.mutation({
-      query: passParams => ({
-        url: AUTH_URLS.CHANGE_PASSWORD,
+    forgotPassword: builder.mutation({
+      query: params => ({
+        url: AUTH_URLS.FORGOTPASSWORD,
         method: 'POST',
-        body: passParams,
+        body: params,
       }),
       transformResponse: (response: {data: any}) => response,
     }),
   }),
 });
 
-export const {useLoginMutation, useRegisterMutation, useChangePwdMutation} =
-authAPI;
+export const {useLoginMutation, useRegisterMutation, useForgotPasswordMutation} =
+  authAPI;

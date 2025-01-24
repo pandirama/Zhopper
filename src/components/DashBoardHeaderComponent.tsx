@@ -5,24 +5,46 @@ import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {colors} from '../utils/colors';
 import {fontFamily} from '../utils/appStyles';
 import LinearGradient from 'react-native-linear-gradient';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {useAppDispatch} from '../store';
+import {authAction} from '../reducer/auth/authSlice';
+import { Ionicons, MaterialCommunityIcons } from '../utils/IconUtils';
+import { clearStorage } from '../utils/common';
 
-const DashBoardHeaderComponent = ({title}: any) => {
+const DashBoardHeaderComponent = ({title, navigation, back}: any) => {
+  const dispatch = useAppDispatch();
+  const onLogout = () => {
+    clearStorage();
+    dispatch(authAction.logout());
+  };
+
   return (
     <LinearGradient
       colors={['#9b6ec6', '#b386dc', '#c79bef']}
       style={styles.container}>
       <View style={styles.subContainer}>
-        <TouchableOpacity style={styles.logoutTouch}>
-          <LinearGradient colors={['#4b0892', '#853b92']} style={styles.logout}>
-            <MaterialCommunityIcons
-              name="logout"
-              color={colors.white}
-              size={20}
-              style={{marginLeft: 3}}
-            />
-          </LinearGradient>
-        </TouchableOpacity>
+        {back ? (
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            style={styles.backBtnView}>
+            <Ionicons name="arrow-back" size={20} />
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            style={styles.logoutTouch}
+            onPress={() => onLogout()}>
+            <LinearGradient
+              colors={['#4b0892', '#853b92']}
+              style={styles.logout}>
+              <MaterialCommunityIcons
+                name="logout"
+                color={colors.white}
+                size={20}
+                style={{marginLeft: 3}}
+              />
+            </LinearGradient>
+          </TouchableOpacity>
+        )}
+
         <Text style={styles.titleTxt}>{title}</Text>
         <Image source={require('../assets/logo.png')} style={styles.icon} />
       </View>
@@ -64,5 +86,15 @@ const styles = StyleSheet.create({
   },
   logoutTouch: {
     marginLeft: 10,
+  },
+  backBtnView: {
+    backgroundColor: colors.white,
+    borderRadius: 100,
+    padding: 10,
+    width: 40,
+    height: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: 15,
   },
 });

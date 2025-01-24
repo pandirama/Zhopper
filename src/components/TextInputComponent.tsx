@@ -15,6 +15,7 @@ const TextInputComponent = forwardRef((props: any, ref: any) => {
         onChangeText={onChangeValue}
         placeholder={placeHolder}
         value={value}
+        placeholderTextColor={'#7f7f7f'}
         ref={tRef => {
           if (ref) {
             ref.current = tRef;
@@ -61,5 +62,7 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     paddingRight: 15,
     flex: 1,
+    fontSize: 16,
+    fontWeight: 500,
   },
 });

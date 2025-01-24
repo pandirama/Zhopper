@@ -8,62 +8,55 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
+  View,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import appStyles, {fontFamily} from '../../utils/appStyles';
 import {colors} from '../../utils/colors';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import Fontisto from 'react-native-vector-icons/Fontisto';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import LinearGradient from 'react-native-linear-gradient';
 import HeaderComponent from '../../components/HeaderComponent';
 import TextInputComponent from '../../components/TextInputComponent';
+import {Ionicons, Zocial} from '../../utils/IconUtils';
+import {useForgotPasswordMutation} from '../../api/auth/authAPI';
 import useCommon from '../../hooks/useCommon';
-import {useChangePwdMutation} from '../../api/auth/authAPI';
 import {getErrorMessage} from '../../utils/common';
 
-const ForgotPasswordComponent = () => {
+const ForgotPasswordComponent = ({}: any) => {
   const {showToast, toggleBackdrop} = useCommon();
-
-  const [fullName, setFullName] = useState('');
+  const [userName, setUserName] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [reTypePassword, setRetypePassword] = useState('');
-  const [capcha, setCapcha] = useState('');
+
+  const [forgotPassword, {isLoading}] = useForgotPasswordMutation();
 
   const fnameFieldRef = useRef<TextInput>();
-  const passFieldRef = useRef<TextInput>();
-  const rePassFieldRef = useRef<TextInput>();
-
-  const [changePwd, {isLoading}] = useChangePwdMutation();
 
   useEffect(() => {
     toggleBackdrop(isLoading);
   }, [isLoading]);
 
-  const onPasswordChange = async () => {
-    if (fullName === '' || password === '' || reTypePassword === '') {
+  const onForgotSubmit = async () => {
+    if (userName === '' || email === '') {
       showToast({
         type: 'error',
         text1: 'Please Enter Required Fields',
       });
       return;
     }
-    if (password !== reTypePassword) {
-      showToast({
-        type: 'error',
-        text1: 'Password and Retype Password are incorrect',
-      });
-      return;
-    }
     try {
       const params = {
-        userid: 10000,
-        password: 'XXXXX',
+        username: userName,
+        email: email,
       };
 
-      const response: any = await changePwd(params).unwrap();
+      const response: any = await forgotPassword(params).unwrap();
       console.log('response', response);
       if (response[0]?.status === 1) {
+        setPassword(response[0]?.data);
+        showToast({
+          type: 'success',
+          text1: response[0]?.message,
+        });
       } else {
         showToast({
           type: 'error',
@@ -104,74 +97,47 @@ const ForgotPasswordComponent = () => {
                 style={styles.icon}
               />
             }
-            placeHolder={'Enter User Name or Email'}
-            headText={'Name or Email'}
-            onChangeValue={setFullName}
-            value={fullName}
+            placeHolder={'Enter Your User Name'}
+            headText={'User Name'}
+            onChangeValue={setUserName}
+            value={userName}
             returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
             onSubmitEditing={() => fnameFieldRef.current?.focus()}
           />
+
           <TextInputComponent
             icon={
-              <Fontisto
-                name="locked"
+              <Zocial
+                name="email"
                 color={colors.icon}
                 size={25}
                 style={styles.icon}
               />
             }
             ref={fnameFieldRef}
-            placeHolder={'**************'}
-            headText={'Password'}
-            onChangeValue={setPassword}
-            value={password}
-            secureTextEntry={true}
-            returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
-            onSubmitEditing={() => passFieldRef.current?.focus()}
-          />
-
-          <TextInputComponent
-            icon={
-              <MaterialCommunityIcons
-                name="lock-off"
-                color={colors.icon}
-                size={25}
-                style={styles.icon}
-              />
-            }
-            ref={passFieldRef}
-            placeHolder={'**************'}
-            headText={'Retype Password'}
-            onChangeValue={setRetypePassword}
-            value={reTypePassword}
-            secureTextEntry={true}
-            onSubmitEditing={() => rePassFieldRef.current?.focus()}
-          />
-
-          <TextInputComponent
-            icon={
-              <MaterialCommunityIcons
-                name="dots-horizontal"
-                color={colors.icon}
-                size={25}
-                style={styles.icon}
-              />
-            }
-            ref={rePassFieldRef}
-            placeHolder={'Enter Capcha'}
-            headText={'Enter Capcha'}
-            onChangeValue={setCapcha}
-            value={capcha}
+            placeHolder={'Enter Your Email ID'}
+            headText={'Email ID'}
+            onChangeValue={setEmail}
+            value={email}
             returnKeyType={'done'}
           />
 
-          <TouchableOpacity onPress={onPasswordChange}>
+          <TouchableOpacity onPress={onForgotSubmit}>
             <LinearGradient
               colors={['#853b92', '#4b0892']}
               style={styles.loginBtn}>
               <Text style={styles.loginBtnTxt}>SUBMIT NOW</Text>
             </LinearGradient>
           </TouchableOpacity>
+          {password && (
+            <View style={styles.passwordAnswerView}>
+              <View style={styles.coloView} />
+              <Text
+                style={
+                  styles.passwordAnswerTxt
+                }>{`Your Password is ${password}`}</Text>
+            </View>
+          )}
         </ScrollView>
       </SafeAreaView>
     </>
@@ -260,6 +226,25 @@ const styles = StyleSheet.create({
   signupTxt: {
     color: colors.inputBorder,
     fontSize: 16,
+  },
+  coloView: {
+    width: 5,
+    backgroundColor: '#ea6b2e',
+  },
+  passwordAnswerView: {
+    margin: 20,
+    backgroundColor: colors.white,
+    flexDirection: 'row',
+    borderRadius: 3,
+  },
+  passwordAnswerTxt: {
+    paddingTop: 15,
+    paddingBottom: 15,
+    textAlign: 'center',
+    fontSize: 15,
+    flex: 1,
+    fontFamily: fontFamily.poppins_extra_bold,
+    color: '#2a1247',
   },
 });
 

@@ -8,14 +8,35 @@ export const profileAPI = createApi({
   reducerPath: PROFILE_API_REDUCER_KEY,
   baseQuery: axiosBaseQuery(),
   endpoints: builder => ({
-    getProfile: builder.query<any, void>({
-      query: () => ({
+    getProfile: builder.query<any, any>({
+      query: params => ({
         url: PROFILE_URLS.PROFILE,
         method: 'GET',
+        params,
+      }),
+      transformResponse: (response: {data: any}) => response,
+    }),
+    getReferralQR: builder.query<any, any>({
+      query: params => ({
+        url: PROFILE_URLS.REFERRAL_QR,
+        method: 'GET',
+        params,
+      }),
+      transformResponse: (response: {data: any}) => response,
+    }),
+    changePwd: builder.mutation({
+      query: passParams => ({
+        url: PROFILE_URLS.CHANGE_PASSWORD,
+        method: 'POST',
+        body: passParams,
       }),
       transformResponse: (response: {data: any}) => response,
     }),
   }),
 });
 
-export const {useGetProfileQuery} = profileAPI;
+export const {
+  useLazyGetProfileQuery,
+  useGetReferralQRQuery,
+  useChangePwdMutation,
+} = profileAPI;

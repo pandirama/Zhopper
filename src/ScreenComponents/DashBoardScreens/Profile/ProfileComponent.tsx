@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-native/no-inline-styles */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -17,58 +18,99 @@ import appStyles, {fontFamily} from '../../../utils/appStyles';
 import {colors} from '../../../utils/colors';
 import DashBoardHeaderComponent from '../../../components/DashBoardHeaderComponent';
 import TextInputComponent from '../../../components/TextInputComponent';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import LinearGradient from 'react-native-linear-gradient';
 import {useFocusEffect} from '@react-navigation/native';
 import useCommon from '../../../hooks/useCommon';
 import {getErrorMessage} from '../../../utils/common';
-import {useGetProfileQuery} from '../../../api/profileAPI';
+import {
+  useGetReferralQRQuery,
+  useLazyGetProfileQuery,
+} from '../../../api/profileAPI';
+import {useSelector} from 'react-redux';
+import QRCode from 'react-native-qrcode-svg';
 
-const ProfileComponent = () => {
+const ProfileComponent = ({navigation}: any) => {
   const {showToast, toggleBackdrop} = useCommon();
+  const [fullname, setFullName] = useState('');
   const [email, setEmail] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [city, setCity] = useState('');
-  const [state, setState] = useState('');
-  const [nric, setNirc] = useState('');
-  const [userProfile, setUserProfile] = useState('');
+  const [country, setCountry] = useState('');
+  const [userName, setUserName] = useState('');
+  const [shopperRank, setShopperRank] = useState(0);
+  const [userProfile, setUserProfile] = useState<any>(null);
+  const [referralLink, setReferralLink] = useState<any>(
+    'https://zhopper2u.com/',
+  );
 
+  const {userInfo} = useSelector(({authReducer}: any) => authReducer);
+
+  const fullNameFieldRef = useRef<TextInput>();
   const emailFieldRef = useRef<TextInput>();
-  const phonenumberFieldRef = useRef<TextInput>();
-  const cityFieldRef = useRef<TextInput>();
-  const stateFieldRef = useRef<TextInput>();
+  const countryFieldRef = useRef<TextInput>();
+  const userNameFieldRef = useRef<TextInput>();
+  const shopperRankFieldRef = useRef<TextInput>();
 
   const [step, setStep] = useState(1);
   const totalSteps = 4;
   const totalPackages = ['Bronze', 'Silver', 'Gold', 'Platinum'];
 
-  const {isFetching, refetch} = useGetProfileQuery();
+  const [getProfile, results] = useLazyGetProfileQuery();
+
+  const {isFetching, refetch} = useGetReferralQRQuery({
+    userid: userInfo[0]?.userid,
+  });
 
   useEffect(() => {
-    toggleBackdrop(isFetching);
-  }, [isFetching]);
+    if (results && results.data) {
+      setUserProfile(results.data[0]?.data[0]);
+    }
+  }, [results]);
+
+  useEffect(() => {
+    toggleBackdrop(isFetching || results?.isFetching);
+  }, [isFetching || results?.isFetching]);
+
+  useEffect(() => {
+    if (userProfile) {
+      setFullName(userProfile?.fullname);
+      setEmail(userProfile?.email);
+      setCountry(userProfile?.country);
+      setUserName(userProfile?.username);
+      setShopperRank(userProfile?.shopper_rank?.toString());
+    }
+  }, [userProfile]);
+
+  const getReferralFetch = () => {
+    refetch()
+      .then((response: any) => {
+        const {data, status, message} = response;
+        if (status) {
+          setReferralLink(data[0]?.link);
+        } else {
+          showToast({
+            type: 'error',
+            text1: getErrorMessage(message),
+          });
+        }
+      })
+      .catch(error => {
+        showToast({
+          type: 'error',
+          text1: getErrorMessage(error),
+        });
+      });
+  };
 
   useFocusEffect(
     useCallback(() => {
-      refetch().then((response: any) => {
-        const {isSuccess, isError, data, error} = response;
-        console.log(response);
-        if (isSuccess) {
-          // setUserProfile(data);
-        } else if (isError) {
-          showToast({
-            type: 'error',
-            text1: getErrorMessage(error),
-          });
-        }
-      });
+      getProfile({userid: userInfo[0]?.userid});
+      getReferralFetch();
       return () => {};
     }, []),
   );
 
-  const handleNext = () => {
-    setStep(prevStep => Math.min(prevStep + 1, totalSteps));
-  };
+  // const handleNext = () => {
+  //   setStep(prevStep => Math.min(prevStep + 1, totalSteps));
+  // };
 
   // const handlePrevious = () => {
   //   setStep(prevStep => Math.max(prevStep - 1, 1));
@@ -249,11 +291,7 @@ const ProfileComponent = () => {
                       alignItems: 'center',
                       justifyContent: 'center',
                     }}>
-                    <MaterialIcons
-                      name="qr-code-2"
-                      color={colors.black}
-                      size={90}
-                    />
+                    <QRCode value={referralLink} />
                   </View>
                 </View>
 
@@ -264,7 +302,7 @@ const ProfileComponent = () => {
                   </Text>
                   <TouchableOpacity
                     style={{marginTop: 15}}
-                    onPress={() => handleNext()}>
+                    onPress={() => navigation.navigate('QRCODE')}>
                     <LinearGradient
                       colors={['#853b92', '#4b0892']}
                       style={styles.tabBtn}>
@@ -284,6 +322,15 @@ const ProfileComponent = () => {
               <Text style={styles.titleTxt}>Basic Info</Text>
               <Text style={styles.subtitleTxt}>Basic details about you</Text>
               <TextInputComponent
+                placeHolder={'Enter Your FullName'}
+                headText={'Full Name'}
+                onChangeValue={setFullName}
+                value={fullname}
+                returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
+                onSubmitEditing={() => fullNameFieldRef.current?.focus()}
+              />
+              <TextInputComponent
+                ref={fullNameFieldRef}
                 placeHolder={'Enter Your Email'}
                 headText={'Email'}
                 onChangeValue={setEmail}
@@ -293,41 +340,33 @@ const ProfileComponent = () => {
               />
               <TextInputComponent
                 ref={emailFieldRef}
-                placeHolder={'Enter Your Phone Number'}
-                headText={'Phone Number'}
-                onChangeValue={setPhoneNumber}
-                value={phoneNumber}
+                placeHolder={'Enter Your Country'}
+                headText={'Country'}
+                onChangeValue={setCountry}
+                value={country}
                 returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
-                onSubmitEditing={() => phonenumberFieldRef.current?.focus()}
+                onSubmitEditing={() => countryFieldRef.current?.focus()}
               />
 
               <TextInputComponent
-                placeHolder={'Enter Your City'}
-                headText={'City'}
-                onChangeValue={setCity}
-                value={city}
-                ref={phonenumberFieldRef}
+                placeHolder={'Enter Your User Name'}
+                headText={'user Name'}
+                onChangeValue={setUserName}
+                value={userName}
+                ref={countryFieldRef}
                 returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
-                onSubmitEditing={() => cityFieldRef.current?.focus()}
+                onSubmitEditing={() => userNameFieldRef.current?.focus()}
               />
 
               <TextInputComponent
-                ref={cityFieldRef}
-                placeHolder={'Enter Your State'}
-                headText={'State'}
-                onChangeValue={setState}
-                value={state}
-                returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
-                onSubmitEditing={() => stateFieldRef.current?.focus()}
-              />
-
-              <TextInputComponent
-                ref={stateFieldRef}
-                placeHolder={'Enter Your NRIC'}
-                headText={'nric'}
-                onChangeValue={setNirc}
-                value={nric}
-                returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
+                ref={userNameFieldRef}
+                placeHolder={'Enter Your Shopper Rank'}
+                headText={'Shopper Rank'}
+                onChangeValue={setShopperRank}
+                value={shopperRank}
+                editable={false}
+                returnKeyType={Platform.OS === 'ios' ? 'done' : 'done'}
+                onSubmitEditing={() => shopperRankFieldRef.current?.focus()}
               />
 
               <TouchableOpacity>
@@ -335,6 +374,14 @@ const ProfileComponent = () => {
                   colors={['#853b92', '#4b0892']}
                   style={styles.loginBtn}>
                   <Text style={styles.loginBtnTxt}>SUBMIT</Text>
+                </LinearGradient>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => navigation.navigate('CHANGE_PWD')}>
+                <LinearGradient
+                  colors={['#853b92', '#4b0892']}
+                  style={styles.pwdBtn}>
+                  <Text style={styles.loginBtnTxt}>Change Password</Text>
                 </LinearGradient>
               </TouchableOpacity>
             </View>
@@ -464,6 +511,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignSelf: 'center',
     marginTop: 50,
+    marginBottom: 30,
+  },
+  pwdBtn: {
+    height: 40,
+    borderRadius: 30,
+    width: 220,
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'center',
     marginBottom: 30,
   },
   loginBtnTxt: {

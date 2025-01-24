@@ -49,7 +49,10 @@ const MainAppStack = () => {
   return (
     <MainStack.Navigator screenOptions={{headerShown: false}}>
       {isAuthenticated ? (
-        <MainStack.Screen name="DASH_BOARD" component={DashboardBottomNavigator} />
+        <MainStack.Screen
+          name="DASH_BOARD"
+          component={DashboardBottomNavigator}
+        />
       ) : (
         <MainStack.Screen name="AUTH_ROOT" component={AuthStackNavigator} />
       )}

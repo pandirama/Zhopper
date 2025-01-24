@@ -13,9 +13,6 @@ import {
 import {SafeAreaView} from 'react-native-safe-area-context';
 import appStyles, {fontFamily} from '../../utils/appStyles';
 import {colors} from '../../utils/colors';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import Fontisto from 'react-native-vector-icons/Fontisto';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import LinearGradient from 'react-native-linear-gradient';
 import HeaderComponent from '../../components/HeaderComponent';
 import TextInputComponent from '../../components/TextInputComponent';
@@ -24,6 +21,8 @@ import {useLoginMutation} from '../../api/auth/authAPI';
 import {getErrorMessage, localStorageKey, setStorage} from '../../utils/common';
 import {authAction} from '../../reducer/auth/authSlice';
 import {useAppDispatch} from '../../store';
+import {useSelector} from 'react-redux';
+import { Fontisto, Ionicons, MaterialCommunityIcons } from '../../utils/IconUtils';
 
 type Props = NativeStackScreenProps<any, 'LOGIN'>;
 
@@ -31,7 +30,9 @@ const LoginComponent = ({navigation}: Props) => {
   const {showToast, toggleBackdrop} = useCommon();
   const dispatch = useAppDispatch();
 
-  const [accept, toggleAccept] = useState(false);
+  const {isRemembered, user} = useSelector(({authReducer}: any) => authReducer);
+
+  const [accept, toggleAccept] = useState<boolean>(isRemembered ?? false);
   const [fullName, setFullName] = useState('');
   const [password, setPassword] = useState('');
 
@@ -43,6 +44,13 @@ const LoginComponent = ({navigation}: Props) => {
     toggleBackdrop(isLoading);
   }, [isLoading]);
 
+  useEffect(() => {
+    if (isRemembered) {
+      setFullName(user?.username);
+      setPassword(user?.password);
+    }
+  }, [isRemembered]);
+
   const onBtForgetPassword = () => {
     navigation.navigate('FORGOT_PASSWORD');
   };
@@ -52,7 +60,6 @@ const LoginComponent = ({navigation}: Props) => {
   };
 
   const onLoginSubmit = async () => {
-    navigation.navigate('DASH_BOARD');
     if (fullName === '' || password === '') {
       showToast({
         type: 'error',
@@ -67,13 +74,20 @@ const LoginComponent = ({navigation}: Props) => {
       };
 
       const response: any = await login(params).unwrap();
-      console.log('response', response);
+
       if (response[0]?.status === 1) {
         await setStorage(
           localStorageKey.userInfo,
           JSON.stringify(response[0]?.data),
         );
+        dispatch(
+          authAction.setIsRemembered({
+            isRemembered: accept,
+            user: params,
+          }),
+        );
         dispatch(authAction.setLogin(response[0].data));
+        navigation.navigate('DASH_BOARD');
       } else {
         showToast({
           type: 'error',
@@ -114,7 +128,7 @@ const LoginComponent = ({navigation}: Props) => {
               />
             }
             placeHolder={'Enter Your Name'}
-            headText={'Full Name'}
+            headText={'User Name'}
             onChangeValue={setFullName}
             value={fullName}
             returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}

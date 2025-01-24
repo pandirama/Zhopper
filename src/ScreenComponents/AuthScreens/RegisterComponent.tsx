@@ -15,18 +15,13 @@ import {Dropdown} from 'react-native-element-dropdown';
 import appStyles, {fontFamily} from '../../utils/appStyles';
 import {colors} from '../../utils/colors';
 
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import Fontisto from 'react-native-vector-icons/Fontisto';
-import Zocial from 'react-native-vector-icons/Zocial';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-
 import LinearGradient from 'react-native-linear-gradient';
 import HeaderComponent from '../../components/HeaderComponent';
 import TextInputComponent from '../../components/TextInputComponent';
 import {useRegisterMutation} from '../../api/auth/authAPI';
 import {getErrorMessage} from '../../utils/common';
 import useCommon from '../../hooks/useCommon';
+import { FontAwesome5, Fontisto, Ionicons, MaterialCommunityIcons, Zocial } from '../../utils/IconUtils';
 
 const countries = [
   {
@@ -60,7 +55,6 @@ const RegisterComponent = ({navigation}: any) => {
   const fnameFieldRef = useRef<TextInput>();
   const emailFieldRef = useRef<TextInput>();
   const passFieldRef = useRef<TextInput>();
-  const referralFieldRef = useRef<TextInput>();
 
   const [register, {isLoading}] = useRegisterMutation();
 
@@ -69,6 +63,27 @@ const RegisterComponent = ({navigation}: any) => {
   }, [isLoading]);
 
   const registerSubmit = async () => {
+    if (
+      userName === '' ||
+      password === '' ||
+      fullName === '' ||
+      email === '' ||
+      referralName === '' ||
+      country === ''
+    ) {
+      showToast({
+        type: 'error',
+        text1: 'Please Enter Required Fields',
+      });
+      return;
+    }
+    if (!accept) {
+      showToast({
+        type: 'error',
+        text1: 'Please Accept Terms and Condition',
+      });
+      return;
+    }
     try {
       const params = {
         username: userName,
@@ -80,7 +95,6 @@ const RegisterComponent = ({navigation}: any) => {
       };
 
       const response: any = await register(params).unwrap();
-      console.log('response', response);
       if (response[0]?.status === 1) {
         navigation.navigate('LOGIN');
       } else {
@@ -199,8 +213,7 @@ const RegisterComponent = ({navigation}: any) => {
             headText={'Referral Name'}
             onChangeValue={setReferralName}
             value={referralName}
-            returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
-            onSubmitEditing={() => referralFieldRef.current?.focus()}
+            returnKeyType={'done'}
           />
 
           <View style={styles.dropDownView}>
