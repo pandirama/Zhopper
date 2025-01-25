@@ -24,6 +24,42 @@ import {useGetCategoriesQuery} from '../../../api/productsAPI';
 import {useFocusEffect} from '@react-navigation/native';
 import useCommon from '../../../hooks/useCommon';
 import {getErrorMessage} from '../../../utils/common';
+import {useSelector} from 'react-redux';
+
+const categories = [
+  {
+    name: 'Men',
+    image: require('../../../assets/men_category.png'),
+  },
+  {
+    name: 'Women',
+    image: require('../../../assets/women_category.png'),
+  },
+  {
+    name: 'Kids',
+    image: require('../../../assets/kids_category.png'),
+  },
+  {
+    name: 'Eatery',
+    image: require('../../../assets/eatery_category.png'),
+  },
+  {
+    name: 'Gadgets',
+    image: require('../../../assets/gadgets_category.png'),
+  },
+  {
+    name: 'Bags',
+    image: require('../../../assets/bags_category.png'),
+  },
+  {
+    name: 'Interior',
+    image: require('../../../assets/interior_category.png'),
+  },
+  {
+    name: 'Appliances',
+    image: require('../../../assets/appliances_category.png'),
+  },
+];
 
 type PaginateProp = {
   count: number;
@@ -79,7 +115,9 @@ const ProductsComponent = () => {
   const [activeDot, setActiveDot] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
 
-  const [categories, setCategories] = useState<any>(null);
+  // const [categories, setCategories] = useState<any>(null);
+
+  const {userProfile} = useSelector(({profileReducer}: any) => profileReducer);
 
   const {isFetching, refetch} = useGetCategoriesQuery();
 
@@ -94,7 +132,7 @@ const ProductsComponent = () => {
           const {data, status, message} = response;
           console.log('data', data);
           if (data[0]?.status === 1 && status) {
-            setCategories(data[0]?.data);
+            // setCategories(data[0]?.data);
           } else {
             showToast({
               type: 'error',
@@ -120,12 +158,7 @@ const ProductsComponent = () => {
           padding: 5,
           flex: 1,
         }}>
-        <Image
-          source={{
-            uri: item?.image,
-          }}
-          style={{width: 70, height: 70, borderRadius: 10}}
-        />
+        <Image source={item?.image} style={{width: 80, height: 80}} />
 
         <Text
           style={{
@@ -175,7 +208,7 @@ const ProductsComponent = () => {
                   marginLeft: 5,
                   color: colors.black,
                 }}>
-                JR Rosy
+                {userProfile?.fullname}
               </Text>
             </View>
             <View

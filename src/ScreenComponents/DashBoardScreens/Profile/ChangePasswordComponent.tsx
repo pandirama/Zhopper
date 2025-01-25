@@ -26,11 +26,9 @@ import {useSelector} from 'react-redux';
 const ChangePasswordComponent = ({navigation}: any) => {
   const {showToast, toggleBackdrop} = useCommon();
 
-  const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
-  const currentFieldRef = useRef<TextInput>();
   const newFieldRef = useRef<TextInput>();
   const cofirmFieldRef = useRef<TextInput>();
 
@@ -44,7 +42,6 @@ const ChangePasswordComponent = ({navigation}: any) => {
 
   const onPasswordChange = async () => {
     if (
-      currentPassword === '' ||
       newPassword === '' ||
       confirmPassword === ''
     ) {
@@ -168,16 +165,6 @@ const ChangePasswordComponent = ({navigation}: any) => {
               <Text style={styles.titleTxt}>Update Password</Text>
               <Text style={styles.subtitleTxt}>Change Your Password</Text>
               <TextInputComponent
-                placeHolder={'Enter Your Current Password'}
-                headText={'Current Password'}
-                onChangeValue={setCurrentPassword}
-                value={currentPassword}
-                secureTextEntry={true}
-                returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
-                onSubmitEditing={() => currentFieldRef.current?.focus()}
-              />
-              <TextInputComponent
-                ref={currentFieldRef}
                 placeHolder={'Enter Your New Password'}
                 headText={'New Password'}
                 onChangeValue={setNewPassword}

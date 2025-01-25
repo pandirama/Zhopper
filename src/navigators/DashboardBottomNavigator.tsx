@@ -136,7 +136,7 @@ const DashBoardTabBar = ({state, descriptors, navigation}: any) => {
                 selected: require('../assets/referal_white.png'),
               };
               break;
-            case 'Products':
+            case 'Merchant':
               icon = {
                 unSelected: require('../assets/products.png'),
                 selected: require('../assets/products_white.png'),
@@ -195,7 +195,7 @@ const DashboardBottomNavigator = () => {
       })}>
       <Tab.Screen name="Wallet" component={WalletStackNavigator} />
       <Tab.Screen name="Referal" component={ReferalStackNavigator} />
-      <Tab.Screen name="Products" component={ProductsStackNavigator} />
+      <Tab.Screen name="Merchant" component={ProductsStackNavigator} />
       <Tab.Screen name="News" component={NewsStackNavigator} />
       <Tab.Screen name="Profile" component={ProfileStackNavigator} />
     </Tab.Navigator>

@@ -14,14 +14,19 @@ import {
 import {SafeAreaView} from 'react-native-safe-area-context';
 import appStyles, {fontFamily} from '../../../utils/appStyles';
 import {colors} from '../../../utils/colors';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import Fontisto from 'react-native-vector-icons/Fontisto';
 import DashBoardHeaderComponent from '../../../components/DashBoardHeaderComponent';
 import {useWalletBalanceMutation} from '../../../api/walletAPI';
 import {useFocusEffect} from '@react-navigation/native';
 import {getErrorMessage} from '../../../utils/common';
 import useCommon from '../../../hooks/useCommon';
 import {useSelector} from 'react-redux';
+import {Fontisto, Ionicons} from '../../../utils/IconUtils';
+import {
+  useGetReferralQRQuery,
+  useLazyGetProfileQuery,
+} from '../../../api/profileAPI';
+import {profileAction} from '../../../reducer/profile/profileSlice';
+import {useAppDispatch} from '../../../store';
 
 type Props = NativeStackScreenProps<any, 'WALLET'>;
 
@@ -29,6 +34,7 @@ const walletTypes = ['MM-wallet', 'CB-wallet', 'SRP-wallet'];
 
 const WalletComponent = ({}: Props) => {
   const {showToast, toggleBackdrop} = useCommon();
+  const dispatch = useAppDispatch();
   const [MMWallet, setMMWallet] = useState<any>(null);
   const [CBWallet, setCBWallet] = useState<any>(null);
   const [SRPWallet, setSRPWallet] = useState<any>(null);
@@ -37,9 +43,21 @@ const WalletComponent = ({}: Props) => {
 
   const [walletBalance, {isLoading}] = useWalletBalanceMutation();
 
+  const [getProfile, results] = useLazyGetProfileQuery();
+
+  const {isFetching, refetch} = useGetReferralQRQuery({
+    userid: userInfo[0]?.userid,
+  });
+
   useEffect(() => {
-    toggleBackdrop(isLoading);
-  }, [isLoading]);
+    toggleBackdrop(isLoading || isFetching || results?.isFetching);
+  }, [isLoading || isFetching || results?.isFetching]);
+
+  useEffect(() => {
+    if (results && results.data) {
+      dispatch(profileAction.setUserProfile(results.data[0]?.data[0]));
+    }
+  }, [results]);
 
   const getWalletBalnce = async () => {
     try {
@@ -77,9 +95,32 @@ const WalletComponent = ({}: Props) => {
     }
   };
 
+  const getReferralFetch = () => {
+    refetch()
+      .then((response: any) => {
+        const {data, status, message} = response;
+        if (status) {
+          dispatch(profileAction.setReferralLink(data[0]?.link));
+        } else {
+          showToast({
+            type: 'error',
+            text1: getErrorMessage(message),
+          });
+        }
+      })
+      .catch(error => {
+        showToast({
+          type: 'error',
+          text1: getErrorMessage(error),
+        });
+      });
+  };
+
   useFocusEffect(
     useCallback(() => {
       getWalletBalnce();
+      getProfile({userid: userInfo[0]?.userid});
+      getReferralFetch();
       return () => {};
     }, []),
   );

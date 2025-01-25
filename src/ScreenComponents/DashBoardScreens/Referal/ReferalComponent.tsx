@@ -15,8 +15,9 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import appStyles, {fontFamily} from '../../../utils/appStyles';
 import {colors} from '../../../utils/colors';
 import DashBoardHeaderComponent from '../../../components/DashBoardHeaderComponent';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import LinearGradient from 'react-native-linear-gradient';
+import {useSelector} from 'react-redux';
+import QRCode from 'react-native-qrcode-svg';
 
 const clients = [
   {
@@ -52,6 +53,10 @@ const clients = [
 ];
 
 const ReferalComponent = () => {
+  const {referralLink, userProfile} = useSelector(
+    ({profileReducer}: any) => profileReducer,
+  );
+
   const renderItem = ({item}: any) => {
     return (
       <TouchableOpacity
@@ -111,7 +116,7 @@ const ReferalComponent = () => {
                   fontSize: 16,
                   fontFamily: fontFamily.poppins_semi_bold,
                 }}>
-                JR Rosy
+                {userProfile?.fullname}
               </Text>
               <Text
                 style={{
@@ -177,25 +182,18 @@ const ReferalComponent = () => {
                   style={{
                     justifyContent: 'center',
                     alignItems: 'center',
+                    flex: 1,
                   }}>
                   <View
                     style={{
                       backgroundColor: colors.white,
-                      padding: 5,
                       width: 100,
                       height: 100,
                       alignItems: 'center',
                       justifyContent: 'center',
                     }}>
-                    <MaterialIcons
-                      name="qr-code-2"
-                      color={colors.black}
-                      size={90}
-                    />
+                    <QRCode value={referralLink} size={90} />
                   </View>
-                  <TouchableOpacity style={styles.tabBtn}>
-                    <Text style={styles.tabTxt}>TAP AND SCAN</Text>
-                  </TouchableOpacity>
                 </View>
               </View>
             </ImageBackground>
@@ -320,7 +318,7 @@ const ReferalComponent = () => {
                 fontSize: 16,
                 marginTop: 10,
                 marginBottom: 10,
-                marginLeft:10, 
+                marginLeft: 10,
                 fontFamily: fontFamily.poppins_semi_bold,
               }}>
               Personal Clients

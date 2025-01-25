@@ -1,10 +1,10 @@
 import React from 'react';
 import {ImageBackground, Text} from 'react-native';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import {colors} from '../utils/colors';
 import {useNavigation} from '@react-navigation/native';
 import {fontFamily} from '../utils/appStyles';
+import { Ionicons } from '../utils/IconUtils';
 
 const HeaderComponent = ({title, subTitle, screen}: any) => {
   const navigation = useNavigation();

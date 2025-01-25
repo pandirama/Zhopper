@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {persistReducer} from 'redux-persist';
 
 import authReducer from './auth/authSlice';
+import profileReducer from './profile/profileSlice';
 import {authAPI} from '../api/auth/authAPI';
 import {profileAPI} from '../api/profileAPI';
 import {walletAPI} from '../api/walletAPI';
@@ -22,10 +23,12 @@ const authReducerPersistConfig = {
   whiteList: ['finishGetStarted', 'isShowCongratsScreen'],
 };
 
+
 export const combinedReducer = combineReducers({
   authReducer: persistReducer(authReducerPersistConfig, authReducer),
   [authAPI.reducerPath]: authAPI.reducer,
   [profileAPI.reducerPath]: profileAPI.reducer,
+  profileReducer: persistReducer(authReducerPersistConfig, profileReducer),
   [walletAPI.reducerPath]: walletAPI.reducer,
   [productsAPI.reducerPath]: productsAPI.reducer,
 });

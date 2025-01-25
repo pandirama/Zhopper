@@ -36,12 +36,11 @@ const ProfileComponent = ({navigation}: any) => {
   const [country, setCountry] = useState('');
   const [userName, setUserName] = useState('');
   const [shopperRank, setShopperRank] = useState(0);
-  const [userProfile, setUserProfile] = useState<any>(null);
-  const [referralLink, setReferralLink] = useState<any>(
-    'https://zhopper2u.com/',
-  );
 
-  const {userInfo} = useSelector(({authReducer}: any) => authReducer);
+  const {referralLink, userProfile} = useSelector(({profileReducer}: any) => profileReducer);
+
+  console.log('referralLink', referralLink);
+  console.log('userProfile', userProfile);
 
   const fullNameFieldRef = useRef<TextInput>();
   const emailFieldRef = useRef<TextInput>();
@@ -53,22 +52,6 @@ const ProfileComponent = ({navigation}: any) => {
   const totalSteps = 4;
   const totalPackages = ['Bronze', 'Silver', 'Gold', 'Platinum'];
 
-  const [getProfile, results] = useLazyGetProfileQuery();
-
-  const {isFetching, refetch} = useGetReferralQRQuery({
-    userid: userInfo[0]?.userid,
-  });
-
-  useEffect(() => {
-    if (results && results.data) {
-      setUserProfile(results.data[0]?.data[0]);
-    }
-  }, [results]);
-
-  useEffect(() => {
-    toggleBackdrop(isFetching || results?.isFetching);
-  }, [isFetching || results?.isFetching]);
-
   useEffect(() => {
     if (userProfile) {
       setFullName(userProfile?.fullname);
@@ -79,34 +62,6 @@ const ProfileComponent = ({navigation}: any) => {
     }
   }, [userProfile]);
 
-  const getReferralFetch = () => {
-    refetch()
-      .then((response: any) => {
-        const {data, status, message} = response;
-        if (status) {
-          setReferralLink(data[0]?.link);
-        } else {
-          showToast({
-            type: 'error',
-            text1: getErrorMessage(message),
-          });
-        }
-      })
-      .catch(error => {
-        showToast({
-          type: 'error',
-          text1: getErrorMessage(error),
-        });
-      });
-  };
-
-  useFocusEffect(
-    useCallback(() => {
-      getProfile({userid: userInfo[0]?.userid});
-      getReferralFetch();
-      return () => {};
-    }, []),
-  );
 
   // const handleNext = () => {
   //   setStep(prevStep => Math.min(prevStep + 1, totalSteps));
@@ -190,7 +145,7 @@ const ProfileComponent = ({navigation}: any) => {
                     fontSize: 16,
                     fontFamily: fontFamily.poppins_semi_bold,
                   }}>
-                  JR Rosy
+                  {fullname}
                 </Text>
                 <Text
                   style={{
