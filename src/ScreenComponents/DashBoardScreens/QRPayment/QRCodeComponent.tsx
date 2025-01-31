@@ -1,18 +1,23 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {View, StyleSheet} from 'react-native';
-import QRScanner from './QRScanner';
 import DashBoardHeaderComponent from '../../../components/DashBoardHeaderComponent';
+import QRScanner from './QRScanner';
 
 const clr1 = 'mediumseagreen';
 
-const QRCodeComponent = ({navigation}: any) => {
-  const [qrCode, setQrCode] = useState('');
+const QRCodeComponent = ({navigation, route}: any) => {
+  const {wallet} = route?.params ?? {};
 
   const onQrRead = (qrtext: any) => {
-    console.log('qrtext', qrtext);
-    setQrCode(qrtext);
-    console.log('qrCode', qrCode);
-    navigation.goBack();
+    if (qrtext) {
+      console.log('qrCode', qrtext);
+      navigation.navigate('PAYMENT', {
+        wallet,
+        merchantID: qrtext,
+      });
+    } else {
+      navigation.goBack();
+    }
   };
 
   return (

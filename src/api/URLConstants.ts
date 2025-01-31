@@ -7,7 +7,9 @@ export const AUTH_URLS = {
 };
 
 export const WALLET_URLS = {
-  WALLET_BALANCE: `${BASE_URL}/api/balance`,
+  WALLET_BALANCE_ALL: `${BASE_URL}/api/balance-all`,
+  QR_PAYMENT: `${BASE_URL}/api/payment`,
+  MERCHANT_INFO: `${BASE_URL}/api/merchant-info-new`,
 };
 
 export const PROFILE_URLS = {

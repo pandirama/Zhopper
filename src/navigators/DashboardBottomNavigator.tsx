@@ -18,11 +18,11 @@ import {colors} from '../utils/colors';
 import LinearGradient from 'react-native-linear-gradient';
 import {Image} from 'react-native';
 import {fontFamily} from '../utils/appStyles';
-import PaymentComponent from '../ScreenComponents/DashBoardScreens/PaymentComponent';
 import OrderDetailComponent from '../ScreenComponents/DashBoardScreens/OrderDetailComponent';
 import TransactionsComponent from '../ScreenComponents/DashBoardScreens/TransactionsComponent';
 import ChangePasswordComponent from '../ScreenComponents/DashBoardScreens/Profile/ChangePasswordComponent';
-import QRCodeComponent from '../ScreenComponents/DashBoardScreens/Profile/QRCodeComponent';
+import QRCodeComponent from '../ScreenComponents/DashBoardScreens/QRPayment/QRCodeComponent';
+import PaymentComponent from '../ScreenComponents/DashBoardScreens/QRPayment/PaymentComponent';
 
 const ProductsStack = createNativeStackNavigator<any>();
 
@@ -32,6 +32,8 @@ const WalletStackNavigator = () => {
       screenOptions={{headerShown: false}}
       initialRouteName="WALLET">
       <ProductsStack.Screen name="WALLET" component={WalletComponent} />
+      <ProductsStack.Screen name="QRCODE" component={QRCodeComponent} />
+      <ProductsStack.Screen name="PAYMENT" component={PaymentComponent} />
     </ProductsStack.Navigator>
   );
 };
@@ -76,6 +78,7 @@ const ProfileStackNavigator = () => {
         name="CHANGE_PWD"
         component={ChangePasswordComponent}
       />
+      <ProductsStack.Screen name="PAYMENT" component={PaymentComponent} />
       <ProductsStack.Screen name="QRCODE" component={QRCodeComponent} />
     </ProductsStack.Navigator>
   );

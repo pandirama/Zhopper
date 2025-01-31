@@ -26,11 +26,12 @@ import {useSelector} from 'react-redux';
 const ChangePasswordComponent = ({navigation}: any) => {
   const {showToast, toggleBackdrop} = useCommon();
 
+  const {userProfile} = useSelector(({profileReducer}: any) => profileReducer);
+
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
   const newFieldRef = useRef<TextInput>();
-  const cofirmFieldRef = useRef<TextInput>();
 
   const [changePwd, {isLoading}] = useChangePwdMutation();
 
@@ -41,10 +42,7 @@ const ChangePasswordComponent = ({navigation}: any) => {
   }, [isLoading]);
 
   const onPasswordChange = async () => {
-    if (
-      newPassword === '' ||
-      confirmPassword === ''
-    ) {
+    if (newPassword === '' || confirmPassword === '') {
       showToast({
         type: 'error',
         text1: 'Please Enter Required Fields',
@@ -65,8 +63,14 @@ const ChangePasswordComponent = ({navigation}: any) => {
       };
 
       const response: any = await changePwd(params).unwrap();
-      console.log('response', response);
       if (response[0]?.status === 1) {
+        showToast({
+          type: 'success',
+          text1: response[0]?.message,
+        });
+        setTimeout(() => {
+          navigation.goBack();
+        }, 1000);
       } else {
         showToast({
           type: 'error',
@@ -90,7 +94,11 @@ const ChangePasswordComponent = ({navigation}: any) => {
         animated
       />
       <SafeAreaView style={appStyles.container}>
-        <DashBoardHeaderComponent title={'Profile'} navigation={navigation} back/>
+        <DashBoardHeaderComponent
+          title={'Profile'}
+          navigation={navigation}
+          back
+        />
         <ScrollView showsVerticalScrollIndicator={false}>
           <LinearGradient
             colors={['#9b6ec6', '#b386dc', '#c79bef']}
@@ -114,7 +122,7 @@ const ChangePasswordComponent = ({navigation}: any) => {
                     fontSize: 16,
                     fontFamily: fontFamily.poppins_semi_bold,
                   }}>
-                  JR Rosy
+                  {userProfile?.fullname}
                 </Text>
                 <Text
                   style={{
@@ -180,8 +188,7 @@ const ChangePasswordComponent = ({navigation}: any) => {
                 onChangeValue={setConfirmPassword}
                 value={confirmPassword}
                 secureTextEntry={true}
-                returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
-                onSubmitEditing={() => cofirmFieldRef.current?.focus()}
+                returnKeyType={'done'}
               />
 
               <TouchableOpacity onPress={onPasswordChange}>

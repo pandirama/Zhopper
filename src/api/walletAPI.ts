@@ -10,7 +10,23 @@ export const walletAPI = createApi({
   endpoints: builder => ({
     walletBalance: builder.mutation<any, any>({
       query: walletParams => ({
-        url: WALLET_URLS.WALLET_BALANCE,
+        url: WALLET_URLS.WALLET_BALANCE_ALL,
+        method: 'GET',
+        params: walletParams,
+      }),
+      transformResponse: (response: {data: any}) => response,
+    }),
+    QRPayment: builder.mutation<any, any>({
+      query: walletParams => ({
+        url: WALLET_URLS.QR_PAYMENT,
+        method: 'POST',
+        params: walletParams,
+      }),
+      transformResponse: (response: {data: any}) => response,
+    }),
+    merchantInfo: builder.mutation<any, any>({
+      query: walletParams => ({
+        url: WALLET_URLS.MERCHANT_INFO,
         method: 'GET',
         params: walletParams,
       }),
@@ -19,4 +35,8 @@ export const walletAPI = createApi({
   }),
 });
 
-export const {useWalletBalanceMutation} = walletAPI;
+export const {
+  useWalletBalanceMutation,
+  useQRPaymentMutation,
+  useMerchantInfoMutation,
+} = walletAPI;

@@ -96,6 +96,10 @@ const RegisterComponent = ({navigation}: any) => {
 
       const response: any = await register(params).unwrap();
       if (response[0]?.status === 1) {
+        showToast({
+          type: 'success',
+          text1: response[0]?.message,
+        });
         navigation.navigate('LOGIN');
       } else {
         showToast({

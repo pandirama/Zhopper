@@ -50,7 +50,6 @@ const ForgotPasswordComponent = ({}: any) => {
       };
 
       const response: any = await forgotPassword(params).unwrap();
-      console.log('response', response);
       if (response[0]?.status === 1) {
         setPassword(response[0]?.data);
         showToast({

@@ -5,13 +5,21 @@ import {colors} from '../utils/colors';
 import {fontFamily} from '../utils/appStyles';
 
 const TextInputComponent = forwardRef((props: any, ref: any) => {
-  const {onChangeValue, value, placeHolder, headText, icon, ...otherProps} =
-    props ?? {};
+  const {
+    onChangeValue,
+    value,
+    placeHolder,
+    headText,
+    icon,
+    inputStyle,
+    textInputStyle,
+    ...otherProps
+  } = props ?? {};
   return (
     <View style={styles.inputView}>
       {icon}
       <TextInput
-        style={styles.input}
+        style={[styles.input, textInputStyle]}
         onChangeText={onChangeValue}
         placeholder={placeHolder}
         value={value}
@@ -23,7 +31,7 @@ const TextInputComponent = forwardRef((props: any, ref: any) => {
         }}
         {...otherProps}
       />
-      <Text style={styles.inputHeadTxt}>{headText}</Text>
+      <Text style={[styles.inputHeadTxt, inputStyle]}>{headText}</Text>
     </View>
   );
 });
@@ -62,7 +70,8 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     paddingRight: 15,
     flex: 1,
-    fontSize: 16,
+    fontSize: 17,
     fontWeight: 500,
+    color: colors.black,
   },
 });

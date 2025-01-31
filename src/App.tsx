@@ -7,6 +7,7 @@ import Toast, {ErrorToast, SuccessToast} from 'react-native-toast-message';
 import {PaperProvider} from 'react-native-paper';
 import {PersistGate} from 'redux-persist/lib/integration/react';
 import {Provider as ReduxProvider} from 'react-redux';
+import { KeyboardProvider } from 'react-native-keyboard-controller';
 import store, {persistor} from './store';
 import AppNavigationContainer from './navigators/ApplicationNavigator';
 import {CommonProvider} from './contexts/CommonContext';
@@ -26,7 +27,9 @@ const App = () => {
         <PaperProvider>
           <CommonProvider>
             <PersistGate loading={<SplashScreen />} persistor={persistor}>
-              <AppNavigationContainer />
+              <KeyboardProvider statusBarTranslucent>
+                <AppNavigationContainer />
+              </KeyboardProvider>
             </PersistGate>
             <Toast config={toastConfig} />
           </CommonProvider>

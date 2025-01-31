@@ -1,12 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-native/no-inline-styles */
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Platform, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {
   Camera,
   useCameraDevice,
   useCodeScanner,
 } from 'react-native-vision-camera';
+import {request, PERMISSIONS} from 'react-native-permissions';
 
 const QRScanner = (props: any) => {
   const [hasPermission, setHasPermission] = useState(false);
@@ -16,7 +17,6 @@ const QRScanner = (props: any) => {
   const codeScanner = useCodeScanner({
     codeTypes: ['qr'],
     onCodeScanned: codes => {
-      console.log('onCodeScanned ', codes);
       console.log('onCodeScanned value', codes[0].value);
       props.onRead(codes[0].value);
     },
@@ -29,18 +29,23 @@ const QRScanner = (props: any) => {
     }
   }, [device, hasPermission]);
 
-  const requestCameraPermission = async () => {
-    const permission = await Camera.requestCameraPermission();
-    setHasPermission(permission === 'granted');
-    return permission;
+  const requestCameraPermission = () => {
+    request(
+      Platform.OS === 'ios'
+        ? PERMISSIONS.IOS.CAMERA
+        : PERMISSIONS.ANDROID.CAMERA,
+    ).then(result => {
+      // if (result === 'blocked') {
+      //   openSettings('application').catch(() =>
+      //     console.warn('Cannot open app settings'),
+      //   );
+      // }
+      setHasPermission(result === 'granted');
+    });
   };
 
   useEffect(() => {
     requestCameraPermission();
-
-    setTimeout(() => {
-      props.onRead(null);
-    }, 15 * 1000);
   }, []);
 
   if (device == null || !hasPermission) {

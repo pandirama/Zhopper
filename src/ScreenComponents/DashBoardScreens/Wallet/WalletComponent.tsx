@@ -1,10 +1,11 @@
+/* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-native/no-inline-styles */
 import React, {useCallback, useEffect, useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {
+  FlatList,
   Image,
-  ScrollView,
   StatusBar,
   StyleSheet,
   Text,
@@ -20,24 +21,22 @@ import {useFocusEffect} from '@react-navigation/native';
 import {getErrorMessage} from '../../../utils/common';
 import useCommon from '../../../hooks/useCommon';
 import {useSelector} from 'react-redux';
-import {Fontisto, Ionicons} from '../../../utils/IconUtils';
+import {Ionicons} from '../../../utils/IconUtils';
 import {
   useGetReferralQRQuery,
   useLazyGetProfileQuery,
 } from '../../../api/profileAPI';
 import {profileAction} from '../../../reducer/profile/profileSlice';
 import {useAppDispatch} from '../../../store';
+import LinearGradient from 'react-native-linear-gradient';
 
 type Props = NativeStackScreenProps<any, 'WALLET'>;
 
-const walletTypes = ['MM-wallet', 'CB-wallet', 'SRP-wallet'];
-
-const WalletComponent = ({}: Props) => {
+const WalletComponent = ({navigation}: Props) => {
   const {showToast, toggleBackdrop} = useCommon();
   const dispatch = useAppDispatch();
-  const [MMWallet, setMMWallet] = useState<any>(null);
-  const [CBWallet, setCBWallet] = useState<any>(null);
-  const [SRPWallet, setSRPWallet] = useState<any>(null);
+
+  const [walletBalances, setWalletBalances] = useState<any>(null);
 
   const {userInfo} = useSelector(({authReducer}: any) => authReducer);
 
@@ -61,31 +60,12 @@ const WalletComponent = ({}: Props) => {
 
   const getWalletBalnce = async () => {
     try {
-      const MMWalletResponse = await walletBalance({
+      const walletResponse = await walletBalance({
         userid: userInfo[0]?.userid,
-        gateway: walletTypes[0],
       }).unwrap();
 
-      if (MMWalletResponse[0]?.status === 1) {
-        setMMWallet(MMWalletResponse[0]?.data?.[0]);
-      }
-
-      const CBWalletResponse = await walletBalance({
-        userid: userInfo[0]?.userid,
-        gateway: walletTypes[1],
-      }).unwrap();
-
-      if (CBWalletResponse[0]?.status === 1) {
-        setCBWallet(CBWalletResponse[0]?.data?.[0]);
-      }
-
-      const SRPWalletResponse = await walletBalance({
-        userid: userInfo[0]?.userid,
-        gateway: walletTypes[2],
-      }).unwrap();
-
-      if (SRPWalletResponse[0]?.status === 1) {
-        setSRPWallet(SRPWalletResponse[0]?.data?.[0]);
+      if (walletResponse[0]?.status === 1) {
+        setWalletBalances(walletResponse[0]?.data);
       }
     } catch (err: any) {
       showToast({
@@ -125,6 +105,121 @@ const WalletComponent = ({}: Props) => {
     }, []),
   );
 
+  const renderItem = ({item}: any) => {
+    return (
+      <TouchableOpacity
+        style={[
+          appStyles.boxShadow,
+          {
+            flex: 1,
+            backgroundColor: colors.white,
+            borderRadius: 10,
+            marginRight: 10,
+            marginLeft: 10,
+            paddingTop: 15,
+            paddingLeft: 20,
+            paddingBottom: 10,
+            marginTop: 10,
+            marginBottom: 10,
+          },
+        ]}>
+        <Image source={{uri: item?.icon}} style={styles.itemLogo} />
+        <Text
+          style={{
+            color: '#951bb1',
+            fontSize: 16,
+            fontFamily: fontFamily.poppins_semi_bold,
+            marginTop: 5,
+          }}>
+          {item?.wallet}
+        </Text>
+        <Text
+          style={{
+            color: colors.black,
+            fontSize: 16,
+            fontFamily: fontFamily.poppins_medium,
+          }}>
+          {`${item?.currency} ${item?.balance}`}
+        </Text>
+        <TouchableOpacity
+          style={{marginTop: 5, marginBottom: 5}}
+          onPress={() =>
+            navigation.navigate('QRCODE', {
+              wallet: item,
+            })
+          }>
+          <LinearGradient colors={['#853b92', '#4b0892']} style={styles.tabBtn}>
+            <Text style={styles.tabTxt}>SCAN TO PAY</Text>
+          </LinearGradient>
+        </TouchableOpacity>
+      </TouchableOpacity>
+    );
+  };
+
+  const ListFooter = () => {
+    return (
+      <View
+        style={{
+          borderRadius: 15,
+          padding: 10,
+          marginTop: 40,
+          marginLeft: 10,
+          marginRight: 10,
+          backgroundColor: '#f7f6f6',
+        }}>
+        <Text style={styles.titleTxt}>Recent Transaction</Text>
+        <Text style={styles.subtitleTxt}>
+          In dolor neque, commodo sit amet accumsan ac, sodales nec ex. D
+        </Text>
+        <View style={styles.walletContainer}>
+          <View style={[appStyles.boxShadow, styles.walletSubContainer]}>
+            <TouchableOpacity style={styles.walletTouch}>
+              <Image
+                source={require('../../../assets/record_icon.png')}
+                style={{width: 50, height: 50}}
+              />
+              <Text style={styles.walletTitleTxt}>Spend Record</Text>
+              <Ionicons
+                name={'chevron-forward'}
+                size={22}
+                color={colors.black}
+                style={styles.icon}
+              />
+            </TouchableOpacity>
+            <View style={styles.borderView} />
+            <TouchableOpacity style={styles.walletTouch}>
+              <Image
+                source={require('../../../assets/cb_wallet_icon.png')}
+                style={{width: 50, height: 50}}
+              />
+              <Text style={styles.walletTitleTxt}>Cash Back Wallet</Text>
+              <Ionicons
+                name={'chevron-forward'}
+                size={22}
+                color={colors.black}
+                style={styles.icon}
+              />
+            </TouchableOpacity>
+            <View style={styles.borderView} />
+            <TouchableOpacity style={styles.walletTouch}>
+              <Image
+                source={require('../../../assets/redemption_icon.png')}
+                style={{width: 50, height: 50}}
+              />
+              <Text style={styles.walletTitleTxt}>Redemption</Text>
+              <Ionicons
+                name={'chevron-forward'}
+                size={22}
+                color={colors.black}
+                style={styles.icon}
+              />
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+    );
+  };
+
   return (
     <>
       <StatusBar
@@ -135,192 +230,15 @@ const WalletComponent = ({}: Props) => {
       />
       <SafeAreaView style={appStyles.container}>
         <DashBoardHeaderComponent title={'Assets'} />
-        <ScrollView showsVerticalScrollIndicator={false}>
-          <View
-            style={{
-              flexDirection: 'row',
-              marginLeft: 12,
-              marginRight: 12,
-              marginTop: 30,
-            }}>
-            <View
-              style={[
-                appStyles.boxShadow,
-                {
-                  flex: 1,
-                  backgroundColor: colors.white,
-                  borderRadius: 10,
-                  marginRight: 10,
-                  marginLeft: 10,
-                  paddingTop: 15,
-                  paddingLeft: 20,
-                  paddingBottom: 10,
-                },
-              ]}>
-              <Fontisto name="wallet" color={'#4e0b92'} size={45} />
-              <Text
-                style={{
-                  color: '#951bb1',
-                  fontSize: 16,
-                  fontFamily: fontFamily.poppins_semi_bold,
-                  marginTop: 5,
-                }}>
-                MM Wallet
-              </Text>
-              <Text
-                style={{
-                  color: colors.black,
-                  fontSize: 16,
-                  fontFamily: fontFamily.poppins_medium,
-                }}>
-                {`${MMWallet?.currency} ${MMWallet?.balance}`}
-              </Text>
-            </View>
-            <View
-              style={[
-                appStyles.boxShadow,
-                {
-                  flex: 1,
-                  backgroundColor: colors.white,
-                  borderRadius: 10,
-                  marginRight: 10,
-                  marginLeft: 10,
-                  paddingLeft: 20,
-                  paddingTop: 15,
-                  paddingBottom: 10,
-                },
-              ]}>
-              <Image
-                source={require('../../../assets/cb_wallet.png')}
-                style={{width: 50, height: 50}}
-              />
-              <Text
-                style={{
-                  color: '#951bb1',
-                  fontSize: 16,
-                  fontFamily: fontFamily.poppins_semi_bold,
-                  marginTop: 5,
-                }}>
-                CB Wallet
-              </Text>
-              <Text
-                style={{
-                  color: colors.black,
-                  fontSize: 16,
-                  fontFamily: fontFamily.poppins_medium,
-                }}>
-                {`${MMWallet?.currency} ${CBWallet?.balance}`}
-              </Text>
-            </View>
-          </View>
-          <View
-            style={{
-              flexDirection: 'row',
-              marginLeft: 12,
-              marginRight: 12,
-              marginTop: 30,
-            }}>
-            <View
-              style={[
-                appStyles.boxShadow,
-                {
-                  flex: 1,
-                  backgroundColor: colors.white,
-                  borderRadius: 10,
-                  marginRight: 30,
-                  marginLeft: 10,
-                  paddingTop: 15,
-                  paddingLeft: 20,
-                  paddingBottom: 10,
-                },
-              ]}>
-              <Fontisto name="wallet" color={'#4e0b92'} size={45} />
-              <Text
-                style={{
-                  color: '#951bb1',
-                  fontSize: 16,
-                  fontFamily: fontFamily.poppins_semi_bold,
-                  marginTop: 5,
-                }}>
-                SRP Wallet
-              </Text>
-              <Text
-                style={{
-                  color: colors.black,
-                  fontSize: 16,
-                  fontFamily: fontFamily.poppins_medium,
-                }}>
-                {`${MMWallet?.currency} ${SRPWallet?.balance}`}
-              </Text>
-            </View>
-            <View
-              style={{
-                flex: 1,
-                marginRight: 10,
-                marginLeft: 10,
-              }}
-            />
-          </View>
-          <View
-            style={{
-              borderRadius: 15,
-              padding: 10,
-              marginTop: 60,
-              marginLeft: 20,
-              marginRight: 20,
-              backgroundColor: '#f7f6f6',
-            }}>
-            <Text style={styles.titleTxt}>Recent Transaction</Text>
-            <Text style={styles.subtitleTxt}>
-              In dolor neque, commodo sit amet accumsan ac, sodales nec ex. D
-            </Text>
-            <View style={styles.walletContainer}>
-              <View style={[appStyles.boxShadow, styles.walletSubContainer]}>
-                <TouchableOpacity style={styles.walletTouch}>
-                  <Image
-                    source={require('../../../assets/record_icon.png')}
-                    style={{width: 50, height: 50}}
-                  />
-                  <Text style={styles.walletTitleTxt}>Spend Record</Text>
-                  <Ionicons
-                    name={'chevron-forward'}
-                    size={22}
-                    color={colors.black}
-                    style={styles.icon}
-                  />
-                </TouchableOpacity>
-                <View style={styles.borderView} />
-                <TouchableOpacity style={styles.walletTouch}>
-                  <Image
-                    source={require('../../../assets/cb_wallet_icon.png')}
-                    style={{width: 50, height: 50}}
-                  />
-                  <Text style={styles.walletTitleTxt}>Cash Back Wallet</Text>
-                  <Ionicons
-                    name={'chevron-forward'}
-                    size={22}
-                    color={colors.black}
-                    style={styles.icon}
-                  />
-                </TouchableOpacity>
-                <View style={styles.borderView} />
-                <TouchableOpacity style={styles.walletTouch}>
-                  <Image
-                    source={require('../../../assets/redemption_icon.png')}
-                    style={{width: 50, height: 50}}
-                  />
-                  <Text style={styles.walletTitleTxt}>Redemption</Text>
-                  <Ionicons
-                    name={'chevron-forward'}
-                    size={22}
-                    color={colors.black}
-                    style={styles.icon}
-                  />
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
-        </ScrollView>
+        <FlatList
+          data={walletBalances}
+          renderItem={renderItem}
+          numColumns={2}
+          columnWrapperStyle={styles.flatListColumn}
+          contentContainerStyle={styles.flatListCotent}
+          ListFooterComponent={<ListFooter />}
+          showsVerticalScrollIndicator={false}
+        />
       </SafeAreaView>
     </>
   );
@@ -339,6 +257,10 @@ const styles = StyleSheet.create({
     padding: 8,
     borderRadius: 20,
     marginTop: 40,
+  },
+  itemLogo: {
+    width: 50,
+    height: 50,
   },
   icon: {
     marginRight: 10,
@@ -459,6 +381,28 @@ const styles = StyleSheet.create({
     flex: 1,
     textAlignVertical: 'center',
     marginLeft: 10,
+    fontFamily: fontFamily.poppins_semi_bold,
+  },
+  flatListCotent: {
+    paddingBottom: 30,
+    marginTop: 20,
+    marginLeft: 5,
+    marginRight: 5,
+  },
+  flatListColumn: {
+    flex: 1,
+    justifyContent: 'space-evenly',
+  },
+  tabBtn: {
+    height: 30,
+    borderRadius: 20,
+    justifyContent: 'center',
+    width: 120,
+  },
+  tabTxt: {
+    color: colors.white,
+    fontSize: 12,
+    textAlign: 'center',
     fontFamily: fontFamily.poppins_semi_bold,
   },
 });

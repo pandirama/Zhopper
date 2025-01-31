@@ -40,7 +40,10 @@ const DashBoardHeaderComponent = ({title, navigation, back}: any) => {
             <Ionicons name="arrow-back" size={20} />
           </TouchableOpacity>
         )}
-        <Image source={require('../assets/logo.png')} style={styles.icon} />
+        {!back && (
+          <Image source={require('../assets/logo.png')} style={styles.icon} />
+        )}
+
         <Text style={styles.titleTxt}>{title}</Text>
         <TouchableOpacity style={styles.logoutTouch} onPress={() => onLogout()}>
           <LinearGradient colors={['#4b0892', '#853b92']} style={styles.logout}>

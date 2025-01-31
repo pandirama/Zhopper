@@ -37,10 +37,9 @@ const ProfileComponent = ({navigation}: any) => {
   const [userName, setUserName] = useState('');
   const [shopperRank, setShopperRank] = useState(0);
 
-  const {referralLink, userProfile} = useSelector(({profileReducer}: any) => profileReducer);
-
-  console.log('referralLink', referralLink);
-  console.log('userProfile', userProfile);
+  const {referralLink, userProfile} = useSelector(
+    ({profileReducer}: any) => profileReducer,
+  );
 
   const fullNameFieldRef = useRef<TextInput>();
   const emailFieldRef = useRef<TextInput>();
@@ -61,7 +60,6 @@ const ProfileComponent = ({navigation}: any) => {
       setShopperRank(userProfile?.shopper_rank?.toString());
     }
   }, [userProfile]);
-
 
   // const handleNext = () => {
   //   setStep(prevStep => Math.min(prevStep + 1, totalSteps));
@@ -124,7 +122,9 @@ const ProfileComponent = ({navigation}: any) => {
       />
       <SafeAreaView style={appStyles.container}>
         <DashBoardHeaderComponent title={'Profile'} />
-        <ScrollView showsVerticalScrollIndicator={false}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps={'never'}>
           <LinearGradient
             colors={['#9b6ec6', '#b386dc', '#c79bef']}
             style={styles.container}>
@@ -331,8 +331,8 @@ const ProfileComponent = ({navigation}: any) => {
                   <Text style={styles.loginBtnTxt}>SUBMIT</Text>
                 </LinearGradient>
               </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => navigation.navigate('CHANGE_PWD')}>
+              <TouchableOpacity onPress={() => navigation.navigate('PAYMENT')}>
+                {/* onPress={() => navigation.navigate('CHANGE_PWD')}> */}
                 <LinearGradient
                   colors={['#853b92', '#4b0892']}
                   style={styles.pwdBtn}>
