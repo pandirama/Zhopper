@@ -112,7 +112,7 @@ const PaginationDots = (props: PaginateProp) => {
   );
 };
 
-const ProductsComponent = ({navigation}: any) => {
+const SubCategoryComponent = () => {
   const {showToast, toggleBackdrop} = useCommon();
   const [activeDot, setActiveDot] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
@@ -174,12 +174,7 @@ const ProductsComponent = ({navigation}: any) => {
           alignItems: 'center',
           padding: 5,
           flex: 1,
-        }}
-        onPress={() =>
-          navigation.navigate('SUB_CATEGORY', {
-            subCategory: '',
-          })
-        }>
+        }}>
         <Image
           source={findImage?.image}
           style={{width: 80, height: 80, borderRadius: 10}}
@@ -507,4 +502,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ProductsComponent;
+export default SubCategoryComponent;

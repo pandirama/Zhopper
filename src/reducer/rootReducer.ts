@@ -9,6 +9,7 @@ import {authAPI} from '../api/auth/authAPI';
 import {profileAPI} from '../api/profileAPI';
 import {walletAPI} from '../api/walletAPI';
 import {productsAPI} from '../api/productsAPI';
+import {referralAPI} from '../api/referralAPI';
 
 export const rootPersistConfig = {
   key: 'root',
@@ -23,7 +24,6 @@ const authReducerPersistConfig = {
   whiteList: ['finishGetStarted', 'isShowCongratsScreen'],
 };
 
-
 export const combinedReducer = combineReducers({
   authReducer: persistReducer(authReducerPersistConfig, authReducer),
   [authAPI.reducerPath]: authAPI.reducer,
@@ -31,6 +31,7 @@ export const combinedReducer = combineReducers({
   profileReducer: persistReducer(authReducerPersistConfig, profileReducer),
   [walletAPI.reducerPath]: walletAPI.reducer,
   [productsAPI.reducerPath]: productsAPI.reducer,
+  [referralAPI.reducerPath]: referralAPI.reducer,
 });
 
 export const rootReducer: Reducer<RootState> = (state, action) => {

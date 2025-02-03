@@ -10,6 +10,7 @@ export const WALLET_URLS = {
   WALLET_BALANCE_ALL: `${BASE_URL}/api/balance-all`,
   QR_PAYMENT: `${BASE_URL}/api/payment`,
   MERCHANT_INFO: `${BASE_URL}/api/merchant-info-new`,
+  TRANSACTION: `${BASE_URL}/api/transaction`,
 };
 
 export const PROFILE_URLS = {
@@ -19,5 +20,9 @@ export const PROFILE_URLS = {
 };
 
 export const PRODUCTS_URLS = {
-  CATEGORIES: `${BASE_URL}/api/category`,
+  CATEGORIES: `${BASE_URL}/api/category-all-new`,
+};
+
+export const REFERRAL_URLS = {
+  REFERRAL: `${BASE_URL}/api/referral`,
 };

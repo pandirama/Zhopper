@@ -20,7 +20,7 @@ export const walletAPI = createApi({
       query: walletParams => ({
         url: WALLET_URLS.QR_PAYMENT,
         method: 'POST',
-        params: walletParams,
+        body: walletParams,
       }),
       transformResponse: (response: {data: any}) => response,
     }),
@@ -32,6 +32,14 @@ export const walletAPI = createApi({
       }),
       transformResponse: (response: {data: any}) => response,
     }),
+    walletTransaction: builder.mutation<any, any>({
+      query: walletParams => ({
+        url: WALLET_URLS.TRANSACTION,
+        method: 'POST',
+        body: walletParams,
+      }),
+      transformResponse: (response: {data: any}) => response,
+    }),
   }),
 });
 
@@ -39,4 +47,5 @@ export const {
   useWalletBalanceMutation,
   useQRPaymentMutation,
   useMerchantInfoMutation,
+  useWalletTransactionMutation,
 } = walletAPI;

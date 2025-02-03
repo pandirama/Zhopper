@@ -23,6 +23,8 @@ import TransactionsComponent from '../ScreenComponents/DashBoardScreens/Transact
 import ChangePasswordComponent from '../ScreenComponents/DashBoardScreens/Profile/ChangePasswordComponent';
 import QRCodeComponent from '../ScreenComponents/DashBoardScreens/QRPayment/QRCodeComponent';
 import PaymentComponent from '../ScreenComponents/DashBoardScreens/QRPayment/PaymentComponent';
+import TransactionHistoryComponent from '../ScreenComponents/DashBoardScreens/Wallet/TransactionHistoryComponent';
+import SubCategoryComponent from '../ScreenComponents/DashBoardScreens/Products/SubCategoryComponent';
 
 const ProductsStack = createNativeStackNavigator<any>();
 
@@ -32,6 +34,10 @@ const WalletStackNavigator = () => {
       screenOptions={{headerShown: false}}
       initialRouteName="WALLET">
       <ProductsStack.Screen name="WALLET" component={WalletComponent} />
+      <ProductsStack.Screen
+        name="TRANS_HISTORY"
+        component={TransactionHistoryComponent}
+      />
       <ProductsStack.Screen name="QRCODE" component={QRCodeComponent} />
       <ProductsStack.Screen name="PAYMENT" component={PaymentComponent} />
     </ProductsStack.Navigator>
@@ -54,6 +60,7 @@ const ProductsStackNavigator = () => {
       screenOptions={{headerShown: false}}
       initialRouteName="PRODUCTS">
       <ProductsStack.Screen name="PRODUCTS" component={ProductsComponent} />
+      <ProductsStack.Screen name="SUB_CATEGORY" component={SubCategoryComponent} />
     </ProductsStack.Navigator>
   );
 };

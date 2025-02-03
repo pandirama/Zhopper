@@ -331,8 +331,8 @@ const ProfileComponent = ({navigation}: any) => {
                   <Text style={styles.loginBtnTxt}>SUBMIT</Text>
                 </LinearGradient>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => navigation.navigate('PAYMENT')}>
-                {/* onPress={() => navigation.navigate('CHANGE_PWD')}> */}
+              <TouchableOpacity
+                onPress={() => navigation.navigate('CHANGE_PWD')}>
                 <LinearGradient
                   colors={['#853b92', '#4b0892']}
                   style={styles.pwdBtn}>

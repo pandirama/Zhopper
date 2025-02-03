@@ -173,7 +173,14 @@ const WalletComponent = ({navigation}: Props) => {
         </Text>
         <View style={styles.walletContainer}>
           <View style={[appStyles.boxShadow, styles.walletSubContainer]}>
-            <TouchableOpacity style={styles.walletTouch}>
+            <TouchableOpacity
+              style={styles.walletTouch}
+              onPress={() => {
+                navigation.navigate('TRANS_HISTORY', {
+                  gateway: 'SC-wallet',
+                  title: 'Spend Record',
+                });
+              }}>
               <Image
                 source={require('../../../assets/record_icon.png')}
                 style={{width: 50, height: 50}}
@@ -187,7 +194,14 @@ const WalletComponent = ({navigation}: Props) => {
               />
             </TouchableOpacity>
             <View style={styles.borderView} />
-            <TouchableOpacity style={styles.walletTouch}>
+            <TouchableOpacity
+              style={styles.walletTouch}
+              onPress={() => {
+                navigation.navigate('TRANS_HISTORY', {
+                  gateway: 'CB-wallet',
+                  title: 'Cash Back Wallet',
+                });
+              }}>
               <Image
                 source={require('../../../assets/cb_wallet_icon.png')}
                 style={{width: 50, height: 50}}
@@ -201,7 +215,14 @@ const WalletComponent = ({navigation}: Props) => {
               />
             </TouchableOpacity>
             <View style={styles.borderView} />
-            <TouchableOpacity style={styles.walletTouch}>
+            <TouchableOpacity
+              style={styles.walletTouch}
+              onPress={() => {
+                navigation.navigate('TRANS_HISTORY', {
+                  gateway: 'SRP-wallet',
+                  title: 'Redemption',
+                });
+              }}>
               <Image
                 source={require('../../../assets/redemption_icon.png')}
                 style={{width: 50, height: 50}}

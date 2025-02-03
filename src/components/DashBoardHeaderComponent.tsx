@@ -11,7 +11,12 @@ import {Ionicons, MaterialCommunityIcons} from '../utils/IconUtils';
 import {clearStorage} from '../utils/common';
 import ModalComponent from './ModalComponent';
 
-const DashBoardHeaderComponent = ({title, navigation, back}: any) => {
+const DashBoardHeaderComponent = ({
+  title,
+  navigation,
+  back,
+  onBackPress,
+}: any) => {
   const [isVisible, setIsVisible] = useState(false);
   const dispatch = useAppDispatch();
   const onLogout = async () => {
@@ -35,7 +40,9 @@ const DashBoardHeaderComponent = ({title, navigation, back}: any) => {
       <View style={styles.subContainer}>
         {back && (
           <TouchableOpacity
-            onPress={() => navigation.goBack()}
+            onPress={() => {
+              onBackPress ? onBackPress() : navigation.goBack();
+            }}
             style={styles.backBtnView}>
             <Ionicons name="arrow-back" size={20} />
           </TouchableOpacity>

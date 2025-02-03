@@ -1,6 +1,7 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable react-native/no-inline-styles */
-import React from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   FlatList,
   Image,
@@ -18,43 +19,58 @@ import DashBoardHeaderComponent from '../../../components/DashBoardHeaderCompone
 import LinearGradient from 'react-native-linear-gradient';
 import {useSelector} from 'react-redux';
 import QRCode from 'react-native-qrcode-svg';
-
-const clients = [
-  {
-    icon: require('../../../assets/acct_user1.png'),
-    name: 'Accet User01',
-    level: 'Level 1',
-  },
-  {
-    icon: require('../../../assets/acct_user2.png'),
-    name: 'Accet User05',
-    level: 'Level 2',
-  },
-  {
-    icon: require('../../../assets/acct_user3.png'),
-    name: 'Accet User02',
-    level: 'Level 3',
-  },
-  {
-    icon: require('../../../assets/acct_user4.png'),
-    name: 'Accet User03',
-    level: 'Level 0',
-  },
-  {
-    icon: require('../../../assets/acct_user5.png'),
-    name: 'Accet User04',
-    level: 'Level 2',
-  },
-  {
-    icon: require('../../../assets/acct_user6.png'),
-    name: 'Accet User06',
-    level: 'Level 5',
-  },
-];
+import useCommon from '../../../hooks/useCommon';
+import {getErrorMessage} from '../../../utils/common';
+import {useFocusEffect} from '@react-navigation/native';
+import {useReferralMutation} from '../../../api/referralAPI';
+import Clipboard from '@react-native-clipboard/clipboard';
 
 const ReferalComponent = () => {
-  const {referralLink, userProfile} = useSelector(
-    ({profileReducer}: any) => profileReducer,
+  const {showToast, toggleBackdrop} = useCommon();
+
+  const [referrals, setReferrals] = useState<any>(null);
+
+  const {referralLink} = useSelector(({profileReducer}: any) => profileReducer);
+
+  const {userInfo} = useSelector(({authReducer}: any) => authReducer);
+
+  const [referral, {isLoading}] = useReferralMutation();
+
+  useEffect(() => {
+    toggleBackdrop(isLoading);
+  }, [isLoading]);
+
+  const getReferral = async () => {
+    try {
+      const referralResponse = await referral({
+        userid: userInfo[0]?.userid,
+      }).unwrap();
+
+      if (referralResponse[0]?.status === 1) {
+        setReferrals(referralResponse[0]);
+        showToast({
+          type: 'success',
+          text1: referralResponse[0]?.message,
+        });
+      } else {
+        showToast({
+          type: 'error',
+          text1: getErrorMessage(referralResponse[0]),
+        });
+      }
+    } catch (err: any) {
+      showToast({
+        type: 'error',
+        text1: getErrorMessage(err),
+      });
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      getReferral();
+      return () => {};
+    }, []),
   );
 
   const renderItem = ({item}: any) => {
@@ -68,7 +84,10 @@ const ReferalComponent = () => {
           backgroundColor: colors.white,
           padding: 10,
         }}>
-        <Image source={item?.icon} style={{width: 50, height: 50}} />
+        <Image
+          source={require('../../../assets/person.png')}
+          style={{width: 50, height: 50}}
+        />
 
         <Text
           style={{
@@ -78,7 +97,7 @@ const ReferalComponent = () => {
             color: colors.black,
             marginLeft: 10,
           }}>
-          {item?.name}
+          {item?.username}
         </Text>
         <Text
           style={{
@@ -87,7 +106,7 @@ const ReferalComponent = () => {
             color: '#951bb1',
             marginRight: 10,
           }}>
-          {item?.level}
+          {item?.joindate}
         </Text>
       </TouchableOpacity>
     );
@@ -96,39 +115,6 @@ const ReferalComponent = () => {
   const ListHeader = () => {
     return (
       <>
-        <LinearGradient
-          colors={['#9b6ec6', '#b386dc', '#c79bef']}
-          style={styles.container}>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              marginLeft: 15,
-            }}>
-            <Image
-              source={require('../../../assets/profile_user.png')}
-              style={{width: 60, height: 60}}
-            />
-            <View style={{marginLeft: 10, justifyContent: 'center', flex: 1}}>
-              <Text
-                style={{
-                  color: '#310855',
-                  fontSize: 16,
-                  fontFamily: fontFamily.poppins_semi_bold,
-                }}>
-                {userProfile?.fullname}
-              </Text>
-              <Text
-                style={{
-                  color: colors.black,
-                  fontSize: 14,
-                  fontFamily: fontFamily.poppins_regular,
-                }}>
-                Package
-              </Text>
-            </View>
-          </View>
-        </LinearGradient>
         <View style={styles.loginFormView}>
           <View
             style={{
@@ -194,6 +180,14 @@ const ReferalComponent = () => {
                     }}>
                     <QRCode value={referralLink} size={90} />
                   </View>
+
+                  <TouchableOpacity
+                    style={styles.tabBtn}
+                    onPress={() => {
+                      Clipboard.setString(referralLink);
+                    }}>
+                    <Text style={styles.tabTxt}>TAB AND COPY</Text>
+                  </TouchableOpacity>
                 </View>
               </View>
             </ImageBackground>
@@ -235,7 +229,7 @@ const ReferalComponent = () => {
                   fontSize: 13,
                   fontFamily: fontFamily.poppins_bold,
                 }}>
-                227
+                {referrals?.team}
               </Text>
             </View>
             <View
@@ -270,42 +264,7 @@ const ReferalComponent = () => {
                   fontSize: 13,
                   fontFamily: fontFamily.poppins_bold,
                 }}>
-                50
-              </Text>
-            </View>
-            <View
-              style={[
-                appStyles.boxShadow,
-                {
-                  flex: 1,
-                  backgroundColor: colors.white,
-                  borderRadius: 5,
-                  marginRight: 10,
-                  marginLeft: 10,
-                  paddingLeft: 20,
-                  paddingTop: 15,
-                  paddingBottom: 10,
-                },
-              ]}>
-              <Image
-                source={require('../../../assets/network_icon.png')}
-                style={{width: 50, height: 50}}
-              />
-              <Text
-                style={{
-                  color: colors.black,
-                  fontSize: 13,
-                  fontFamily: fontFamily.poppins_semi_bold,
-                }}>
-                Network
-              </Text>
-              <Text
-                style={{
-                  color: '#951bb1',
-                  fontSize: 13,
-                  fontFamily: fontFamily.poppins_bold,
-                }}>
-                100+
+                {referrals?.direct}
               </Text>
             </View>
           </View>
@@ -340,7 +299,7 @@ const ReferalComponent = () => {
       <SafeAreaView style={appStyles.container}>
         <DashBoardHeaderComponent title={'Referral'} />
         <FlatList
-          data={clients}
+          data={referrals?.data}
           renderItem={renderItem}
           ItemSeparatorComponent={() => {
             return <View style={styles.borderView} />;
@@ -462,14 +421,14 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     backgroundColor: colors.white,
     marginTop: 10,
-    paddingLeft: 12,
-    paddingRight: 12,
+    paddingLeft: 20,
+    paddingRight: 20,
   },
   tabTxt: {
     color: colors.black,
     fontSize: 14,
-    paddingTop: 5,
-    paddingBottom: 5,
+    paddingTop: 8,
+    paddingBottom: 8,
     textAlign: 'center',
     fontFamily: fontFamily.poppins_semi_bold,
   },
