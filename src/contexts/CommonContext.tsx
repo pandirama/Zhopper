@@ -97,9 +97,8 @@ const CommonProvider = ({children}: React.PropsWithChildren): JSX.Element => {
       {showBackdrop && (
         <View style={styles.backDropView}>
           <ActivityIndicator
-            size={20}
             color={colors.inputBorder}
-            style={{transform: [{scaleX: 2}, {scaleY: 2}]}}
+            style={{transform: [{scaleX: 1.3}, {scaleY: 1.3}]}}
           />
         </View>
       )}

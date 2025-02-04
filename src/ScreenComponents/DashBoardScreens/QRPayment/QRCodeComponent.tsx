@@ -2,6 +2,8 @@ import React from 'react';
 import {View, StyleSheet} from 'react-native';
 import DashBoardHeaderComponent from '../../../components/DashBoardHeaderComponent';
 import QRScanner from './QRScanner';
+import appStyles from '../../../utils/appStyles';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 const clr1 = 'mediumseagreen';
 
@@ -10,7 +12,6 @@ const QRCodeComponent = ({navigation, route}: any) => {
 
   const onQrRead = (qrtext: any) => {
     if (qrtext) {
-      console.log('qrCode', qrtext);
       navigation.navigate('PAYMENT', {
         wallet,
         merchantID: qrtext,
@@ -21,12 +22,14 @@ const QRCodeComponent = ({navigation, route}: any) => {
   };
 
   return (
-    <>
-      <DashBoardHeaderComponent title={'Profile'} />
-      <View style={styles.page}>
-        <QRScanner onRead={onQrRead} />
+    <SafeAreaView style={appStyles.container} edges={['right', 'left', 'top']}>
+      <View style={appStyles.headerContainer}>
+        <DashBoardHeaderComponent back />
+        <View style={styles.page}>
+          <QRScanner onRead={onQrRead} />
+        </View>
       </View>
-    </>
+    </SafeAreaView>
   );
 };
 

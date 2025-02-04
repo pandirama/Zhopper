@@ -10,13 +10,9 @@ import {authAction} from '../reducer/auth/authSlice';
 import {Ionicons, MaterialCommunityIcons} from '../utils/IconUtils';
 import {clearStorage} from '../utils/common';
 import ModalComponent from './ModalComponent';
+import {useNavigation} from '@react-navigation/native';
 
-const DashBoardHeaderComponent = ({
-  title,
-  navigation,
-  back,
-  onBackPress,
-}: any) => {
+const DashBoardHeaderComponent = ({title, back, onBackPress}: any) => {
   const [isVisible, setIsVisible] = useState(false);
   const dispatch = useAppDispatch();
   const onLogout = async () => {
@@ -33,6 +29,16 @@ const DashBoardHeaderComponent = ({
     dispatch(authAction.logout());
   };
 
+  const navigation = useNavigation();
+
+  const backBtnEvent = () => {
+    if (onBackPress) {
+      onBackPress();
+      return;
+    }
+    navigation.goBack();
+  };
+
   return (
     <LinearGradient
       colors={['#9b6ec6', '#b386dc', '#c79bef']}
@@ -41,7 +47,7 @@ const DashBoardHeaderComponent = ({
         {back && (
           <TouchableOpacity
             onPress={() => {
-              onBackPress ? onBackPress() : navigation.goBack();
+              backBtnEvent();
             }}
             style={styles.backBtnView}>
             <Ionicons name="arrow-back" size={20} />

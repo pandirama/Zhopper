@@ -21,6 +21,8 @@ export const PROFILE_URLS = {
 
 export const PRODUCTS_URLS = {
   CATEGORIES: `${BASE_URL}/api/category-all-new`,
+  SUB_CATEGORIES: `${BASE_URL}/api/merchant-list-category`,
+  MERCHANT_INFO: `${BASE_URL}/api/merchant-info-new`,
 };
 
 export const REFERRAL_URLS = {

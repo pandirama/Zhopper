@@ -142,7 +142,7 @@ const WalletComponent = ({navigation}: Props) => {
           {`${item?.currency} ${item?.balance}`}
         </Text>
         <TouchableOpacity
-          style={{marginTop: 5, marginBottom: 5}}
+          style={{marginTop: 10, marginBottom: 5}}
           onPress={() =>
             navigation.navigate('QRCODE', {
               wallet: item,
@@ -249,17 +249,21 @@ const WalletComponent = ({navigation}: Props) => {
         backgroundColor={colors.status}
         animated
       />
-      <SafeAreaView style={appStyles.container}>
-        <DashBoardHeaderComponent title={'Assets'} />
-        <FlatList
-          data={walletBalances}
-          renderItem={renderItem}
-          numColumns={2}
-          columnWrapperStyle={styles.flatListColumn}
-          contentContainerStyle={styles.flatListCotent}
-          ListFooterComponent={<ListFooter />}
-          showsVerticalScrollIndicator={false}
-        />
+      <SafeAreaView
+        style={appStyles.container}
+        edges={['right', 'left', 'top']}>
+        <View style={appStyles.headerContainer}>
+          <DashBoardHeaderComponent title={'Assets'} />
+          <FlatList
+            data={walletBalances}
+            renderItem={renderItem}
+            numColumns={2}
+            columnWrapperStyle={styles.flatListColumn}
+            contentContainerStyle={styles.flatListCotent}
+            ListFooterComponent={<ListFooter />}
+            showsVerticalScrollIndicator={false}
+          />
+        </View>
       </SafeAreaView>
     </>
   );

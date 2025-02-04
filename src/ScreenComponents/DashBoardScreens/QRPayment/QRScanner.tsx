@@ -17,7 +17,6 @@ const QRScanner = (props: any) => {
   const codeScanner = useCodeScanner({
     codeTypes: ['qr'],
     onCodeScanned: codes => {
-      console.log('onCodeScanned value', codes[0].value);
       props.onRead(codes[0].value);
     },
   });

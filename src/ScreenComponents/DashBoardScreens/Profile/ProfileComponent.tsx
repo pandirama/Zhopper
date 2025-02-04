@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-native/no-inline-styles */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {
@@ -120,228 +119,233 @@ const ProfileComponent = ({navigation}: any) => {
         backgroundColor={colors.status}
         animated
       />
-      <SafeAreaView style={appStyles.container}>
-        <DashBoardHeaderComponent title={'Profile'} />
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          keyboardShouldPersistTaps={'never'}>
-          <LinearGradient
-            colors={['#9b6ec6', '#b386dc', '#c79bef']}
-            style={styles.container}>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                marginLeft: 15,
-              }}>
-              <Image
-                source={require('../../../assets/profile_user.png')}
-                style={{width: 60, height: 60}}
-              />
-              <View style={{marginLeft: 10, justifyContent: 'center', flex: 1}}>
-                <Text
-                  style={{
-                    color: '#310855',
-                    fontSize: 16,
-                    fontFamily: fontFamily.poppins_semi_bold,
-                  }}>
-                  {fullname}
-                </Text>
-                <Text
-                  style={{
-                    color: colors.black,
-                    fontSize: 14,
-                    fontFamily: fontFamily.poppins_regular,
-                  }}>
-                  Package
-                </Text>
-              </View>
-              <View style={{marginRight: 15}}>
+      <SafeAreaView
+        style={appStyles.container}
+        edges={['right', 'left', 'top']}>
+        <View style={appStyles.headerContainer}>
+          <DashBoardHeaderComponent title={'Profile'} />
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            keyboardShouldPersistTaps={'never'}>
+            <LinearGradient
+              colors={['#9b6ec6', '#b386dc', '#c79bef']}
+              style={styles.container}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  marginLeft: 15,
+                }}>
                 <Image
-                  source={require('../../../assets/arrow_right.png')}
+                  source={require('../../../assets/profile_user.png')}
                   style={{width: 60, height: 60}}
                 />
-                <Text
-                  style={{
-                    color: colors.black,
-                    fontSize: 16,
-                    fontFamily: fontFamily.poppins_semi_bold,
-                    position: 'absolute',
-                    right: 22,
-                    top: 16,
-                  }}>
-                  Pts
-                </Text>
-                <View style={styles.logout}>
+                <View
+                  style={{marginLeft: 10, justifyContent: 'center', flex: 1}}>
                   <Text
                     style={{
-                      color: colors.white,
+                      color: '#310855',
                       fontSize: 16,
                       fontFamily: fontFamily.poppins_semi_bold,
                     }}>
-                    180
+                    {fullname}
+                  </Text>
+                  <Text
+                    style={{
+                      color: colors.black,
+                      fontSize: 14,
+                      fontFamily: fontFamily.poppins_regular,
+                    }}>
+                    Package
                   </Text>
                 </View>
-              </View>
-            </View>
-            <View
-              style={{
-                backgroundColor: '#e2d2f0',
-                marginTop: 10,
-                height: 80,
-                borderRadius: 15,
-                justifyContent: 'center',
-                alignItems: 'center',
-                marginLeft: 15,
-                marginRight: 15,
-              }}>
-              {renderStepIndicator()}
-            </View>
-          </LinearGradient>
-          <View style={styles.loginFormView}>
-            <View
-              style={{
-                marginTop: 20,
-                borderBottomLeftRadius: 10,
-                borderBottomRightRadius: 10,
-                backgroundColor: colors.white,
-              }}>
-              <LinearGradient
-                colors={['#853b92', '#4b0892']}
-                style={{
-                  borderTopLeftRadius: 10,
-                  borderTopRightRadius: 10,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
-                <Text
-                  style={{
-                    textAlign: 'center',
-                    color: colors.white,
-                    fontSize: 18,
-                    marginTop: 15,
-                    fontFamily: fontFamily.poppins_bold,
-                  }}>
-                  My Referral QR Code
-                </Text>
-                <Text
-                  style={{
-                    textAlign: 'center',
-                    color: '#b691c1',
-                    fontSize: 12,
-                    fontFamily: fontFamily.poppins_medium,
-                    marginBottom: 15,
-                  }}>
-                  Share with your friend, register free account !
-                </Text>
-              </LinearGradient>
-              <View style={{flexDirection: 'row', margin: 20}}>
-                <View style={{flex: 0.7}}>
-                  <View
+                <View style={{marginRight: 15}}>
+                  <Image
+                    source={require('../../../assets/arrow_right.png')}
+                    style={{width: 60, height: 60}}
+                  />
+                  <Text
                     style={{
-                      backgroundColor: '#ebdcf9',
-                      padding: 10,
-                      width: 120,
-                      height: 120,
-                      alignItems: 'center',
-                      justifyContent: 'center',
+                      color: colors.black,
+                      fontSize: 16,
+                      fontFamily: fontFamily.poppins_semi_bold,
+                      position: 'absolute',
+                      right: 22,
+                      top: 16,
                     }}>
-                    <QRCode value={referralLink} />
+                    Pts
+                  </Text>
+                  <View style={styles.logout}>
+                    <Text
+                      style={{
+                        color: colors.white,
+                        fontSize: 16,
+                        fontFamily: fontFamily.poppins_semi_bold,
+                      }}>
+                      180
+                    </Text>
                   </View>
                 </View>
-
-                <View style={{flex: 1}}>
-                  <Text>
-                    Lorem ipsum dolor sit amet, cons in auctor lacus. Quisque
-                    sed t
+              </View>
+              <View
+                style={{
+                  backgroundColor: '#e2d2f0',
+                  marginTop: 10,
+                  height: 80,
+                  borderRadius: 15,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  marginLeft: 15,
+                  marginRight: 15,
+                }}>
+                {renderStepIndicator()}
+              </View>
+            </LinearGradient>
+            <View style={styles.loginFormView}>
+              <View
+                style={{
+                  marginTop: 20,
+                  borderBottomLeftRadius: 10,
+                  borderBottomRightRadius: 10,
+                  backgroundColor: colors.white,
+                }}>
+                <LinearGradient
+                  colors={['#853b92', '#4b0892']}
+                  style={{
+                    borderTopLeftRadius: 10,
+                    borderTopRightRadius: 10,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <Text
+                    style={{
+                      textAlign: 'center',
+                      color: colors.white,
+                      fontSize: 18,
+                      marginTop: 15,
+                      fontFamily: fontFamily.poppins_bold,
+                    }}>
+                    My Referral QR Code
                   </Text>
-                  <TouchableOpacity
-                    style={{marginTop: 15}}
-                    onPress={() => navigation.navigate('QRCODE')}>
-                    <LinearGradient
-                      colors={['#853b92', '#4b0892']}
-                      style={styles.tabBtn}>
-                      <Text style={styles.tabTxt}>TAP AND SCAN</Text>
-                    </LinearGradient>
-                  </TouchableOpacity>
+                  <Text
+                    style={{
+                      textAlign: 'center',
+                      color: '#b691c1',
+                      fontSize: 12,
+                      fontFamily: fontFamily.poppins_medium,
+                      marginBottom: 15,
+                    }}>
+                    Share with your friend, register free account !
+                  </Text>
+                </LinearGradient>
+                <View style={{flexDirection: 'row', margin: 20}}>
+                  <View style={{flex: 0.7}}>
+                    <View
+                      style={{
+                        backgroundColor: '#ebdcf9',
+                        padding: 10,
+                        width: 120,
+                        height: 120,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}>
+                      <QRCode value={referralLink} />
+                    </View>
+                  </View>
+
+                  <View style={{flex: 1}}>
+                    <Text>
+                      Lorem ipsum dolor sit amet, cons in auctor lacus. Quisque
+                      sed t
+                    </Text>
+                    <TouchableOpacity
+                      style={{marginTop: 15}}
+                      onPress={() => navigation.navigate('QRCODE')}>
+                      <LinearGradient
+                        colors={['#853b92', '#4b0892']}
+                        style={styles.tabBtn}>
+                        <Text style={styles.tabTxt}>TAP AND SCAN</Text>
+                      </LinearGradient>
+                    </TouchableOpacity>
+                  </View>
                 </View>
               </View>
+              <View
+                style={{
+                  backgroundColor: '#f7f6f6',
+                  borderRadius: 10,
+                  padding: 10,
+                  marginTop: 30,
+                }}>
+                <Text style={styles.titleTxt}>Basic Info</Text>
+                <Text style={styles.subtitleTxt}>Basic details about you</Text>
+                <TextInputComponent
+                  placeHolder={'Enter Your FullName'}
+                  headText={'Full Name'}
+                  onChangeValue={setFullName}
+                  value={fullname}
+                  returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
+                  onSubmitEditing={() => fullNameFieldRef.current?.focus()}
+                />
+                <TextInputComponent
+                  ref={fullNameFieldRef}
+                  placeHolder={'Enter Your Email'}
+                  headText={'Email'}
+                  onChangeValue={setEmail}
+                  value={email}
+                  returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
+                  onSubmitEditing={() => emailFieldRef.current?.focus()}
+                />
+                <TextInputComponent
+                  ref={emailFieldRef}
+                  placeHolder={'Enter Your Country'}
+                  headText={'Country'}
+                  onChangeValue={setCountry}
+                  value={country}
+                  returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
+                  onSubmitEditing={() => countryFieldRef.current?.focus()}
+                />
+
+                <TextInputComponent
+                  placeHolder={'Enter Your User Name'}
+                  headText={'user Name'}
+                  onChangeValue={setUserName}
+                  value={userName}
+                  ref={countryFieldRef}
+                  returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
+                  onSubmitEditing={() => userNameFieldRef.current?.focus()}
+                />
+
+                <TextInputComponent
+                  ref={userNameFieldRef}
+                  placeHolder={'Enter Your Shopper Rank'}
+                  headText={'Shopper Rank'}
+                  onChangeValue={setShopperRank}
+                  value={shopperRank}
+                  editable={false}
+                  returnKeyType={Platform.OS === 'ios' ? 'done' : 'done'}
+                  onSubmitEditing={() => shopperRankFieldRef.current?.focus()}
+                />
+
+                <TouchableOpacity>
+                  <LinearGradient
+                    colors={['#853b92', '#4b0892']}
+                    style={styles.loginBtn}>
+                    <Text style={styles.loginBtnTxt}>SUBMIT</Text>
+                  </LinearGradient>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => navigation.navigate('CHANGE_PWD')}>
+                  <LinearGradient
+                    colors={['#853b92', '#4b0892']}
+                    style={styles.pwdBtn}>
+                    <Text style={styles.loginBtnTxt}>Change Password</Text>
+                  </LinearGradient>
+                </TouchableOpacity>
+              </View>
             </View>
-            <View
-              style={{
-                backgroundColor: '#f7f6f6',
-                borderRadius: 10,
-                padding: 10,
-                marginTop: 30,
-              }}>
-              <Text style={styles.titleTxt}>Basic Info</Text>
-              <Text style={styles.subtitleTxt}>Basic details about you</Text>
-              <TextInputComponent
-                placeHolder={'Enter Your FullName'}
-                headText={'Full Name'}
-                onChangeValue={setFullName}
-                value={fullname}
-                returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
-                onSubmitEditing={() => fullNameFieldRef.current?.focus()}
-              />
-              <TextInputComponent
-                ref={fullNameFieldRef}
-                placeHolder={'Enter Your Email'}
-                headText={'Email'}
-                onChangeValue={setEmail}
-                value={email}
-                returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
-                onSubmitEditing={() => emailFieldRef.current?.focus()}
-              />
-              <TextInputComponent
-                ref={emailFieldRef}
-                placeHolder={'Enter Your Country'}
-                headText={'Country'}
-                onChangeValue={setCountry}
-                value={country}
-                returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
-                onSubmitEditing={() => countryFieldRef.current?.focus()}
-              />
-
-              <TextInputComponent
-                placeHolder={'Enter Your User Name'}
-                headText={'user Name'}
-                onChangeValue={setUserName}
-                value={userName}
-                ref={countryFieldRef}
-                returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
-                onSubmitEditing={() => userNameFieldRef.current?.focus()}
-              />
-
-              <TextInputComponent
-                ref={userNameFieldRef}
-                placeHolder={'Enter Your Shopper Rank'}
-                headText={'Shopper Rank'}
-                onChangeValue={setShopperRank}
-                value={shopperRank}
-                editable={false}
-                returnKeyType={Platform.OS === 'ios' ? 'done' : 'done'}
-                onSubmitEditing={() => shopperRankFieldRef.current?.focus()}
-              />
-
-              <TouchableOpacity>
-                <LinearGradient
-                  colors={['#853b92', '#4b0892']}
-                  style={styles.loginBtn}>
-                  <Text style={styles.loginBtnTxt}>SUBMIT</Text>
-                </LinearGradient>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => navigation.navigate('CHANGE_PWD')}>
-                <LinearGradient
-                  colors={['#853b92', '#4b0892']}
-                  style={styles.pwdBtn}>
-                  <Text style={styles.loginBtnTxt}>Change Password</Text>
-                </LinearGradient>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </ScrollView>
+          </ScrollView>
+        </View>
       </SafeAreaView>
     </>
   );

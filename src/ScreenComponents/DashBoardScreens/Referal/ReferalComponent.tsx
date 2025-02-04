@@ -296,19 +296,23 @@ const ReferalComponent = () => {
         backgroundColor={colors.status}
         animated
       />
-      <SafeAreaView style={appStyles.container}>
-        <DashBoardHeaderComponent title={'Referral'} />
-        <FlatList
-          data={referrals?.data}
-          renderItem={renderItem}
-          ItemSeparatorComponent={() => {
-            return <View style={styles.borderView} />;
-          }}
-          style={{marginBottom: 10}}
-          showsVerticalScrollIndicator={false}
-          keyExtractor={(item: any) => item?._id}
-          ListHeaderComponent={<ListHeader />}
-        />
+      <SafeAreaView
+        style={appStyles.container}
+        edges={['right', 'left', 'top']}>
+        <View style={appStyles.headerContainer}>
+          <DashBoardHeaderComponent title={'Referral'} />
+          <FlatList
+            data={referrals?.data}
+            renderItem={renderItem}
+            ItemSeparatorComponent={() => {
+              return <View style={styles.borderView} />;
+            }}
+            style={{marginBottom: 10}}
+            showsVerticalScrollIndicator={false}
+            keyExtractor={(item: any) => item?._id}
+            ListHeaderComponent={<ListHeader />}
+          />
+        </View>
       </SafeAreaView>
     </>
   );

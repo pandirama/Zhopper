@@ -246,16 +246,20 @@ const NewsComponent = ({}: Props) => {
         backgroundColor={colors.status}
         animated
       />
-      <SafeAreaView style={appStyles.container}>
-        <DashBoardHeaderComponent title={'News'} />
-        <FlatList
-          data={clients}
-          renderItem={renderItem}
-          style={{marginBottom: 10}}
-          showsVerticalScrollIndicator={false}
-          keyExtractor={(item: any) => item?._id}
-          ListHeaderComponent={<ListHeader />}
-        />
+      <SafeAreaView
+        style={appStyles.container}
+        edges={['right', 'left', 'top']}>
+        <View style={appStyles.headerContainer}>
+          <DashBoardHeaderComponent title={'News'} />
+          <FlatList
+            data={clients}
+            renderItem={renderItem}
+            style={{marginBottom: 10}}
+            showsVerticalScrollIndicator={false}
+            keyExtractor={(item: any) => item?._id}
+            ListHeaderComponent={<ListHeader />}
+          />
+        </View>
       </SafeAreaView>
     </>
   );

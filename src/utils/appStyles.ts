@@ -16,6 +16,10 @@ export const fontFamily = {
 const appStyles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: colors.status,
+  },
+  headerContainer: {
+    flex: 1,
     backgroundColor: colors.background,
   },
   scrollContainer: {

@@ -79,65 +79,67 @@ const ForgotPasswordComponent = ({}: any) => {
         animated
       />
       <SafeAreaView style={appStyles.container}>
-        <HeaderComponent
-          title={'Forgot Password'}
-          subTitle={'Reset Your Password'}
-        />
-        <ScrollView
-          style={styles.loginFormView}
-          showsVerticalScrollIndicator={false}>
-          <Text style={appStyles.titleTxt}>Forgot Password Form</Text>
-          <TextInputComponent
-            icon={
-              <Ionicons
-                name="person"
-                color={colors.icon}
-                size={25}
-                style={styles.icon}
-              />
-            }
-            placeHolder={'Enter Your User Name'}
-            headText={'User Name'}
-            onChangeValue={setUserName}
-            value={userName}
-            returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
-            onSubmitEditing={() => fnameFieldRef.current?.focus()}
+        <View style={appStyles.headerContainer}>
+          <HeaderComponent
+            title={'Forgot Password'}
+            subTitle={'Reset Your Password'}
           />
+          <ScrollView
+            style={styles.loginFormView}
+            showsVerticalScrollIndicator={false}>
+            <Text style={appStyles.titleTxt}>Forgot Password Form</Text>
+            <TextInputComponent
+              icon={
+                <Ionicons
+                  name="person"
+                  color={colors.icon}
+                  size={25}
+                  style={styles.icon}
+                />
+              }
+              placeHolder={'Enter Your User Name'}
+              headText={'User Name'}
+              onChangeValue={setUserName}
+              value={userName}
+              returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
+              onSubmitEditing={() => fnameFieldRef.current?.focus()}
+            />
 
-          <TextInputComponent
-            icon={
-              <Zocial
-                name="email"
-                color={colors.icon}
-                size={25}
-                style={styles.icon}
-              />
-            }
-            ref={fnameFieldRef}
-            placeHolder={'Enter Your Email ID'}
-            headText={'Email ID'}
-            onChangeValue={setEmail}
-            value={email}
-            returnKeyType={'done'}
-          />
+            <TextInputComponent
+              icon={
+                <Zocial
+                  name="email"
+                  color={colors.icon}
+                  size={25}
+                  style={styles.icon}
+                />
+              }
+              ref={fnameFieldRef}
+              placeHolder={'Enter Your Email ID'}
+              headText={'Email ID'}
+              onChangeValue={setEmail}
+              value={email}
+              returnKeyType={'done'}
+            />
 
-          <TouchableOpacity onPress={onForgotSubmit}>
-            <LinearGradient
-              colors={['#853b92', '#4b0892']}
-              style={styles.loginBtn}>
-              <Text style={styles.loginBtnTxt}>SUBMIT NOW</Text>
-            </LinearGradient>
-          </TouchableOpacity>
-          {password && (
-            <View style={styles.passwordAnswerView}>
-              <View style={styles.coloView} />
-              <Text
-                style={
-                  styles.passwordAnswerTxt
-                }>{`Your Password is ${password}`}</Text>
-            </View>
-          )}
-        </ScrollView>
+            <TouchableOpacity onPress={onForgotSubmit}>
+              <LinearGradient
+                colors={['#853b92', '#4b0892']}
+                style={styles.loginBtn}>
+                <Text style={styles.loginBtnTxt}>SUBMIT NOW</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+            {password && (
+              <View style={styles.passwordAnswerView}>
+                <View style={styles.coloView} />
+                <Text
+                  style={
+                    styles.passwordAnswerTxt
+                  }>{`Your Password is ${password}`}</Text>
+              </View>
+            )}
+          </ScrollView>
+        </View>
       </SafeAreaView>
     </>
   );

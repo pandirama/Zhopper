@@ -123,7 +123,7 @@ const AppCollapse = ({item}: any) => {
   );
 };
 
-const TransactionHistoryComponent = ({navigation, route}: Props) => {
+const TransactionHistoryComponent = ({route}: Props) => {
   const {gateway} = route?.params ?? {};
 
   const {showToast, toggleBackdrop} = useCommon();
@@ -144,9 +144,6 @@ const TransactionHistoryComponent = ({navigation, route}: Props) => {
         userid: userInfo[0]?.userid,
         gateway,
       }).unwrap();
-
-      console.log('transactionResponse', transactionResponse);
-      console.log('transactionResponse', transactionResponse?.status);
 
       if (transactionResponse[0]?.status === 1) {
         setTransHistory(transactionResponse[0]?.data);
@@ -187,13 +184,11 @@ const TransactionHistoryComponent = ({navigation, route}: Props) => {
         backgroundColor={colors.status}
         animated
       />
-      <SafeAreaView style={appStyles.container}>
-        <DashBoardHeaderComponent
-          title={'Transaction '}
-          navigation={navigation}
-          back
-        />
-        <View style={{paddingLeft: 16, paddingRight: 16}}>
+      <SafeAreaView
+        style={appStyles.container}
+        edges={['right', 'left', 'top']}>
+        <View style={appStyles.headerContainer}>
+          <DashBoardHeaderComponent title={'Transaction '} back />
           <Text style={styles.titleTxt}>Wallet Transaction History</Text>
           <Text style={styles.subtitleTxt}>Details of transaction</Text>
           <FlatList
@@ -215,11 +210,13 @@ const styles = StyleSheet.create({
     color: '#000000',
     fontFamily: fontFamily.poppins_semi_bold,
     marginTop: 25,
+    marginLeft: 16,
   },
   subtitleTxt: {
     fontSize: 14,
     color: '#8c8b8b',
     fontFamily: fontFamily.poppins_medium,
+    marginLeft: 16,
   },
   walletSubContainer: {
     backgroundColor: colors.white,
@@ -230,6 +227,8 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     paddingBottom: 15,
     borderRightWidth: 10,
+    marginLeft: 16,
+    marginRight: 16,
   },
   itemTitleTxt: {
     fontSize: 16,
@@ -242,7 +241,7 @@ const styles = StyleSheet.create({
     fontFamily: fontFamily.poppins_medium,
   },
   flatListCotent: {
-    marginBottom: 150,
+    // marginBottom: 150,
   },
   flatListColumn: {
     flex: 1,

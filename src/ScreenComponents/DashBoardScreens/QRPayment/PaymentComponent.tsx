@@ -28,7 +28,7 @@ import {useFocusEffect} from '@react-navigation/native';
 
 const windowWidth = Dimensions.get('window').width;
 
-const PaymentComponent = ({navigation, route}: any) => {
+const PaymentComponent = ({route}: any) => {
   const {wallet = {}, merchantID = ''} = route?.params ?? {};
   const {showToast, toggleBackdrop} = useCommon();
 
@@ -53,7 +53,6 @@ const PaymentComponent = ({navigation, route}: any) => {
         userid: merchantID,
       };
       const response: any = await merchantInfo(params).unwrap();
-      console.log('response', response);
       if (response[0]?.status === 1) {
         showToast({
           type: 'success',
@@ -65,7 +64,6 @@ const PaymentComponent = ({navigation, route}: any) => {
           type: 'error',
           text1: response[0]?.message,
         });
-        setFailed(true);
       }
     } catch (err: any) {
       showToast({
@@ -93,7 +91,6 @@ const PaymentComponent = ({navigation, route}: any) => {
         transactionid: `OF${Math.floor(100000 + Math.random() * 900000)}`,
       };
       const response: any = await QRPayment(params).unwrap();
-      console.log('response', response);
       if (response[0]?.status === 1) {
         showToast({
           type: 'success',
@@ -124,11 +121,7 @@ const PaymentComponent = ({navigation, route}: any) => {
         animated
       />
       <SafeAreaView style={appStyles.container}>
-        <DashBoardHeaderComponent
-          title={'Payment'}
-          navigation={navigation}
-          back
-        />
+        <DashBoardHeaderComponent title={'Payment'} back />
         {succeed && (
           <View
             style={{

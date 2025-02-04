@@ -23,9 +23,9 @@ setup_permissions([
     'Camera',
   # 'Contacts',
   # 'FaceID',
-  # 'LocationAccuracy',
-  # 'LocationAlways',
-  # 'LocationWhenInUse',
+  'LocationAccuracy',
+  'LocationAlways',
+  'LocationWhenInUse',
   # 'MediaLibrary',
   # 'Microphone',
   # 'Motion',
@@ -46,6 +46,9 @@ if linkage != nil
 end
 
 target 'Zhopper' do
+  rn_maps_path = '../node_modules/react-native-maps'
+  pod 'react-native-google-maps', :path => rn_maps_path
+  
   config = use_native_modules!
 
   use_react_native!(

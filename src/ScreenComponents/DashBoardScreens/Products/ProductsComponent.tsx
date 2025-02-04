@@ -7,7 +7,6 @@ import {
   Dimensions,
   FlatList,
   Image,
-  ScrollView,
   StatusBar,
   StyleSheet,
   Text,
@@ -27,6 +26,9 @@ import useCommon from '../../../hooks/useCommon';
 import {getErrorMessage} from '../../../utils/common';
 import {useSelector} from 'react-redux';
 import DashBoardHeaderComponent from '../../../components/DashBoardHeaderComponent';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+
+type Props = NativeStackScreenProps<any, 'PRODUCTS'>;
 
 const imageCategories = [
   {
@@ -112,7 +114,7 @@ const PaginationDots = (props: PaginateProp) => {
   );
 };
 
-const ProductsComponent = ({navigation}: any) => {
+const ProductsComponent = ({navigation}: Props) => {
   const {showToast, toggleBackdrop} = useCommon();
   const [activeDot, setActiveDot] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
@@ -133,13 +135,11 @@ const ProductsComponent = ({navigation}: any) => {
       refetch()
         .then((response: any) => {
           const {data, status, message} = response;
-          console.log('data', data);
           if (data[0]?.status === 1 && status) {
             const categoryData = data[0]?.data;
             const categoryArray: any = [];
             for (var key in categoryData) {
               if (categoryData.hasOwnProperty(key)) {
-                console.log(key + ' -> ' + categoryData[key]);
                 categoryArray.push({name: categoryData[key]});
               }
             }
@@ -177,7 +177,7 @@ const ProductsComponent = ({navigation}: any) => {
         }}
         onPress={() =>
           navigation.navigate('SUB_CATEGORY', {
-            subCategory: '',
+            subCategory: item?.name,
           })
         }>
         <Image
@@ -207,7 +207,12 @@ const ProductsComponent = ({navigation}: any) => {
           flexDirection: 'row',
           paddingTop: 15,
           paddingBottom: 15,
-        }}>
+        }}
+        onPress={() =>
+          navigation.navigate('SUB_CATEGORY', {
+            subCategory: item?.name,
+          })
+        }>
         <Text
           style={{
             fontFamily: fontFamily.poppins_bold,
@@ -246,6 +251,169 @@ const ProductsComponent = ({navigation}: any) => {
     );
   };
 
+  const ListHeader = () => {
+    return (
+      <View>
+        <View
+          style={{
+            flexDirection: 'row',
+            marginLeft: 15,
+            marginTop: 25,
+            marginRight: 15,
+          }}>
+          <Image source={require('../../../assets/merchant_profile.png')} />
+          <View style={{flex: 1, justifyContent: 'center', marginLeft: 5}}>
+            <Text
+              style={{
+                fontFamily: fontFamily.poppins_medium,
+                fontSize: 12,
+                marginLeft: 5,
+                color: colors.black,
+              }}>
+              Welcome Back
+            </Text>
+            <Text
+              style={{
+                fontFamily: fontFamily.poppins_semi_bold,
+                fontSize: 14,
+                marginLeft: 5,
+                color: colors.black,
+              }}>
+              {userProfile?.fullname}
+            </Text>
+          </View>
+          <View
+            style={{
+              borderRadius: 100,
+              padding: 5,
+              backgroundColor: '#d19fff',
+              width: 45,
+              height: 45,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <Feather name="bell" color={colors.black} size={25} />
+          </View>
+        </View>
+        <View style={styles.searchView}>
+          <View style={styles.searchContainer}>
+            <Feather name="search" color={'#b2b2b2'} size={20} />
+            <TextInput
+              style={styles.input}
+              placeholder="Search  Fashion Accessories...."
+              placeholderTextColor="#A9A9A9"
+              value={searchTerm}
+              onChangeText={text => setSearchTerm(text)}
+            />
+          </View>
+          <TouchableOpacity
+            style={{
+              borderRadius: 100,
+              padding: 5,
+              backgroundColor: '#d19fff',
+              width: 45,
+              height: 45,
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginLeft: 5,
+            }}>
+            <Image
+              source={require('../../../assets/filter_icon.png')}
+              style={{width: 30, height: 30}}
+            />
+          </TouchableOpacity>
+        </View>
+        <View
+          style={{
+            alignItems: 'center',
+            marginTop: 20,
+          }}>
+          <Image
+            source={require('../../../assets/merchant_map.png')}
+            resizeMode="cover"
+          />
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              backgroundColor: '#d19fff',
+              borderRadius: 25,
+              paddingLeft: 10,
+              paddingRight: 10,
+              paddingTop: 5,
+              paddingBottom: 5,
+              position: 'absolute',
+              bottom: 0,
+              right: 18,
+            }}>
+            <Image source={require('../../../assets/location_map.png')} />
+            <Text
+              style={{
+                fontFamily: fontFamily.poppins_semi_bold,
+                fontSize: 12,
+                marginLeft: 5,
+                color: colors.black,
+              }}>
+              Explore Nearby Places
+            </Text>
+          </View>
+        </View>
+
+        <View style={styles.caroselContainer}>
+          <Carousel
+            width={width}
+            height={180}
+            loop={false}
+            data={slideContent}
+            scrollAnimationDuration={1000}
+            onProgressChange={(_, absoluteProgress) => {
+              setActiveDot(Math.round(absoluteProgress) + 1);
+            }}
+            renderItem={({index}) => (
+              <View style={styles.carouselContainer}>
+                <View style={styles.pageDotView}>
+                  <Image source={slideContent[index].icon} />
+                </View>
+              </View>
+            )}
+          />
+          <PaginationDots count={4} active={activeDot} />
+        </View>
+        <View style={{flexDirection: 'row', marginLeft: 10, marginRight: 10}}>
+          <Text
+            style={{
+              fontFamily: fontFamily.poppins_semi_bold,
+              fontSize: 18,
+              marginLeft: 5,
+              flex: 1,
+              color: colors.black,
+            }}>
+            Categories
+          </Text>
+          <TouchableOpacity
+            style={{flexDirection: 'row'}}
+            onPress={() => setSeeAll(a => !a)}>
+            <Text
+              style={{
+                fontFamily: fontFamily.poppins_medium,
+                fontSize: 14,
+                marginRight: 2,
+                color: '#3f00a1',
+              }}>
+              See All
+            </Text>
+            <Feather
+              name="arrow-up-right"
+              color={'#3f00a1'}
+              size={20}
+              style={{marginRight: 15}}
+            />
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
+  };
+
   return (
     <>
       <StatusBar
@@ -254,178 +422,27 @@ const ProductsComponent = ({navigation}: any) => {
         backgroundColor={colors.background}
         animated
       />
-      <SafeAreaView style={appStyles.container}>
-        {seeAll ? (
-          renderSeeAll()
-        ) : (
-          <ScrollView showsVerticalScrollIndicator={false}>
-            <View
-              style={{
-                flexDirection: 'row',
-                marginLeft: 15,
-                marginTop: 25,
-                marginRight: 15,
-              }}>
-              <Image source={require('../../../assets/merchant_profile.png')} />
-              <View style={{flex: 1, justifyContent: 'center', marginLeft: 5}}>
-                <Text
-                  style={{
-                    fontFamily: fontFamily.poppins_medium,
-                    fontSize: 12,
-                    marginLeft: 5,
-                    color: colors.black,
-                  }}>
-                  Welcome Back
-                </Text>
-                <Text
-                  style={{
-                    fontFamily: fontFamily.poppins_semi_bold,
-                    fontSize: 14,
-                    marginLeft: 5,
-                    color: colors.black,
-                  }}>
-                  {userProfile?.fullname}
-                </Text>
-              </View>
-              <View
-                style={{
-                  borderRadius: 100,
-                  padding: 5,
-                  backgroundColor: '#d19fff',
-                  width: 45,
-                  height: 45,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}>
-                <Feather name="bell" color={colors.black} size={25} />
-              </View>
-            </View>
-            <View style={styles.searchView}>
-              <View style={styles.searchContainer}>
-                <Feather name="search" color={'#b2b2b2'} size={20} />
-                <TextInput
-                  style={styles.input}
-                  placeholder="Search  Fashion Accessories...."
-                  placeholderTextColor="#A9A9A9"
-                  value={searchTerm}
-                  onChangeText={text => setSearchTerm(text)}
-                />
-              </View>
-              <TouchableOpacity
-                style={{
-                  borderRadius: 100,
-                  padding: 5,
-                  backgroundColor: '#d19fff',
-                  width: 45,
-                  height: 45,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  marginLeft: 5,
-                }}>
-                <Image
-                  source={require('../../../assets/filter_icon.png')}
-                  style={{width: 30, height: 30}}
-                />
-              </TouchableOpacity>
-            </View>
-            <View
-              style={{
-                alignItems: 'center',
-                marginTop: 20,
-              }}>
-              <Image
-                source={require('../../../assets/merchant_map.png')}
-                resizeMode="cover"
-              />
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  backgroundColor: '#d19fff',
-                  borderRadius: 25,
-                  paddingLeft: 10,
-                  paddingRight: 10,
-                  paddingTop: 5,
-                  paddingBottom: 5,
-                  position: 'absolute',
-                  bottom: 0,
-                  right: 18,
-                }}>
-                <Image source={require('../../../assets/location_map.png')} />
-                <Text
-                  style={{
-                    fontFamily: fontFamily.poppins_semi_bold,
-                    fontSize: 12,
-                    marginLeft: 5,
-                    color: colors.black,
-                  }}>
-                  Explore Nearby Places
-                </Text>
-              </View>
-            </View>
-
-            <View style={styles.caroselContainer}>
-              <Carousel
-                width={width}
-                height={180}
-                loop={false}
-                data={slideContent}
-                scrollAnimationDuration={1000}
-                onProgressChange={(_, absoluteProgress) => {
-                  setActiveDot(Math.round(absoluteProgress) + 1);
-                }}
-                renderItem={({index}) => (
-                  <View style={styles.carouselContainer}>
-                    <View style={styles.pageDotView}>
-                      <Image source={slideContent[index].icon} />
-                    </View>
-                  </View>
-                )}
-              />
-              <PaginationDots count={4} active={activeDot} />
-            </View>
-            <View style={{marginLeft: 15, marginTop: 15}}>
-              <View style={{flexDirection: 'row'}}>
-                <Text
-                  style={{
-                    fontFamily: fontFamily.poppins_semi_bold,
-                    fontSize: 18,
-                    marginLeft: 5,
-                    flex: 1,
-                    color: colors.black,
-                  }}>
-                  Categories
-                </Text>
-                <TouchableOpacity
-                  style={{flexDirection: 'row'}}
-                  onPress={() => setSeeAll(a => !a)}>
-                  <Text
-                    style={{
-                      fontFamily: fontFamily.poppins_medium,
-                      fontSize: 14,
-                      marginRight: 2,
-                      color: '#3f00a1',
-                    }}>
-                    See All
-                  </Text>
-                  <Feather
-                    name="arrow-up-right"
-                    color={'#3f00a1'}
-                    size={20}
-                    style={{marginRight: 15}}
-                  />
-                </TouchableOpacity>
-              </View>
-              <FlatList
-                data={categories}
-                renderItem={renderItem}
-                numColumns={4}
-                columnWrapperStyle={styles.flatListColumn}
-                contentContainerStyle={styles.flatListCotent}
-              />
-            </View>
-          </ScrollView>
-        )}
+      <SafeAreaView
+        style={[
+          appStyles.container,
+          {backgroundColor: seeAll ? colors.status : colors.background},
+        ]}
+        edges={['right', 'left', 'top']}>
+        <View style={appStyles.headerContainer}>
+          {seeAll ? (
+            renderSeeAll()
+          ) : (
+            <FlatList
+              data={categories}
+              renderItem={renderItem}
+              numColumns={4}
+              showsVerticalScrollIndicator={false}
+              columnWrapperStyle={styles.flatListColumn}
+              contentContainerStyle={styles.flatListCotent}
+              ListHeaderComponent={<ListHeader />}
+            />
+          )}
+        </View>
       </SafeAreaView>
     </>
   );
@@ -451,6 +468,7 @@ const styles = StyleSheet.create({
   flatListCotent: {
     marginBottom: 15,
     marginTop: 10,
+    paddingBottom: 25,
   },
   flatListColumn: {
     flex: 1,

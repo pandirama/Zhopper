@@ -15,7 +15,27 @@ export const productsAPI = createApi({
       }),
       transformResponse: (response: {data: any}) => response,
     }),
+    getSubCategory: builder.mutation<any, any>({
+      query: walletParams => ({
+        url: PRODUCTS_URLS.SUB_CATEGORIES,
+        method: 'POST',
+        body: walletParams,
+      }),
+      transformResponse: (response: {data: any}) => response,
+    }),
+    getMerchantInfo: builder.mutation<any, any>({
+      query: walletParams => ({
+        url: PRODUCTS_URLS.MERCHANT_INFO,
+        method: 'GET',
+        params: walletParams,
+      }),
+      transformResponse: (response: {data: any}) => response,
+    }),
   }),
 });
 
-export const {useGetCategoriesQuery} = productsAPI;
+export const {
+  useGetCategoriesQuery,
+  useGetSubCategoryMutation,
+  useGetMerchantInfoMutation,
+} = productsAPI;

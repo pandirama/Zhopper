@@ -22,7 +22,11 @@ import {getErrorMessage, localStorageKey, setStorage} from '../../utils/common';
 import {authAction} from '../../reducer/auth/authSlice';
 import {useAppDispatch} from '../../store';
 import {useSelector} from 'react-redux';
-import { Fontisto, Ionicons, MaterialCommunityIcons } from '../../utils/IconUtils';
+import {
+  Fontisto,
+  Ionicons,
+  MaterialCommunityIcons,
+} from '../../utils/IconUtils';
 
 type Props = NativeStackScreenProps<any, 'LOGIN'>;
 
@@ -110,76 +114,82 @@ const LoginComponent = ({navigation}: Props) => {
         backgroundColor={colors.status}
         animated
       />
-      <SafeAreaView style={appStyles.container}>
-        <HeaderComponent
-          title={'Welcome Back'}
-          subTitle={'Login to Your Account'}
-          screen
-        />
-        <View style={styles.loginFormView}>
-          <Text style={appStyles.titleTxt}>Login Form</Text>
-          <TextInputComponent
-            icon={
-              <Ionicons
-                name="person"
-                color={colors.icon}
-                size={25}
-                style={styles.icon}
-              />
-            }
-            placeHolder={'Enter Your Name'}
-            headText={'User Name'}
-            onChangeValue={setFullName}
-            value={fullName}
-            returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
-            onSubmitEditing={() => fnameFieldRef.current?.focus()}
+      <SafeAreaView
+        style={appStyles.container}
+        edges={['right', 'left', 'top']}>
+        <View style={appStyles.headerContainer}>
+          <HeaderComponent
+            title={'Welcome Back'}
+            subTitle={'Login to Your Account'}
+            screen
           />
-          <TextInputComponent
-            icon={
-              <Fontisto
-                name="locked"
-                color={colors.icon}
-                size={25}
-                style={styles.icon}
-              />
-            }
-            ref={fnameFieldRef}
-            placeHolder={'**************'}
-            headText={'Password'}
-            onChangeValue={setPassword}
-            value={password}
-            secureTextEntry={true}
-            returnKeyType={'done'}
-          />
-          <View style={styles.passwordView}>
-            <TouchableOpacity
-              onPress={() => toggleAccept(a => !a)}
-              style={styles.checkTouch}>
-              <MaterialCommunityIcons
-                name={accept ? 'check-circle' : 'checkbox-blank-circle-outline'}
-                size={24}
-                color={'#c14dbd'}
-              />
+          <View style={styles.loginFormView}>
+            <Text style={appStyles.titleTxt}>Login Form</Text>
+            <TextInputComponent
+              icon={
+                <Ionicons
+                  name="person"
+                  color={colors.icon}
+                  size={25}
+                  style={styles.icon}
+                />
+              }
+              placeHolder={'Enter Your Name'}
+              headText={'User Name'}
+              onChangeValue={setFullName}
+              value={fullName}
+              returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
+              onSubmitEditing={() => fnameFieldRef.current?.focus()}
+            />
+            <TextInputComponent
+              icon={
+                <Fontisto
+                  name="locked"
+                  color={colors.icon}
+                  size={25}
+                  style={styles.icon}
+                />
+              }
+              ref={fnameFieldRef}
+              placeHolder={'**************'}
+              headText={'Password'}
+              onChangeValue={setPassword}
+              value={password}
+              secureTextEntry={true}
+              returnKeyType={'done'}
+            />
+            <View style={styles.passwordView}>
+              <TouchableOpacity
+                onPress={() => toggleAccept(a => !a)}
+                style={styles.checkTouch}>
+                <MaterialCommunityIcons
+                  name={
+                    accept ? 'check-circle' : 'checkbox-blank-circle-outline'
+                  }
+                  size={24}
+                  color={'#c14dbd'}
+                />
 
-              <Text style={styles.rememberTxt}>Remember me</Text>
+                <Text style={styles.rememberTxt}>Remember me</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={onBtForgetPassword}
+                style={styles.passTouch}>
+                <Text style={styles.passwordTxt}>Forgot Password</Text>
+              </TouchableOpacity>
+            </View>
+            <TouchableOpacity onPress={onLoginSubmit}>
+              <LinearGradient
+                colors={['#853b92', '#4b0892']}
+                style={styles.loginBtn}>
+                <Text style={styles.loginBtnTxt}>LOGIN NOW</Text>
+              </LinearGradient>
             </TouchableOpacity>
-            <TouchableOpacity
-              onPress={onBtForgetPassword}
-              style={styles.passTouch}>
-              <Text style={styles.passwordTxt}>Forgot Password</Text>
+            <TouchableOpacity style={styles.signupView} onPress={onBtSignup}>
+              <Text style={styles.donttxt}>Don’t have an Acccount ?</Text>
+              <Text style={styles.signupTxt}>Signup</Text>
             </TouchableOpacity>
           </View>
-          <TouchableOpacity onPress={onLoginSubmit}>
-            <LinearGradient
-              colors={['#853b92', '#4b0892']}
-              style={styles.loginBtn}>
-              <Text style={styles.loginBtnTxt}>LOGIN NOW</Text>
-            </LinearGradient>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.signupView} onPress={onBtSignup}>
-            <Text style={styles.donttxt}>Don’t have an Acccount ?</Text>
-            <Text style={styles.signupTxt}>Signup</Text>
-          </TouchableOpacity>
         </View>
       </SafeAreaView>
     </>

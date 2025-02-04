@@ -93,114 +93,115 @@ const ChangePasswordComponent = ({navigation}: any) => {
         backgroundColor={colors.status}
         animated
       />
-      <SafeAreaView style={appStyles.container}>
-        <DashBoardHeaderComponent
-          title={'Profile'}
-          navigation={navigation}
-          back
-        />
-        <ScrollView showsVerticalScrollIndicator={false}>
-          <LinearGradient
-            colors={['#9b6ec6', '#b386dc', '#c79bef']}
-            style={styles.container}>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                marginLeft: 15,
-                marginBottom: 20,
-                marginTop: 20,
-              }}>
-              <Image
-                source={require('../../../assets/profile_user.png')}
-                style={{width: 60, height: 60}}
-              />
-              <View style={{marginLeft: 10, justifyContent: 'center', flex: 1}}>
-                <Text
-                  style={{
-                    color: '#310855',
-                    fontSize: 16,
-                    fontFamily: fontFamily.poppins_semi_bold,
-                  }}>
-                  {userProfile?.fullname}
-                </Text>
-                <Text
-                  style={{
-                    color: colors.black,
-                    fontSize: 14,
-                    fontFamily: fontFamily.poppins_regular,
-                  }}>
-                  Package
-                </Text>
-              </View>
-              <View style={{marginRight: 15}}>
+      <SafeAreaView
+        style={appStyles.container}
+        edges={['right', 'left', 'top']}>
+        <View style={appStyles.headerContainer}>
+          <DashBoardHeaderComponent title={'Profile'} back />
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <LinearGradient
+              colors={['#9b6ec6', '#b386dc', '#c79bef']}
+              style={styles.container}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  marginLeft: 15,
+                  marginBottom: 20,
+                  marginTop: 20,
+                }}>
                 <Image
-                  source={require('../../../assets/arrow_right.png')}
+                  source={require('../../../assets/profile_user.png')}
                   style={{width: 60, height: 60}}
                 />
-                <Text
-                  style={{
-                    color: colors.black,
-                    fontSize: 16,
-                    fontFamily: fontFamily.poppins_semi_bold,
-                    position: 'absolute',
-                    right: 22,
-                    top: 16,
-                  }}>
-                  Pts
-                </Text>
-                <View style={styles.logout}>
+                <View
+                  style={{marginLeft: 10, justifyContent: 'center', flex: 1}}>
                   <Text
                     style={{
-                      color: colors.white,
+                      color: '#310855',
                       fontSize: 16,
                       fontFamily: fontFamily.poppins_semi_bold,
                     }}>
-                    180
+                    {userProfile?.fullname}
+                  </Text>
+                  <Text
+                    style={{
+                      color: colors.black,
+                      fontSize: 14,
+                      fontFamily: fontFamily.poppins_regular,
+                    }}>
+                    Package
                   </Text>
                 </View>
+                <View style={{marginRight: 15}}>
+                  <Image
+                    source={require('../../../assets/arrow_right.png')}
+                    style={{width: 60, height: 60}}
+                  />
+                  <Text
+                    style={{
+                      color: colors.black,
+                      fontSize: 16,
+                      fontFamily: fontFamily.poppins_semi_bold,
+                      position: 'absolute',
+                      right: 22,
+                      top: 16,
+                    }}>
+                    Pts
+                  </Text>
+                  <View style={styles.logout}>
+                    <Text
+                      style={{
+                        color: colors.white,
+                        fontSize: 16,
+                        fontFamily: fontFamily.poppins_semi_bold,
+                      }}>
+                      180
+                    </Text>
+                  </View>
+                </View>
+              </View>
+            </LinearGradient>
+            <View style={styles.loginFormView}>
+              <View
+                style={{
+                  backgroundColor: '#f7f6f6',
+                  borderRadius: 10,
+                  padding: 10,
+                  marginTop: 30,
+                }}>
+                <Text style={styles.titleTxt}>Update Password</Text>
+                <Text style={styles.subtitleTxt}>Change Your Password</Text>
+                <TextInputComponent
+                  placeHolder={'Enter Your New Password'}
+                  headText={'New Password'}
+                  onChangeValue={setNewPassword}
+                  value={newPassword}
+                  secureTextEntry={true}
+                  returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
+                  onSubmitEditing={() => newFieldRef.current?.focus()}
+                />
+                <TextInputComponent
+                  ref={newFieldRef}
+                  placeHolder={'Enter Your Confirm Password'}
+                  headText={'Confirm Password'}
+                  onChangeValue={setConfirmPassword}
+                  value={confirmPassword}
+                  secureTextEntry={true}
+                  returnKeyType={'done'}
+                />
+
+                <TouchableOpacity onPress={onPasswordChange}>
+                  <LinearGradient
+                    colors={['#853b92', '#4b0892']}
+                    style={styles.loginBtn}>
+                    <Text style={styles.loginBtnTxt}>SUBMIT</Text>
+                  </LinearGradient>
+                </TouchableOpacity>
               </View>
             </View>
-          </LinearGradient>
-          <View style={styles.loginFormView}>
-            <View
-              style={{
-                backgroundColor: '#f7f6f6',
-                borderRadius: 10,
-                padding: 10,
-                marginTop: 30,
-              }}>
-              <Text style={styles.titleTxt}>Update Password</Text>
-              <Text style={styles.subtitleTxt}>Change Your Password</Text>
-              <TextInputComponent
-                placeHolder={'Enter Your New Password'}
-                headText={'New Password'}
-                onChangeValue={setNewPassword}
-                value={newPassword}
-                secureTextEntry={true}
-                returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
-                onSubmitEditing={() => newFieldRef.current?.focus()}
-              />
-              <TextInputComponent
-                ref={newFieldRef}
-                placeHolder={'Enter Your Confirm Password'}
-                headText={'Confirm Password'}
-                onChangeValue={setConfirmPassword}
-                value={confirmPassword}
-                secureTextEntry={true}
-                returnKeyType={'done'}
-              />
-
-              <TouchableOpacity onPress={onPasswordChange}>
-                <LinearGradient
-                  colors={['#853b92', '#4b0892']}
-                  style={styles.loginBtn}>
-                  <Text style={styles.loginBtnTxt}>SUBMIT</Text>
-                </LinearGradient>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </ScrollView>
+          </ScrollView>
+        </View>
       </SafeAreaView>
     </>
   );

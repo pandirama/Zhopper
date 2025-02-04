@@ -25,6 +25,7 @@ import QRCodeComponent from '../ScreenComponents/DashBoardScreens/QRPayment/QRCo
 import PaymentComponent from '../ScreenComponents/DashBoardScreens/QRPayment/PaymentComponent';
 import TransactionHistoryComponent from '../ScreenComponents/DashBoardScreens/Wallet/TransactionHistoryComponent';
 import SubCategoryComponent from '../ScreenComponents/DashBoardScreens/Products/SubCategoryComponent';
+import MerchantInfoComponent from '../ScreenComponents/DashBoardScreens/Products/MerchantInfoComponent';
 
 const ProductsStack = createNativeStackNavigator<any>();
 
@@ -60,7 +61,14 @@ const ProductsStackNavigator = () => {
       screenOptions={{headerShown: false}}
       initialRouteName="PRODUCTS">
       <ProductsStack.Screen name="PRODUCTS" component={ProductsComponent} />
-      <ProductsStack.Screen name="SUB_CATEGORY" component={SubCategoryComponent} />
+      <ProductsStack.Screen
+        name="SUB_CATEGORY"
+        component={SubCategoryComponent}
+      />
+      <ProductsStack.Screen
+        name="MERCHANT_INFO"
+        component={MerchantInfoComponent}
+      />
     </ProductsStack.Navigator>
   );
 };
