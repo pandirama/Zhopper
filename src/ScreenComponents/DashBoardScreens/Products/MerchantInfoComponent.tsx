@@ -22,8 +22,6 @@ import MapView, {Marker} from 'react-native-maps';
 
 type Props = NativeStackScreenProps<any, 'MERCHANT_INFO'>;
 
-const LATITUDE = 13.0843;
-const LONGITUDE = 80.2705;
 const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = 0.0421;
 
@@ -141,23 +139,28 @@ const MerchantInfoComponent = ({route}: Props) => {
                 <Text style={styles.titleTxt}>Address :</Text>
                 <Text style={styles.subTitleTxt}>{merchantInfo?.Address}</Text>
               </View>
-              <View style={styles.map}>
-                <MapView
-                  style={styles.map}
-                  zoomEnabled={true}
-                  ref={mapView}
-                  initialRegion={{
-                    latitude: LATITUDE,
-                    longitude: LONGITUDE,
-                    latitudeDelta: LATITUDE_DELTA,
-                    longitudeDelta: LONGITUDE_DELTA,
-                  }}>
-                  <Marker
-                    coordinate={{latitude: LATITUDE, longitude: LONGITUDE}}
-                    pinColor={'purple'}
-                  />
-                </MapView>
-              </View>
+              {merchantInfo?.latitude && merchantInfo?.longitude && (
+                <View style={styles.map}>
+                  <MapView
+                    style={styles.map}
+                    zoomEnabled={true}
+                    ref={mapView}
+                    initialRegion={{
+                      latitude: parseInt(merchantInfo?.latitude, 10),
+                      longitude: parseInt(merchantInfo?.longitude, 10),
+                      latitudeDelta: LATITUDE_DELTA,
+                      longitudeDelta: LONGITUDE_DELTA,
+                    }}>
+                    <Marker
+                      coordinate={{
+                        latitude: parseInt(merchantInfo?.latitude, 10),
+                        longitude: parseInt(merchantInfo?.longitude, 10),
+                      }}
+                      pinColor={'purple'}
+                    />
+                  </MapView>
+                </View>
+              )}
             </ScrollView>
           </View>
         </View>

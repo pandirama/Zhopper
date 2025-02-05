@@ -2,7 +2,7 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {useCallback, useEffect, useState} from 'react';
 import {
-  ScrollView,
+  FlatList,
   StatusBar,
   StyleSheet,
   Text,
@@ -26,7 +26,7 @@ const SubCategoryComponent = ({route, navigation}: Props) => {
   const {subCategory} = route?.params ?? {};
   const {showToast, toggleBackdrop} = useCommon();
 
-  const [categories, setCategories] = useState<any>([]);
+  const [categories, setCategories] = useState<any>(null);
 
   const [getSubCategory, {isLoading}] = useGetSubCategoryMutation();
 
@@ -68,7 +68,7 @@ const SubCategoryComponent = ({route, navigation}: Props) => {
     }, []),
   );
 
-  const renderCategoryItem = (item: any) => {
+  const renderCategoryItem = ({item}: any) => {
     return (
       <TouchableOpacity
         style={{
@@ -117,15 +117,15 @@ const SubCategoryComponent = ({route, navigation}: Props) => {
         <View style={appStyles.headerContainer}>
           <DashBoardHeaderComponent title={subCategory} back />
           {categories?.length > 0 && (
-            <ScrollView
-              contentContainerStyle={{paddingBottom: 15}}
-              showsVerticalScrollIndicator={false}>
-              <View style={[appStyles.boxShadow, styles.walletSubContainer]}>
-                {categories?.map((item: any) => {
-                  return renderCategoryItem(item);
-                })}
-              </View>
-            </ScrollView>
+            <View style={[appStyles.boxShadow, styles.walletSubContainer]}>
+              <FlatList
+                data={categories}
+                renderItem={renderCategoryItem}
+                showsVerticalScrollIndicator={false}
+                removeClippedSubviews={false}
+                keyExtractor={(item, index) => 'key' + index}
+              />
+            </View>
           )}
         </View>
       </SafeAreaView>

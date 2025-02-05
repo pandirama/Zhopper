@@ -236,12 +236,18 @@ const ProductsComponent = ({navigation}: Props) => {
   const renderSeeAll = () => {
     return (
       <>
-        <DashBoardHeaderComponent onBackPress={() => setSeeAll(false)} back />
+        <DashBoardHeaderComponent
+          onBackPress={() => setSeeAll(false)}
+          back
+          title={'Categories'}
+        />
         <View style={[appStyles.boxShadow, styles.walletSubContainer]}>
           <FlatList
             data={categories}
             showsVerticalScrollIndicator={false}
             renderItem={renderAllCategory}
+            removeClippedSubviews={false}
+            keyExtractor={(item, index) => 'key' + index}
             ItemSeparatorComponent={() => {
               return <View style={styles.borderView} />;
             }}
@@ -440,6 +446,8 @@ const ProductsComponent = ({navigation}: Props) => {
               columnWrapperStyle={styles.flatListColumn}
               contentContainerStyle={styles.flatListCotent}
               ListHeaderComponent={<ListHeader />}
+              removeClippedSubviews={false}
+              keyExtractor={(item, index) => 'key' + index}
             />
           )}
         </View>

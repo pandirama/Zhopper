@@ -17,7 +17,10 @@ const QRScanner = (props: any) => {
   const codeScanner = useCodeScanner({
     codeTypes: ['qr'],
     onCodeScanned: codes => {
-      props.onRead(codes[0].value);
+      const values = codes[0]?.value ?? '';
+      const index = values?.lastIndexOf('/') + 1;
+      const merchantID = values?.substring(index);
+      props.onRead(merchantID);
     },
   });
 

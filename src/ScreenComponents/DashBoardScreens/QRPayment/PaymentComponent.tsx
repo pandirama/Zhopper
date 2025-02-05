@@ -120,167 +120,171 @@ const PaymentComponent = ({route}: any) => {
         backgroundColor={colors.status}
         animated
       />
-      <SafeAreaView style={appStyles.container}>
-        <DashBoardHeaderComponent title={'Payment'} back />
-        {succeed && (
-          <View
-            style={{
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginTop: 100,
-            }}>
-            <Success style={{alignSelf: 'center'}} />
+      <SafeAreaView
+        style={appStyles.container}
+        edges={['right', 'left', 'top']}>
+        <View style={appStyles.headerContainer}>
+          <DashBoardHeaderComponent title={'Payment'} back />
+          {succeed && (
             <View
               style={{
-                position: 'absolute',
-                alignSelf: 'center',
-                bottom: 60,
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginTop: 50,
               }}>
-              <Text
+              <Success style={{alignSelf: 'center'}} />
+              <View
                 style={{
-                  color: colors.white,
-                  fontSize: 25,
-                  textAlign: 'center',
-                  width: windowWidth / 1.3,
-                  fontFamily: fontFamily.poppins_bold,
-                }}>
-                Payment Successful
-              </Text>
-              <Text
-                style={{
-                  color: '#83c8a4',
-                  fontSize: 12,
-                  marginTop: 5,
-                  textAlign: 'center',
-                  width: windowWidth / 1.3,
-                  fontFamily: fontFamily.poppins_medium,
-                }}>
-                Congrates, Your Payment has made Sucessfully
-              </Text>
-            </View>
-          </View>
-        )}
-
-        {failed && (
-          <View
-            style={{
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginTop: 100,
-            }}>
-            <Failed style={{alignSelf: 'center'}} />
-            <View
-              style={{
-                position: 'absolute',
-                alignSelf: 'center',
-                bottom: 60,
-              }}>
-              <Text
-                style={{
-                  color: colors.white,
-                  fontSize: 25,
-                  textAlign: 'center',
-                  width: windowWidth / 1.3,
-                  fontFamily: fontFamily.poppins_bold,
-                }}>
-                Payment Declined
-              </Text>
-              <Text
-                style={{
-                  color: '#83c8a4',
-                  fontSize: 12,
-                  marginTop: 5,
-                  textAlign: 'center',
-                  width: windowWidth / 1.3,
-                  fontFamily: fontFamily.poppins_medium,
-                }}>
-                Sorry, Your Payment has failed
-              </Text>
-            </View>
-          </View>
-        )}
-
-        {!succeed && !failed && (
-          <View
-            style={{
-              marginLeft: 30,
-              marginRight: 30,
-              justifyContent: 'center',
-              flex: 1,
-            }}>
-            <View
-              style={{
-                marginTop: 20,
-              }}>
-              <LinearGradient
-                colors={['#853b92', '#4b0892']}
-                style={{
-                  borderTopLeftRadius: 25,
-                  borderTopRightRadius: 25,
+                  position: 'absolute',
+                  alignSelf: 'center',
+                  bottom: 60,
                 }}>
                 <Text
                   style={{
                     color: colors.white,
-                    fontSize: 18,
-                    marginTop: 10,
+                    fontSize: 25,
+                    textAlign: 'center',
+                    width: windowWidth / 1.3,
                     fontFamily: fontFamily.poppins_bold,
-                    marginLeft: 10,
                   }}>
-                  Make Your Payment
+                  Payment Successful
                 </Text>
                 <Text
                   style={{
-                    color: '#b691c1',
+                    color: '#83c8a4',
                     fontSize: 12,
+                    marginTop: 5,
+                    textAlign: 'center',
+                    width: windowWidth / 1.3,
                     fontFamily: fontFamily.poppins_medium,
-                    marginBottom: 10,
-                    marginLeft: 10,
                   }}>
-                  Simple way to make your payment
+                  Congrates, Your Payment has made Sucessfully
                 </Text>
-              </LinearGradient>
-            </View>
-            <View style={styles.loginFormView}>
-              <View
-                style={{
-                  backgroundColor: colors.white,
-                  padding: 10,
-                  borderBottomLeftRadius: 25,
-                  borderBottomRightRadius: 25,
-                }}>
-                <Text style={styles.titleTxt}>
-                  {merchantInfos?.['Merchant Name']}
-                </Text>
-                <Text style={styles.subtitleTxt}>({merchantID})</Text>
-                <TextInputComponent
-                  headText={'Amount'}
-                  onChangeValue={setAmount}
-                  value={amount}
-                  inputStyle={{backgroundColor: colors.white}}
-                  returnKeyType={'done'}
-                  textInputStyle={{paddingLeft: 3}}
-                  icon={
-                    <Text
-                      style={{
-                        fontSize: 17,
-                        fontWeight: 500,
-                        color: colors.black,
-                      }}>
-                      {`${wallet?.currency} : `}
-                    </Text>
-                  }
-                />
-                <TouchableOpacity onPress={onPayment}>
-                  <LinearGradient
-                    colors={['#853b92', '#4b0892']}
-                    style={styles.loginBtn}>
-                    <Text style={styles.loginBtnTxt}>MAKE PAYMENT</Text>
-                  </LinearGradient>
-                </TouchableOpacity>
               </View>
             </View>
-          </View>
-        )}
+          )}
+
+          {failed && (
+            <View
+              style={{
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginTop: 50,
+              }}>
+              <Failed style={{alignSelf: 'center'}} />
+              <View
+                style={{
+                  position: 'absolute',
+                  alignSelf: 'center',
+                  bottom: 60,
+                }}>
+                <Text
+                  style={{
+                    color: colors.white,
+                    fontSize: 25,
+                    textAlign: 'center',
+                    width: windowWidth / 1.3,
+                    fontFamily: fontFamily.poppins_bold,
+                  }}>
+                  Payment Declined
+                </Text>
+                <Text
+                  style={{
+                    color: '#83c8a4',
+                    fontSize: 12,
+                    marginTop: 5,
+                    textAlign: 'center',
+                    width: windowWidth / 1.3,
+                    fontFamily: fontFamily.poppins_medium,
+                  }}>
+                  Sorry, Your Payment has failed
+                </Text>
+              </View>
+            </View>
+          )}
+
+          {!succeed && !failed && (
+            <View
+              style={{
+                marginLeft: 30,
+                marginRight: 30,
+                justifyContent: 'center',
+                flex: 1,
+              }}>
+              <View
+                style={{
+                  marginTop: 20,
+                }}>
+                <LinearGradient
+                  colors={['#853b92', '#4b0892']}
+                  style={{
+                    borderTopLeftRadius: 25,
+                    borderTopRightRadius: 25,
+                  }}>
+                  <Text
+                    style={{
+                      color: colors.white,
+                      fontSize: 18,
+                      marginTop: 10,
+                      fontFamily: fontFamily.poppins_bold,
+                      marginLeft: 10,
+                    }}>
+                    Make Your Payment
+                  </Text>
+                  <Text
+                    style={{
+                      color: '#b691c1',
+                      fontSize: 12,
+                      fontFamily: fontFamily.poppins_medium,
+                      marginBottom: 10,
+                      marginLeft: 10,
+                    }}>
+                    Simple way to make your payment
+                  </Text>
+                </LinearGradient>
+              </View>
+              <View style={styles.loginFormView}>
+                <View
+                  style={{
+                    backgroundColor: colors.white,
+                    padding: 10,
+                    borderBottomLeftRadius: 25,
+                    borderBottomRightRadius: 25,
+                  }}>
+                  <Text style={styles.titleTxt}>
+                    {merchantInfos?.['Merchant Name']}
+                  </Text>
+                  <Text style={styles.subtitleTxt}>({merchantID})</Text>
+                  <TextInputComponent
+                    headText={'Amount'}
+                    onChangeValue={setAmount}
+                    value={amount}
+                    inputStyle={{backgroundColor: colors.white}}
+                    returnKeyType={'done'}
+                    textInputStyle={{paddingLeft: 3}}
+                    icon={
+                      <Text
+                        style={{
+                          fontSize: 17,
+                          fontWeight: 500,
+                          color: colors.black,
+                        }}>
+                        {`${wallet?.currency} : `}
+                      </Text>
+                    }
+                  />
+                  <TouchableOpacity onPress={onPayment}>
+                    <LinearGradient
+                      colors={['#853b92', '#4b0892']}
+                      style={styles.loginBtn}>
+                      <Text style={styles.loginBtnTxt}>MAKE PAYMENT</Text>
+                    </LinearGradient>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+          )}
+        </View>
       </SafeAreaView>
     </>
   );

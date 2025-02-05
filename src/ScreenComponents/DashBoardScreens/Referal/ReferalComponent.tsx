@@ -309,7 +309,8 @@ const ReferalComponent = () => {
             }}
             style={{marginBottom: 10}}
             showsVerticalScrollIndicator={false}
-            keyExtractor={(item: any) => item?._id}
+            removeClippedSubviews={false}
+            keyExtractor={(item, index) => 'key' + index}
             ListHeaderComponent={<ListHeader />}
           />
         </View>

@@ -179,6 +179,7 @@ const WalletComponent = ({navigation}: Props) => {
                 navigation.navigate('TRANS_HISTORY', {
                   gateway: 'SC-wallet',
                   title: 'Spend Record',
+                  subTitle: 'Spend Record -> Spending Credit Wallet',
                 });
               }}>
               <Image
@@ -200,6 +201,7 @@ const WalletComponent = ({navigation}: Props) => {
                 navigation.navigate('TRANS_HISTORY', {
                   gateway: 'CB-wallet',
                   title: 'Cash Back Wallet',
+                  subTitle: 'Cash Back Wallet -> Cash Back Wallet',
                 });
               }}>
               <Image
@@ -221,6 +223,7 @@ const WalletComponent = ({navigation}: Props) => {
                 navigation.navigate('TRANS_HISTORY', {
                   gateway: 'SRP-wallet',
                   title: 'Redemption',
+                  subTitle: 'Redemption -> SRP Wallet',
                 });
               }}>
               <Image
@@ -262,6 +265,8 @@ const WalletComponent = ({navigation}: Props) => {
             contentContainerStyle={styles.flatListCotent}
             ListFooterComponent={<ListFooter />}
             showsVerticalScrollIndicator={false}
+            removeClippedSubviews={false}
+            keyExtractor={(item, index) => 'key' + index}
           />
         </View>
       </SafeAreaView>

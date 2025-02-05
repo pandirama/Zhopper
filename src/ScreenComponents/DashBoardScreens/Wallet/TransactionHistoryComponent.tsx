@@ -78,11 +78,10 @@ const AppCollapse = ({item}: any) => {
           </View>
           <View style={{flex: 1}}>
             <Text style={styles.itemTitleTxt}>AMOUNT</Text>
-            <Text style={styles.itemSubTitleTxt}>{item?.amount}</Text>
-          </View>
-          <View style={{flex: 1}}>
-            <Text style={styles.itemTitleTxt}>CURRENCY</Text>
-            <Text style={styles.itemSubTitleTxt}>{item?.currency}</Text>
+            <Text
+              style={
+                styles.itemSubTitleTxt
+              }>{`${item?.currency} ${item?.amount}`}</Text>
           </View>
         </View>
 
@@ -124,7 +123,7 @@ const AppCollapse = ({item}: any) => {
 };
 
 const TransactionHistoryComponent = ({route}: Props) => {
-  const {gateway} = route?.params ?? {};
+  const {gateway, title, subTitle} = route?.params ?? {};
 
   const {showToast, toggleBackdrop} = useCommon();
 
@@ -188,15 +187,17 @@ const TransactionHistoryComponent = ({route}: Props) => {
         style={appStyles.container}
         edges={['right', 'left', 'top']}>
         <View style={appStyles.headerContainer}>
-          <DashBoardHeaderComponent title={'Transaction '} back />
+          <DashBoardHeaderComponent title={title} back />
           <Text style={styles.titleTxt}>Wallet Transaction History</Text>
-          <Text style={styles.subtitleTxt}>Details of transaction</Text>
+          <Text style={styles.subtitleTxt}>{subTitle}</Text>
           <FlatList
             data={transHistory}
             renderItem={renderItem}
             style={styles.flatListCotent}
             contentContainerStyle={{paddingBottom: 25}}
             showsVerticalScrollIndicator={false}
+            removeClippedSubviews={false}
+            keyExtractor={(item, index) => 'key' + index}
           />
         </View>
       </SafeAreaView>
