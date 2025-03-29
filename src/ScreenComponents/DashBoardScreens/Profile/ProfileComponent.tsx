@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-native/no-inline-styles */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {
@@ -21,23 +21,85 @@ import LinearGradient from 'react-native-linear-gradient';
 import {useFocusEffect} from '@react-navigation/native';
 import useCommon from '../../../hooks/useCommon';
 import {getErrorMessage} from '../../../utils/common';
-import {
-  useGetReferralQRQuery,
-  useLazyGetProfileQuery,
-} from '../../../api/profileAPI';
+import {useGetEditProfileQuery} from '../../../api/profileAPI';
 import {useSelector} from 'react-redux';
 import QRCode from 'react-native-qrcode-svg';
+import {countries} from '../../AuthScreens/RegisterComponent';
+import {Dropdown} from 'react-native-element-dropdown';
+import {KeyboardAvoidingView} from 'react-native-keyboard-controller';
 
 const ProfileComponent = ({navigation}: any) => {
   const {showToast, toggleBackdrop} = useCommon();
+  // let svg = useRef<MutableRefObject<Svg | undefined>>(null);
   const [fullname, setFullName] = useState('');
+  const [nameStatus, setNameStatus] = useState(false);
   const [email, setEmail] = useState('');
+  const [emailStatus, setEmailStatus] = useState(false);
   const [country, setCountry] = useState('');
+  const [countryStatus, setCountryStatus] = useState(false);
   const [userName, setUserName] = useState('');
+  const [userStatus, setUserStatus] = useState(false);
   const [shopperRank, setShopperRank] = useState(0);
+  const [rankStatus, setRankStatus] = useState(false);
+  const [isFocus, setIsFocus] = useState<boolean>(false);
 
   const {referralLink, userProfile} = useSelector(
     ({profileReducer}: any) => profileReducer,
+  );
+
+  const {userInfo} = useSelector(({authReducer}: any) => authReducer);
+
+  const {isFetching, refetch} = useGetEditProfileQuery({
+    userid: userInfo?.[0]?.userid,
+  });
+
+  useEffect(() => {
+    toggleBackdrop(isFetching);
+  }, [isFetching]);
+
+  const getProfile = () => {
+    refetch()
+      .then((response: any) => {
+        const {data, status, message} = response;
+        if (status) {
+          data[0]?.data.filter((result: any) => {
+            if (result.hasOwnProperty('fullname')) {
+              setFullName(result?.fullname);
+              setNameStatus(result?.status === 1 ? false : true);
+            } else if (result.hasOwnProperty('email')) {
+              setEmail(result?.email);
+              setEmailStatus(result?.status === 1 ? false : true);
+            } else if (result.hasOwnProperty('country')) {
+              setCountry(result?.country);
+              setCountryStatus(result?.status === 1 ? true : false);
+            } else if (result.hasOwnProperty('username')) {
+              setUserName(result?.username);
+              setUserStatus(result?.status === 1 ? false : true);
+            } else if (result.hasOwnProperty('shopper_rank')) {
+              setShopperRank(result?.shopper_rank?.toString());
+              setRankStatus(result?.status === 1 ? false : true);
+            }
+          });
+        } else {
+          showToast({
+            type: 'error',
+            text1: getErrorMessage(message),
+          });
+        }
+      })
+      .catch(error => {
+        showToast({
+          type: 'error',
+          text1: getErrorMessage(error),
+        });
+      });
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      getProfile();
+      return () => {};
+    }, []),
   );
 
   const fullNameFieldRef = useRef<TextInput>();
@@ -45,71 +107,6 @@ const ProfileComponent = ({navigation}: any) => {
   const countryFieldRef = useRef<TextInput>();
   const userNameFieldRef = useRef<TextInput>();
   const shopperRankFieldRef = useRef<TextInput>();
-
-  const [step, setStep] = useState(1);
-  const totalSteps = 4;
-  const totalPackages = ['Bronze', 'Silver', 'Gold', 'Platinum'];
-
-  useEffect(() => {
-    if (userProfile) {
-      setFullName(userProfile?.fullname);
-      setEmail(userProfile?.email);
-      setCountry(userProfile?.country);
-      setUserName(userProfile?.username);
-      setShopperRank(userProfile?.shopper_rank?.toString());
-    }
-  }, [userProfile]);
-
-  // const handleNext = () => {
-  //   setStep(prevStep => Math.min(prevStep + 1, totalSteps));
-  // };
-
-  // const handlePrevious = () => {
-  //   setStep(prevStep => Math.max(prevStep - 1, 1));
-  // };
-
-  const renderStepIndicator = () => {
-    const indicators = [];
-    for (let i = 1; i <= totalSteps; i++) {
-      indicators.push(
-        <View>
-          {i % 2 !== 0 && (
-            <Text
-              style={[
-                styles.stepText,
-                i <= step && styles.activeStepText,
-                {top: -20, left: 25},
-              ]}>
-              {totalPackages[i - 1]}
-            </Text>
-          )}
-          <View key={i} style={styles.stepContainer}>
-            <View style={[styles.line, i <= step && styles.activeLine]} />
-            <View
-              style={[styles.stepIndicator, i <= step && styles.activeStep]}
-            />
-            {step === totalSteps ? (
-              <View style={[styles.line, styles.activeLine]} />
-            ) : (
-              <View style={[styles.line, i < step && styles.activeLine]} />
-            )}
-          </View>
-          {i % 2 === 0 && (
-            <Text
-              style={[
-                styles.stepText,
-                i <= step && styles.activeStepText,
-                {top: 10, left: 20},
-              ]}>
-              {totalPackages[i - 1]}
-            </Text>
-          )}
-        </View>,
-      );
-    }
-
-    return <View style={styles.indicatorContainer}>{indicators}</View>;
-  };
 
   return (
     <>
@@ -124,227 +121,233 @@ const ProfileComponent = ({navigation}: any) => {
         edges={['right', 'left', 'top']}>
         <View style={appStyles.headerContainer}>
           <DashBoardHeaderComponent title={'Profile'} />
-          <ScrollView
-            showsVerticalScrollIndicator={false}
-            keyboardShouldPersistTaps={'never'}>
-            <LinearGradient
-              colors={['#9b6ec6', '#b386dc', '#c79bef']}
-              style={styles.container}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  marginLeft: 15,
-                }}>
-                <Image
-                  source={require('../../../assets/profile_user.png')}
-                  style={{width: 60, height: 60}}
-                />
+          <KeyboardAvoidingView
+            behavior={'padding'}
+            keyboardVerticalOffset={25}
+            style={{flex: 1}}>
+            <ScrollView
+              showsVerticalScrollIndicator={false}
+              keyboardShouldPersistTaps={'never'}>
+              <LinearGradient
+                colors={['#9b6ec6', '#b386dc', '#c79bef']}
+                style={styles.container}>
                 <View
-                  style={{marginLeft: 10, justifyContent: 'center', flex: 1}}>
-                  <Text
-                    style={{
-                      color: '#310855',
-                      fontSize: 16,
-                      fontFamily: fontFamily.poppins_semi_bold,
-                    }}>
-                    {fullname}
-                  </Text>
-                  <Text
-                    style={{
-                      color: colors.black,
-                      fontSize: 14,
-                      fontFamily: fontFamily.poppins_regular,
-                    }}>
-                    Package
-                  </Text>
-                </View>
-                <View style={{marginRight: 15}}>
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    marginLeft: 15,
+                    marginTop: 10,
+                    marginBottom: 10,
+                  }}>
                   <Image
-                    source={require('../../../assets/arrow_right.png')}
+                    source={require('../../../assets/person.png')}
                     style={{width: 60, height: 60}}
                   />
-                  <Text
-                    style={{
-                      color: colors.black,
-                      fontSize: 16,
-                      fontFamily: fontFamily.poppins_semi_bold,
-                      position: 'absolute',
-                      right: 22,
-                      top: 16,
-                    }}>
-                    Pts
-                  </Text>
-                  <View style={styles.logout}>
+                  <View
+                    style={{marginLeft: 10, justifyContent: 'center', flex: 1}}>
                     <Text
                       style={{
-                        color: colors.white,
+                        color: '#310855',
                         fontSize: 16,
+                        fontWeight: 800,
                         fontFamily: fontFamily.poppins_semi_bold,
                       }}>
-                      180
+                      {fullname}
+                    </Text>
+                    <Text
+                      style={{
+                        color: colors.black,
+                        fontSize: 14,
+                        fontWeight: 600,
+                        fontFamily: fontFamily.poppins_regular,
+                      }}>
+                      {userProfile?.shopper_rank}
                     </Text>
                   </View>
                 </View>
-              </View>
-              <View
-                style={{
-                  backgroundColor: '#e2d2f0',
-                  marginTop: 10,
-                  height: 80,
-                  borderRadius: 15,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  marginLeft: 15,
-                  marginRight: 15,
-                }}>
-                {renderStepIndicator()}
-              </View>
-            </LinearGradient>
-            <View style={styles.loginFormView}>
-              <View
-                style={{
-                  marginTop: 20,
-                  borderBottomLeftRadius: 10,
-                  borderBottomRightRadius: 10,
-                  backgroundColor: colors.white,
-                }}>
-                <LinearGradient
-                  colors={['#853b92', '#4b0892']}
+              </LinearGradient>
+              <View style={styles.loginFormView}>
+                <View
                   style={{
-                    borderTopLeftRadius: 10,
-                    borderTopRightRadius: 10,
-                    justifyContent: 'center',
-                    alignItems: 'center',
+                    marginTop: 20,
+                    borderBottomLeftRadius: 10,
+                    borderBottomRightRadius: 10,
+                    backgroundColor: colors.white,
                   }}>
-                  <Text
+                  <LinearGradient
+                    colors={['#853b92', '#4b0892']}
                     style={{
-                      textAlign: 'center',
-                      color: colors.white,
-                      fontSize: 18,
-                      marginTop: 15,
-                      fontFamily: fontFamily.poppins_bold,
+                      borderTopLeftRadius: 10,
+                      borderTopRightRadius: 10,
+                      justifyContent: 'center',
+                      alignItems: 'center',
                     }}>
-                    My Referral QR Code
-                  </Text>
-                  <Text
-                    style={{
-                      textAlign: 'center',
-                      color: '#b691c1',
-                      fontSize: 12,
-                      fontFamily: fontFamily.poppins_medium,
-                      marginBottom: 15,
-                    }}>
-                    Share with your friend, register free account !
-                  </Text>
-                </LinearGradient>
-                <View style={{flexDirection: 'row', margin: 20}}>
-                  <View style={{flex: 0.7}}>
+                    <Text
+                      style={{
+                        textAlign: 'center',
+                        color: colors.white,
+                        fontSize: 18,
+                        marginTop: 15,
+                        fontFamily: fontFamily.poppins_bold,
+                      }}>
+                      My Referral QR Code
+                    </Text>
+                    <Text
+                      style={{
+                        textAlign: 'center',
+                        color: '#b691c1',
+                        fontSize: 12,
+                        fontFamily: fontFamily.poppins_medium,
+                        marginBottom: 15,
+                      }}>
+                      Share with your friend, register free account !
+                    </Text>
+                  </LinearGradient>
+                  <View style={{flexDirection: 'row', margin: 20}}>
+                    <View style={{flex: 0.7}}>
+                      <View
+                        style={{
+                          backgroundColor: '#ebdcf9',
+                          padding: 10,
+                          width: 120,
+                          height: 120,
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}>
+                        <QRCode
+                          value={referralLink}
+                          // getRef={(ref?) => (svg = ref)}
+                        />
+                      </View>
+                    </View>
+
                     <View
                       style={{
-                        backgroundColor: '#ebdcf9',
-                        padding: 10,
-                        width: 120,
-                        height: 120,
+                        flex: 1,
                         alignItems: 'center',
                         justifyContent: 'center',
                       }}>
-                      <QRCode value={referralLink} />
+                      <TouchableOpacity
+                        onPress={() => {
+                          // svg.toDataURL(data => {
+                          //   const shareImageBase64 = {
+                          //     title: 'QR',
+                          //     message: 'Ehi, this is my QR code',
+                          //     url: `data:image/png;base64,${data}`,
+                          //   };
+                          // });
+                          // navigation.navigate('QRCODE')
+                        }}>
+                        <LinearGradient
+                          colors={['#853b92', '#4b0892']}
+                          style={styles.tabBtn}>
+                          <Text style={styles.tabTxt}>TAP AND SCAN</Text>
+                        </LinearGradient>
+                      </TouchableOpacity>
                     </View>
                   </View>
-
-                  <View style={{flex: 1}}>
-                    <Text>
-                      Lorem ipsum dolor sit amet, cons in auctor lacus. Quisque
-                      sed t
-                    </Text>
-                    <TouchableOpacity
-                      style={{marginTop: 15}}
-                      onPress={() => navigation.navigate('QRCODE')}>
-                      <LinearGradient
-                        colors={['#853b92', '#4b0892']}
-                        style={styles.tabBtn}>
-                        <Text style={styles.tabTxt}>TAP AND SCAN</Text>
-                      </LinearGradient>
-                    </TouchableOpacity>
+                </View>
+                <View
+                  style={{
+                    backgroundColor: '#f7f6f6',
+                    borderRadius: 10,
+                    padding: 10,
+                    marginTop: 30,
+                  }}>
+                  <Text style={styles.titleTxt}>Basic Info</Text>
+                  <Text style={styles.subtitleTxt}>
+                    Basic details about you
+                  </Text>
+                  <TextInputComponent
+                    placeHolder={'Enter Your FullName'}
+                    headText={'Full Name'}
+                    onChangeValue={setFullName}
+                    value={fullname}
+                    editable={nameStatus}
+                    returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
+                    onSubmitEditing={() => fullNameFieldRef.current?.focus()}
+                  />
+                  <TextInputComponent
+                    ref={fullNameFieldRef}
+                    placeHolder={'Enter Your Email'}
+                    headText={'Email'}
+                    onChangeValue={setEmail}
+                    value={email}
+                    editable={emailStatus}
+                    returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
+                    onSubmitEditing={() => emailFieldRef.current?.focus()}
+                  />
+                  <View style={styles.dropDownView}>
+                    <Dropdown
+                      dropdownPosition="bottom"
+                      style={[
+                        styles.dropDown,
+                        isFocus && {borderColor: colors.primary},
+                      ]}
+                      disable={countryStatus}
+                      placeholderStyle={styles.placeholderStyle}
+                      selectedTextStyle={styles.selectedTextStyle}
+                      inputSearchStyle={styles.inputSearchStyle}
+                      iconStyle={styles.iconStyle}
+                      containerStyle={styles.dropcontainerStyle}
+                      data={countries}
+                      maxHeight={300}
+                      labelField="label"
+                      valueField="value"
+                      placeholder={!isFocus ? 'Select Country' : ''}
+                      value={country}
+                      onFocus={() => setIsFocus(true)}
+                      onBlur={() => setIsFocus(false)}
+                      onChange={(item: any) => {
+                        setCountry(item?.value);
+                        setIsFocus(false);
+                      }}
+                      search={false}
+                    />
+                    <Text style={styles.inputHeadTxt}>Country</Text>
                   </View>
+
+                  <TextInputComponent
+                    placeHolder={'Enter Your User Name'}
+                    headText={'user Name'}
+                    onChangeValue={setUserName}
+                    value={userName}
+                    editable={userStatus}
+                    ref={countryFieldRef}
+                    returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
+                    onSubmitEditing={() => userNameFieldRef.current?.focus()}
+                  />
+
+                  <TextInputComponent
+                    ref={userNameFieldRef}
+                    placeHolder={'Enter Your Shopper Rank'}
+                    headText={'Shopper Rank'}
+                    onChangeValue={setShopperRank}
+                    value={shopperRank}
+                    editable={rankStatus}
+                    returnKeyType={Platform.OS === 'ios' ? 'done' : 'done'}
+                    onSubmitEditing={() => shopperRankFieldRef.current?.focus()}
+                  />
+
+                  <TouchableOpacity>
+                    <LinearGradient
+                      colors={['#853b92', '#4b0892']}
+                      style={styles.loginBtn}>
+                      <Text style={styles.loginBtnTxt}>SUBMIT</Text>
+                    </LinearGradient>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => navigation.navigate('CHANGE_PWD')}>
+                    <LinearGradient
+                      colors={['#853b92', '#4b0892']}
+                      style={styles.pwdBtn}>
+                      <Text style={styles.loginBtnTxt}>Change Password</Text>
+                    </LinearGradient>
+                  </TouchableOpacity>
                 </View>
               </View>
-              <View
-                style={{
-                  backgroundColor: '#f7f6f6',
-                  borderRadius: 10,
-                  padding: 10,
-                  marginTop: 30,
-                }}>
-                <Text style={styles.titleTxt}>Basic Info</Text>
-                <Text style={styles.subtitleTxt}>Basic details about you</Text>
-                <TextInputComponent
-                  placeHolder={'Enter Your FullName'}
-                  headText={'Full Name'}
-                  onChangeValue={setFullName}
-                  value={fullname}
-                  returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
-                  onSubmitEditing={() => fullNameFieldRef.current?.focus()}
-                />
-                <TextInputComponent
-                  ref={fullNameFieldRef}
-                  placeHolder={'Enter Your Email'}
-                  headText={'Email'}
-                  onChangeValue={setEmail}
-                  value={email}
-                  returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
-                  onSubmitEditing={() => emailFieldRef.current?.focus()}
-                />
-                <TextInputComponent
-                  ref={emailFieldRef}
-                  placeHolder={'Enter Your Country'}
-                  headText={'Country'}
-                  onChangeValue={setCountry}
-                  value={country}
-                  returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
-                  onSubmitEditing={() => countryFieldRef.current?.focus()}
-                />
-
-                <TextInputComponent
-                  placeHolder={'Enter Your User Name'}
-                  headText={'user Name'}
-                  onChangeValue={setUserName}
-                  value={userName}
-                  ref={countryFieldRef}
-                  returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
-                  onSubmitEditing={() => userNameFieldRef.current?.focus()}
-                />
-
-                <TextInputComponent
-                  ref={userNameFieldRef}
-                  placeHolder={'Enter Your Shopper Rank'}
-                  headText={'Shopper Rank'}
-                  onChangeValue={setShopperRank}
-                  value={shopperRank}
-                  editable={false}
-                  returnKeyType={Platform.OS === 'ios' ? 'done' : 'done'}
-                  onSubmitEditing={() => shopperRankFieldRef.current?.focus()}
-                />
-
-                <TouchableOpacity>
-                  <LinearGradient
-                    colors={['#853b92', '#4b0892']}
-                    style={styles.loginBtn}>
-                    <Text style={styles.loginBtnTxt}>SUBMIT</Text>
-                  </LinearGradient>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => navigation.navigate('CHANGE_PWD')}>
-                  <LinearGradient
-                    colors={['#853b92', '#4b0892']}
-                    style={styles.pwdBtn}>
-                    <Text style={styles.loginBtnTxt}>Change Password</Text>
-                  </LinearGradient>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </ScrollView>
+            </ScrollView>
+          </KeyboardAvoidingView>
         </View>
       </SafeAreaView>
     </>
@@ -392,7 +395,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#853b92',
   },
   container: {
-    height: 180,
     justifyContent: 'center',
     width: '100%',
     marginTop: 20,

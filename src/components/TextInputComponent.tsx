@@ -13,6 +13,7 @@ const TextInputComponent = forwardRef((props: any, ref: any) => {
     icon,
     inputStyle,
     textInputStyle,
+    rightIcon,
     ...otherProps
   } = props ?? {};
   return (
@@ -31,6 +32,7 @@ const TextInputComponent = forwardRef((props: any, ref: any) => {
         }}
         {...otherProps}
       />
+      {rightIcon && rightIcon}
       <Text style={[styles.inputHeadTxt, inputStyle]}>{headText}</Text>
     </View>
   );

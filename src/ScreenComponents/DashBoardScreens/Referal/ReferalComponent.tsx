@@ -48,10 +48,6 @@ const ReferalComponent = () => {
 
       if (referralResponse[0]?.status === 1) {
         setReferrals(referralResponse[0]);
-        showToast({
-          type: 'success',
-          text1: referralResponse[0]?.message,
-        });
       } else {
         showToast({
           type: 'error',
@@ -75,7 +71,7 @@ const ReferalComponent = () => {
 
   const renderItem = ({item}: any) => {
     return (
-      <TouchableOpacity
+      <View
         style={{
           flexDirection: 'row',
           alignItems: 'center',
@@ -108,7 +104,7 @@ const ReferalComponent = () => {
           }}>
           {item?.joindate}
         </Text>
-      </TouchableOpacity>
+      </View>
     );
   };
 
@@ -184,6 +180,10 @@ const ReferalComponent = () => {
                   <TouchableOpacity
                     style={styles.tabBtn}
                     onPress={() => {
+                      showToast({
+                        type: 'success',
+                        text1: 'Referral Code Copied Successfully',
+                      });
                       Clipboard.setString(referralLink);
                     }}>
                     <Text style={styles.tabTxt}>TAB AND COPY</Text>

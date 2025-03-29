@@ -1,32 +1,39 @@
-/* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable @typescript-eslint/no-shadow */
 /* eslint-disable react-native/no-inline-styles */
 import React, {useCallback, useEffect, useState} from 'react';
 import {
   Dimensions,
   FlatList,
   Image,
+  Platform,
   StatusBar,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import appStyles, {fontFamily} from '../../../utils/appStyles';
 import {colors} from '../../../utils/colors';
-import Carousel from 'react-native-reanimated-carousel';
-import _ from 'lodash';
-import {Feather, Ionicons} from '../../../utils/IconUtils';
-import {useGetCategoriesQuery} from '../../../api/productsAPI';
+import {Feather} from '../../../utils/IconUtils';
+import {
+  useGetCategoriesQuery,
+  useMerchantLocationsMutation,
+  useSearchMerchantLocationsMutation,
+} from '../../../api/productsAPI';
 import {useFocusEffect} from '@react-navigation/native';
 import useCommon from '../../../hooks/useCommon';
 import {getErrorMessage} from '../../../utils/common';
 import {useSelector} from 'react-redux';
 import DashBoardHeaderComponent from '../../../components/DashBoardHeaderComponent';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import Geolocation from '@react-native-community/geolocation';
+import {PERMISSIONS, request} from 'react-native-permissions';
+import {
+  isLocationEnabled,
+  promptForEnableLocationIfNeeded,
+} from 'react-native-android-location-enabler';
+import ProductHeaderComponent from './ProductHeaderComponent';
 
 type Props = NativeStackScreenProps<any, 'PRODUCTS'>;
 
@@ -65,70 +72,133 @@ const imageCategories = [
   },
 ];
 
-type PaginateProp = {
-  count: number;
-  active: number;
-};
-
-const {width} = Dimensions.get('window');
-
-const slideContent: any = [
-  {
-    icon: require('../../../assets/merchant_offer.png'),
-  },
-  {
-    icon: require('../../../assets/merchant_offer.png'),
-  },
-  {
-    icon: require('../../../assets/merchant_offer.png'),
-  },
-  {
-    icon: require('../../../assets/merchant_offer.png'),
-  },
-];
-
-const PaginationDots = (props: PaginateProp) => {
-  return (
-    <View style={styles.dotContainer}>
-      {_.map(new Array(props.count), (_val: any, index: any) => (
-        <View
-          style={[
-            {padding: 5, backgroundColor: colors.white},
-            index === 0 && {
-              borderTopLeftRadius: 25,
-              borderBottomLeftRadius: 25,
-            },
-            index + 1 === props.count && {
-              borderTopRightRadius: 25,
-              borderBottomRightRadius: 25,
-            },
-          ]}>
-          {index + 1 === props.active ? (
-            <View style={styles.activeDot} />
-          ) : (
-            <View key={index + 1} style={styles.dot} />
-          )}
-        </View>
-      ))}
-    </View>
-  );
-};
-
 const ProductsComponent = ({navigation}: Props) => {
   const {showToast, toggleBackdrop} = useCommon();
-  const [activeDot, setActiveDot] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
-  const [seeAll, setSeeAll] = useState<boolean>(false);
 
   const [categories, setCategories] = useState<any>(null);
+  const [currentLocation, setCurrentLocation] = useState<any>(null);
+  const [merchantMarkers, setMerchantMarkers] = useState<any>(null);
 
   const {userProfile} = useSelector(({profileReducer}: any) => profileReducer);
 
   const {isFetching, refetch} = useGetCategoriesQuery();
 
+  const [merchantLocations, {isLoading}] = useMerchantLocationsMutation();
+
+  const [searchMerchantLocations, {isLoading: isSearchLoading}] =
+    useSearchMerchantLocationsMutation();
+
   useEffect(() => {
-    toggleBackdrop(isFetching);
-  }, [isFetching]);
+    toggleBackdrop(isFetching || isLoading || isSearchLoading);
+  }, [isFetching || isLoading || isSearchLoading]);
+
+  const requestLocationPermission = async () => {
+    return request(
+      Platform.OS === 'ios'
+        ? PERMISSIONS.IOS.LOCATION_ALWAYS
+        : PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
+    ).then(result => {
+      return result;
+    });
+  };
+
+  const getSeachMerchantLocation = async () => {
+    try {
+      const params = {
+        search: searchTerm,
+        latitude: currentLocation?.latitude,
+        longitude: currentLocation?.longitude,
+      };
+
+      const response: any = await searchMerchantLocations(params).unwrap();
+      if (response[0]?.status === 1) {
+        setMerchantMarkers(response[0]?.data);
+      } else {
+        setSearchTerm('');
+        showToast({
+          type: 'error',
+          text1: response[0]?.message,
+        });
+      }
+    } catch (err: any) {
+      showToast({
+        type: 'error',
+        text1: getErrorMessage(err),
+      });
+    }
+  };
+
+  const getMerchantLocations = async (locations: any) => {
+    try {
+      const params = {
+        latitude: locations?.latitude,
+        longitude: locations?.longitude,
+      };
+
+      const response: any = await merchantLocations(params).unwrap();
+      if (response[0]?.status === 1) {
+        setMerchantMarkers(response[0]?.data);
+      } else {
+        showToast({
+          type: 'error',
+          text1: response[0]?.message,
+        });
+      }
+    } catch (err: any) {
+      showToast({
+        type: 'error',
+        text1: getErrorMessage(err),
+      });
+    }
+  };
+
+  const getUserLocation = () => {
+    Geolocation.getCurrentPosition(
+      position => {
+        const region = {
+          latitude: position?.coords?.latitude,
+          longitude: position?.coords?.longitude,
+          latitudeDelta: 5,
+          longitudeDelta: 5,
+        };
+        setCurrentLocation(region);
+        getMerchantLocations(region);
+      },
+      error => {
+        console.warn(error.code, error.message);
+        handleCheckPressed();
+      },
+      {enableHighAccuracy: false, timeout: 15000},
+    );
+  };
+
+  const handleCheckPressed = async () => {
+    if (Platform.OS === 'android') {
+      const checkEnabled: boolean = await isLocationEnabled();
+      if (!checkEnabled) {
+        try {
+          const enableResult = await promptForEnableLocationIfNeeded();
+          if (enableResult === 'enabled') {
+            getUserLocation();
+          }
+        } catch (error: unknown) {
+          if (error instanceof Error) {
+            console.error(error.message);
+          }
+        }
+      }
+    }
+  };
+
+  const getLocation = () => {
+    const result = requestLocationPermission();
+    result.then(res => {
+      if (res === 'granted') {
+        getUserLocation();
+      }
+    });
+  };
 
   useFocusEffect(
     useCallback(() => {
@@ -157,12 +227,13 @@ const ProductsComponent = ({navigation}: Props) => {
             text1: getErrorMessage(error),
           });
         });
+      getLocation();
       return () => {};
     }, []),
   );
 
   const renderItem = ({item, index}: any) => {
-    if (index > 7 && !seeAll) {
+    if (index > 7) {
       return <></>;
     }
     const findImage = imageCategories.find(imageName => {
@@ -199,227 +270,6 @@ const ProductsComponent = ({navigation}: Props) => {
     );
   };
 
-  const renderAllCategory = ({item}: any) => {
-    return (
-      <TouchableOpacity
-        style={{
-          flex: 1,
-          flexDirection: 'row',
-          paddingTop: 15,
-          paddingBottom: 15,
-        }}
-        onPress={() =>
-          navigation.navigate('SUB_CATEGORY', {
-            subCategory: item?.name,
-          })
-        }>
-        <Text
-          style={{
-            fontFamily: fontFamily.poppins_bold,
-            fontSize: 15,
-            color: colors.black,
-            flex: 1,
-            paddingLeft: 20,
-          }}>
-          {item?.name}
-        </Text>
-        <Ionicons
-          name={'chevron-forward'}
-          size={22}
-          color={colors.black}
-          style={styles.icon}
-        />
-      </TouchableOpacity>
-    );
-  };
-
-  const renderSeeAll = () => {
-    return (
-      <>
-        <DashBoardHeaderComponent
-          onBackPress={() => setSeeAll(false)}
-          back
-          title={'Categories'}
-        />
-        <View style={[appStyles.boxShadow, styles.walletSubContainer]}>
-          <FlatList
-            data={categories}
-            showsVerticalScrollIndicator={false}
-            renderItem={renderAllCategory}
-            removeClippedSubviews={false}
-            keyExtractor={(item, index) => 'key' + index}
-            ItemSeparatorComponent={() => {
-              return <View style={styles.borderView} />;
-            }}
-          />
-        </View>
-      </>
-    );
-  };
-
-  const ListHeader = () => {
-    return (
-      <View>
-        <View
-          style={{
-            flexDirection: 'row',
-            marginLeft: 15,
-            marginTop: 25,
-            marginRight: 15,
-          }}>
-          <Image source={require('../../../assets/merchant_profile.png')} />
-          <View style={{flex: 1, justifyContent: 'center', marginLeft: 5}}>
-            <Text
-              style={{
-                fontFamily: fontFamily.poppins_medium,
-                fontSize: 12,
-                marginLeft: 5,
-                color: colors.black,
-              }}>
-              Welcome Back
-            </Text>
-            <Text
-              style={{
-                fontFamily: fontFamily.poppins_semi_bold,
-                fontSize: 14,
-                marginLeft: 5,
-                color: colors.black,
-              }}>
-              {userProfile?.fullname}
-            </Text>
-          </View>
-          <View
-            style={{
-              borderRadius: 100,
-              padding: 5,
-              backgroundColor: '#d19fff',
-              width: 45,
-              height: 45,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-            <Feather name="bell" color={colors.black} size={25} />
-          </View>
-        </View>
-        <View style={styles.searchView}>
-          <View style={styles.searchContainer}>
-            <Feather name="search" color={'#b2b2b2'} size={20} />
-            <TextInput
-              style={styles.input}
-              placeholder="Search  Fashion Accessories...."
-              placeholderTextColor="#A9A9A9"
-              value={searchTerm}
-              onChangeText={text => setSearchTerm(text)}
-            />
-          </View>
-          <TouchableOpacity
-            style={{
-              borderRadius: 100,
-              padding: 5,
-              backgroundColor: '#d19fff',
-              width: 45,
-              height: 45,
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginLeft: 5,
-            }}>
-            <Image
-              source={require('../../../assets/filter_icon.png')}
-              style={{width: 30, height: 30}}
-            />
-          </TouchableOpacity>
-        </View>
-        <View
-          style={{
-            alignItems: 'center',
-            marginTop: 20,
-          }}>
-          <Image
-            source={require('../../../assets/merchant_map.png')}
-            resizeMode="cover"
-          />
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              backgroundColor: '#d19fff',
-              borderRadius: 25,
-              paddingLeft: 10,
-              paddingRight: 10,
-              paddingTop: 5,
-              paddingBottom: 5,
-              position: 'absolute',
-              bottom: 0,
-              right: 18,
-            }}>
-            <Image source={require('../../../assets/location_map.png')} />
-            <Text
-              style={{
-                fontFamily: fontFamily.poppins_semi_bold,
-                fontSize: 12,
-                marginLeft: 5,
-                color: colors.black,
-              }}>
-              Explore Nearby Places
-            </Text>
-          </View>
-        </View>
-
-        <View style={styles.caroselContainer}>
-          <Carousel
-            width={width}
-            height={180}
-            loop={false}
-            data={slideContent}
-            scrollAnimationDuration={1000}
-            onProgressChange={(_, absoluteProgress) => {
-              setActiveDot(Math.round(absoluteProgress) + 1);
-            }}
-            renderItem={({index}) => (
-              <View style={styles.carouselContainer}>
-                <View style={styles.pageDotView}>
-                  <Image source={slideContent[index].icon} />
-                </View>
-              </View>
-            )}
-          />
-          <PaginationDots count={4} active={activeDot} />
-        </View>
-        <View style={{flexDirection: 'row', marginLeft: 10, marginRight: 10}}>
-          <Text
-            style={{
-              fontFamily: fontFamily.poppins_semi_bold,
-              fontSize: 18,
-              marginLeft: 5,
-              flex: 1,
-              color: colors.black,
-            }}>
-            Categories
-          </Text>
-          <TouchableOpacity
-            style={{flexDirection: 'row'}}
-            onPress={() => setSeeAll(a => !a)}>
-            <Text
-              style={{
-                fontFamily: fontFamily.poppins_medium,
-                fontSize: 14,
-                marginRight: 2,
-                color: '#3f00a1',
-              }}>
-              See All
-            </Text>
-            <Feather
-              name="arrow-up-right"
-              color={'#3f00a1'}
-              size={20}
-              style={{marginRight: 15}}
-            />
-          </TouchableOpacity>
-        </View>
-      </View>
-    );
-  };
-
   return (
     <>
       <StatusBar
@@ -429,27 +279,73 @@ const ProductsComponent = ({navigation}: Props) => {
         animated
       />
       <SafeAreaView
-        style={[
-          appStyles.container,
-          {backgroundColor: seeAll ? colors.status : colors.background},
-        ]}
+        style={[appStyles.container, {backgroundColor: colors.background}]}
         edges={['right', 'left', 'top']}>
         <View style={appStyles.headerContainer}>
-          {seeAll ? (
-            renderSeeAll()
-          ) : (
-            <FlatList
-              data={categories}
-              renderItem={renderItem}
-              numColumns={4}
-              showsVerticalScrollIndicator={false}
-              columnWrapperStyle={styles.flatListColumn}
-              contentContainerStyle={styles.flatListCotent}
-              ListHeaderComponent={<ListHeader />}
-              removeClippedSubviews={false}
-              keyExtractor={(item, index) => 'key' + index}
-            />
-          )}
+          <DashBoardHeaderComponent title={'Categories'} />
+          <FlatList
+            data={categories}
+            renderItem={renderItem}
+            numColumns={4}
+            showsVerticalScrollIndicator={false}
+            columnWrapperStyle={styles.flatListColumn}
+            contentContainerStyle={styles.flatListCotent}
+            ListHeaderComponent={
+              <>
+                <ProductHeaderComponent
+                  fullname={userProfile?.fullname}
+                  currentLocation={currentLocation}
+                  merchantMarkers={merchantMarkers}
+                  getSeachMerchantLocation={getSeachMerchantLocation}
+                  getMerchantLocations={getMerchantLocations}
+                  setSearchTerm={setSearchTerm}
+                  searchTerm={searchTerm}
+                />
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    marginLeft: 10,
+                    marginRight: 10,
+                  }}>
+                  <Text
+                    style={{
+                      fontFamily: fontFamily.poppins_semi_bold,
+                      fontSize: 18,
+                      marginLeft: 5,
+                      flex: 1,
+                      color: colors.black,
+                    }}>
+                    Categories
+                  </Text>
+                  <TouchableOpacity
+                    style={{flexDirection: 'row'}}
+                    onPress={() =>
+                      navigation.navigate('SEE_ALL_CATEGORY', {
+                        categories: categories,
+                      })
+                    }>
+                    <Text
+                      style={{
+                        fontFamily: fontFamily.poppins_medium,
+                        fontSize: 14,
+                        marginRight: 2,
+                        color: '#3f00a1',
+                      }}>
+                      See All
+                    </Text>
+                    <Feather
+                      name="arrow-up-right"
+                      color={'#3f00a1'}
+                      size={20}
+                      style={{marginRight: 15}}
+                    />
+                  </TouchableOpacity>
+                </View>
+              </>
+            }
+            removeClippedSubviews={false}
+            keyExtractor={(item, index) => 'key' + index}
+          />
         </View>
       </SafeAreaView>
     </>
@@ -530,6 +426,12 @@ const styles = StyleSheet.create({
     width: '79%',
     paddingVertical: 15,
     color: colors.black,
+  },
+  map: {
+    width: Dimensions.get('window').width / 1.07,
+    height: 200,
+    alignSelf: 'center',
+    borderRadius: 10,
   },
 });
 

@@ -31,6 +31,22 @@ export const productsAPI = createApi({
       }),
       transformResponse: (response: {data: any}) => response,
     }),
+    merchantLocations: builder.mutation<any, any>({
+      query: walletParams => ({
+        url: PRODUCTS_URLS.MERCHANT_LOCATION,
+        method: 'POST',
+        body: walletParams,
+      }),
+      transformResponse: (response: {data: any}) => response,
+    }),
+    searchMerchantLocations: builder.mutation<any, any>({
+      query: walletParams => ({
+        url: PRODUCTS_URLS.MERCHANT_SEARCH,
+        method: 'POST',
+        body: walletParams,
+      }),
+      transformResponse: (response: {data: any}) => response,
+    }),
   }),
 });
 
@@ -38,4 +54,6 @@ export const {
   useGetCategoriesQuery,
   useGetSubCategoryMutation,
   useGetMerchantInfoMutation,
+  useMerchantLocationsMutation,
+  useSearchMerchantLocationsMutation,
 } = productsAPI;

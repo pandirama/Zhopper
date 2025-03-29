@@ -26,6 +26,7 @@ import PaymentComponent from '../ScreenComponents/DashBoardScreens/QRPayment/Pay
 import TransactionHistoryComponent from '../ScreenComponents/DashBoardScreens/Wallet/TransactionHistoryComponent';
 import SubCategoryComponent from '../ScreenComponents/DashBoardScreens/Products/SubCategoryComponent';
 import MerchantInfoComponent from '../ScreenComponents/DashBoardScreens/Products/MerchantInfoComponent';
+import SeeAllCategoryComponent from '../ScreenComponents/DashBoardScreens/Products/SeeAllCategoryComponent';
 
 const ProductsStack = createNativeStackNavigator<any>();
 
@@ -61,6 +62,10 @@ const ProductsStackNavigator = () => {
       screenOptions={{headerShown: false}}
       initialRouteName="PRODUCTS">
       <ProductsStack.Screen name="PRODUCTS" component={ProductsComponent} />
+      <ProductsStack.Screen
+        name="SEE_ALL_CATEGORY"
+        component={SeeAllCategoryComponent}
+      />
       <ProductsStack.Screen
         name="SUB_CATEGORY"
         component={SubCategoryComponent}
@@ -208,9 +213,9 @@ const DashboardBottomNavigator = () => {
   return (
     <Tab.Navigator
       tabBar={props => <DashBoardTabBar {...props} />}
-      screenOptions={({route}) => ({
+      screenOptions={{
         headerShown: false,
-      })}>
+      }}>
       <Tab.Screen name="Wallet" component={WalletStackNavigator} />
       <Tab.Screen name="Referal" component={ReferalStackNavigator} />
       <Tab.Screen name="Merchant" component={ProductsStackNavigator} />

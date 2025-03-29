@@ -4,7 +4,8 @@ import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {colors} from '../utils/colors';
 import {useNavigation} from '@react-navigation/native';
 import {fontFamily} from '../utils/appStyles';
-import { Ionicons } from '../utils/IconUtils';
+import {Ionicons} from '../utils/IconUtils';
+import ZhopperLogo from '../assets/zhopper_logo.svg';
 
 const HeaderComponent = ({title, subTitle, screen}: any) => {
   const navigation = useNavigation();
@@ -12,13 +13,18 @@ const HeaderComponent = ({title, subTitle, screen}: any) => {
     <ImageBackground
       source={require('../assets/heade_banner.png')}
       style={styles.imageContainer}>
-      {!screen && (
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          style={styles.backBtnView}>
-          <Ionicons name="arrow-back" size={20} />
-        </TouchableOpacity>
-      )}
+      <View style={styles.topHeaderView}>
+        {!screen && (
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            style={styles.backBtnView}>
+            <Ionicons name="arrow-back" size={20} />
+          </TouchableOpacity>
+        )}
+        <View style={styles.logoView}>
+          <ZhopperLogo style={styles.logoIcon} />
+        </View>
+      </View>
 
       <View style={[styles.viewContainer, screen && styles.screenTrueView]}>
         <Text style={styles.titleTxt}>{title}</Text>
@@ -31,6 +37,10 @@ const HeaderComponent = ({title, subTitle, screen}: any) => {
 export default HeaderComponent;
 
 const styles = StyleSheet.create({
+  topHeaderView: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
   backBtnView: {
     backgroundColor: colors.white,
     borderRadius: 100,
@@ -39,8 +49,17 @@ const styles = StyleSheet.create({
     height: 40,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 25,
-    marginLeft: 20,
+    marginTop: 10,
+    marginLeft: 10,
+  },
+  logoView: {
+    marginTop: 10,
+    marginRight: 10,
+    alignSelf: 'flex-end',
+    flex: 1,
+  },
+  logoIcon: {
+    alignSelf: 'flex-end',
   },
   screenTrueView: {
     marginTop: 50,

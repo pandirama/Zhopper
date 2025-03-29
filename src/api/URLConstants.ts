@@ -16,6 +16,7 @@ export const WALLET_URLS = {
 export const PROFILE_URLS = {
   PROFILE: `${BASE_URL}/api/profile`,
   REFERRAL_QR: `${BASE_URL}/api/qr`,
+  EDIT_PROFILE: `${BASE_URL}/api/profile`,
   CHANGE_PASSWORD: `${BASE_URL}/api/change-password`,
 };
 
@@ -23,6 +24,8 @@ export const PRODUCTS_URLS = {
   CATEGORIES: `${BASE_URL}/api/category-all-new`,
   SUB_CATEGORIES: `${BASE_URL}/api/merchant-list-category`,
   MERCHANT_INFO: `${BASE_URL}/api/merchant-info-new`,
+  MERCHANT_LOCATION: `${BASE_URL}/api/location`,
+  MERCHANT_SEARCH: `${BASE_URL}/api/location-search`,
 };
 
 export const REFERRAL_URLS = {

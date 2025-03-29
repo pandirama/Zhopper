@@ -121,6 +121,6 @@ const styles = StyleSheet.create({
     height: 40,
     alignItems: 'center',
     justifyContent: 'center',
-    marginLeft: 15,
+    marginLeft: 10,
   },
 });

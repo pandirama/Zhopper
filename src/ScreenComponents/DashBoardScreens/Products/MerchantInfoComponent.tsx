@@ -22,8 +22,8 @@ import MapView, {Marker} from 'react-native-maps';
 
 type Props = NativeStackScreenProps<any, 'MERCHANT_INFO'>;
 
-const LATITUDE_DELTA = 0.0922;
-const LONGITUDE_DELTA = 0.0421;
+export const LATITUDE_DELTA = 0.0922;
+export const LONGITUDE_DELTA = 0.0421;
 
 const MerchantInfoComponent = ({route}: Props) => {
   const {merchantID} = route?.params ?? {};
@@ -66,6 +66,21 @@ const MerchantInfoComponent = ({route}: Props) => {
       return () => {};
     }, []),
   );
+
+  const goToCurrentLocation = () => {
+    let initialRegion = {...merchantInfo};
+    initialRegion.latitude = parseFloat(merchantInfo?.latitude);
+    initialRegion.longitude = parseFloat(merchantInfo?.longitude);
+    initialRegion.latitudeDelta = 0.005;
+    initialRegion.longitudeDelta = 0.005;
+    mapView?.animateToRegion(initialRegion, 2000);
+  };
+
+  useEffect(() => {
+    if (merchantInfo?.latitude && merchantInfo?.longitude) {
+      goToCurrentLocation();
+    }
+  }, [merchantInfo]);
 
   return (
     <>
@@ -144,18 +159,24 @@ const MerchantInfoComponent = ({route}: Props) => {
                   <MapView
                     style={styles.map}
                     zoomEnabled={true}
-                    ref={mapView}
-                    initialRegion={{
-                      latitude: parseInt(merchantInfo?.latitude, 10),
-                      longitude: parseInt(merchantInfo?.longitude, 10),
-                      latitudeDelta: LATITUDE_DELTA,
-                      longitudeDelta: LONGITUDE_DELTA,
+                    ref={ref => {
+                      mapView = ref;
+                    }}
+                    showsUserLocation={true}
+                    onMapReady={goToCurrentLocation}
+                    loadingEnabled
+                    region={{
+                      latitude: parseFloat(merchantInfo?.latitude),
+                      longitude: parseFloat(merchantInfo?.longitude),
+                      latitudeDelta: 0.005,
+                      longitudeDelta: 0.005,
                     }}>
                     <Marker
                       coordinate={{
-                        latitude: parseInt(merchantInfo?.latitude, 10),
-                        longitude: parseInt(merchantInfo?.longitude, 10),
+                        latitude: parseFloat(merchantInfo?.latitude),
+                        longitude: parseFloat(merchantInfo?.longitude),
                       }}
+                      title={merchantInfo['Shop Name']}
                       pinColor={'purple'}
                     />
                   </MapView>

@@ -54,7 +54,21 @@ const WalletComponent = ({navigation}: Props) => {
 
   useEffect(() => {
     if (results && results.data) {
-      dispatch(profileAction.setUserProfile(results.data[0]?.data[0]));
+      let userObj: any = {
+        fullname: '',
+        shopper_rank: '',
+      };
+      results.data[0]?.data.filter((result: any) => {
+        if (result.hasOwnProperty('fullname')) {
+          userObj = {
+            ...userObj,
+            fullname: result?.fullname,
+          };
+        } else if (result.hasOwnProperty('shopper_rank')) {
+          userObj = {...userObj, shopper_rank: result?.shopper_rank};
+        }
+      });
+      dispatch(profileAction.setUserProfile(userObj));
     }
   }, [results]);
 
@@ -107,7 +121,7 @@ const WalletComponent = ({navigation}: Props) => {
 
   const renderItem = ({item}: any) => {
     return (
-      <TouchableOpacity
+      <View
         style={[
           appStyles.boxShadow,
           {
@@ -141,18 +155,22 @@ const WalletComponent = ({navigation}: Props) => {
           }}>
           {`${item?.currency} ${item?.balance}`}
         </Text>
-        <TouchableOpacity
-          style={{marginTop: 10, marginBottom: 5}}
-          onPress={() =>
-            navigation.navigate('QRCODE', {
-              wallet: item,
-            })
-          }>
-          <LinearGradient colors={['#853b92', '#4b0892']} style={styles.tabBtn}>
-            <Text style={styles.tabTxt}>SCAN TO PAY</Text>
-          </LinearGradient>
-        </TouchableOpacity>
-      </TouchableOpacity>
+        {item?.wallet === 'SC-wallet' && (
+          <TouchableOpacity
+            style={{marginTop: 10, marginBottom: 5}}
+            onPress={() =>
+              navigation.navigate('QRCODE', {
+                wallet: item,
+              })
+            }>
+            <LinearGradient
+              colors={['#853b92', '#4b0892']}
+              style={styles.tabBtn}>
+              <Text style={styles.tabTxt}>SCAN TO PAY</Text>
+            </LinearGradient>
+          </TouchableOpacity>
+        )}
+      </View>
     );
   };
 
@@ -168,9 +186,6 @@ const WalletComponent = ({navigation}: Props) => {
           backgroundColor: '#f7f6f6',
         }}>
         <Text style={styles.titleTxt}>Recent Transaction</Text>
-        <Text style={styles.subtitleTxt}>
-          In dolor neque, commodo sit amet accumsan ac, sodales nec ex. D
-        </Text>
         <View style={styles.walletContainer}>
           <View style={[appStyles.boxShadow, styles.walletSubContainer]}>
             <TouchableOpacity

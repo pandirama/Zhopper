@@ -16,6 +16,7 @@ import appStyles, {fontFamily} from '../../../utils/appStyles';
 import {colors} from '../../../utils/colors';
 import DashBoardHeaderComponent from '../../../components/DashBoardHeaderComponent';
 import LinearGradient from 'react-native-linear-gradient';
+import {useSelector} from 'react-redux';
 
 type Props = NativeStackScreenProps<any, 'NEWS'>;
 
@@ -67,6 +68,8 @@ const clients = [
 ];
 
 const NewsComponent = ({}: Props) => {
+  const {userProfile} = useSelector(({profileReducer}: any) => profileReducer);
+
   const renderItem = ({item}: any) => {
     return (
       <View style={{marginLeft: 15, marginTop: 15, marginRight: 15}}>
@@ -181,11 +184,11 @@ const NewsComponent = ({}: Props) => {
             flexDirection: 'row',
             alignItems: 'center',
             marginLeft: 15,
-            marginTop: 25,
-            marginBottom: 25,
+            marginTop: 10,
+            marginBottom: 10,
           }}>
           <Image
-            source={require('../../../assets/profile_user.png')}
+            source={require('../../../assets/person.png')}
             style={{width: 60, height: 60}}
           />
           <View style={{marginLeft: 10, justifyContent: 'center', flex: 1}}>
@@ -193,45 +196,20 @@ const NewsComponent = ({}: Props) => {
               style={{
                 color: '#310855',
                 fontSize: 16,
+                fontWeight: 800,
                 fontFamily: fontFamily.poppins_semi_bold,
               }}>
-              JR Rosy
+              {userProfile?.fullname}
             </Text>
             <Text
               style={{
                 color: colors.black,
                 fontSize: 14,
+                fontWeight: 600,
                 fontFamily: fontFamily.poppins_regular,
               }}>
-              Package
+              {userProfile?.shopper_rank}
             </Text>
-          </View>
-          <View style={{marginRight: 15}}>
-            <Image
-              source={require('../../../assets/arrow_right.png')}
-              style={{width: 60, height: 60}}
-            />
-            <Text
-              style={{
-                color: colors.black,
-                fontSize: 16,
-                fontFamily: fontFamily.poppins_semi_bold,
-                position: 'absolute',
-                right: 22,
-                top: 16,
-              }}>
-              Pts
-            </Text>
-            <View style={styles.logout}>
-              <Text
-                style={{
-                  color: colors.white,
-                  fontSize: 16,
-                  fontFamily: fontFamily.poppins_semi_bold,
-                }}>
-                180
-              </Text>
-            </View>
           </View>
         </View>
       </LinearGradient>

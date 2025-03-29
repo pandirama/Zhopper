@@ -24,6 +24,14 @@ export const profileAPI = createApi({
       }),
       transformResponse: (response: {data: any}) => response,
     }),
+    getEditProfile: builder.query<any, any>({
+      query: params => ({
+        url: PROFILE_URLS.EDIT_PROFILE,
+        method: 'GET',
+        params,
+      }),
+      transformResponse: (response: {data: any}) => response,
+    }),
     changePwd: builder.mutation({
       query: passParams => ({
         url: PROFILE_URLS.CHANGE_PASSWORD,
@@ -39,4 +47,5 @@ export const {
   useLazyGetProfileQuery,
   useGetReferralQRQuery,
   useChangePwdMutation,
+  useGetEditProfileQuery,
 } = profileAPI;

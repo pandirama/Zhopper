@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, {useEffect, useRef, useState} from 'react';
 import {
@@ -28,8 +29,9 @@ import {
   MaterialCommunityIcons,
   Zocial,
 } from '../../utils/IconUtils';
+import {KeyboardAvoidingView} from 'react-native-keyboard-controller';
 
-const countries = [
+export const countries = [
   {
     label: 'Singapore',
     value: 'Singapore',
@@ -54,6 +56,7 @@ const RegisterComponent = ({navigation}: any) => {
   const [referralName, setReferralName] = useState('');
   const [country, setCountry] = useState('');
   const [accept, toggleAccept] = useState(false);
+  const [showPassword, togglePassword] = useState(true);
 
   const [isFocus, setIsFocus] = useState<boolean>(false);
 
@@ -137,160 +140,176 @@ const RegisterComponent = ({navigation}: any) => {
             title={'Join With Us'}
             subTitle={'Register Your Account'}
           />
-          <ScrollView
-            style={styles.loginFormView}
-            showsVerticalScrollIndicator={false}>
-            <Text style={appStyles.titleTxt}>Register Form</Text>
-            <TextInputComponent
-              icon={
-                <FontAwesome5
-                  name="user-alt"
-                  color={colors.icon}
-                  size={24}
-                  style={styles.icon}
-                />
-              }
-              placeHolder={'Enter Your User Name'}
-              headText={'User Name'}
-              onChangeValue={setUserName}
-              value={userName}
-              returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
-              onSubmitEditing={() => unameFieldRef.current?.focus()}
-            />
-            <TextInputComponent
-              icon={
-                <Ionicons
-                  name="person"
-                  color={colors.icon}
-                  size={25}
-                  style={styles.icon}
-                />
-              }
-              ref={unameFieldRef}
-              placeHolder={'Enter Your Full Name'}
-              headText={'Full Name'}
-              onChangeValue={setFullName}
-              value={fullName}
-              returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
-              onSubmitEditing={() => fnameFieldRef.current?.focus()}
-            />
-
-            <TextInputComponent
-              icon={
-                <Zocial
-                  name="email"
-                  color={colors.icon}
-                  size={25}
-                  style={styles.icon}
-                />
-              }
-              placeHolder={'Enter Your Email'}
-              headText={'Email ID'}
-              onChangeValue={setEmail}
-              value={email}
-              ref={fnameFieldRef}
-              returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
-              onSubmitEditing={() => emailFieldRef.current?.focus()}
-            />
-
-            <TextInputComponent
-              icon={
-                <Fontisto
-                  name="locked"
-                  color={colors.icon}
-                  size={25}
-                  style={styles.icon}
-                />
-              }
-              ref={emailFieldRef}
-              placeHolder={'**************'}
-              headText={'Password'}
-              onChangeValue={setPassword}
-              value={password}
-              secureTextEntry={true}
-              returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
-              onSubmitEditing={() => passFieldRef.current?.focus()}
-            />
-
-            <TextInputComponent
-              icon={
-                <FontAwesome5
-                  name="users"
-                  color={colors.icon}
-                  size={22}
-                  style={styles.icon}
-                />
-              }
-              ref={passFieldRef}
-              placeHolder={'Enter Your Referral Name'}
-              headText={'Referral Name'}
-              onChangeValue={setReferralName}
-              value={referralName}
-              returnKeyType={'done'}
-            />
-
-            <View style={styles.dropDownView}>
-              <FontAwesome5
-                name="globe"
-                color={colors.icon}
-                size={25}
-                style={styles.icon}
+          <KeyboardAvoidingView
+            behavior={'padding'}
+            keyboardVerticalOffset={25}
+            style={{flex: 1}}>
+            <ScrollView
+              style={styles.loginFormView}
+              showsVerticalScrollIndicator={false}>
+              <Text style={appStyles.titleTxt}>Register Form</Text>
+              <TextInputComponent
+                icon={
+                  <FontAwesome5
+                    name="user-alt"
+                    color={colors.icon}
+                    size={24}
+                    style={styles.icon}
+                  />
+                }
+                placeHolder={'Enter Your User Name'}
+                headText={'User Name'}
+                onChangeValue={setUserName}
+                value={userName}
+                returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
+                onSubmitEditing={() => unameFieldRef.current?.focus()}
               />
-              <Dropdown
-                dropdownPosition="bottom"
-                style={[
-                  styles.dropDown,
-                  isFocus && {borderColor: colors.primary},
-                ]}
-                placeholderStyle={styles.placeholderStyle}
-                selectedTextStyle={styles.selectedTextStyle}
-                inputSearchStyle={styles.inputSearchStyle}
-                iconStyle={styles.iconStyle}
-                containerStyle={styles.dropcontainerStyle}
-                data={countries}
-                maxHeight={300}
-                labelField="label"
-                valueField="value"
-                placeholder={!isFocus ? 'Select Country' : ''}
-                value={country}
-                onFocus={() => setIsFocus(true)}
-                onBlur={() => setIsFocus(false)}
-                onChange={(item: any) => {
-                  setCountry(item?.value);
-                  setIsFocus(false);
-                }}
-                search={false}
+              <TextInputComponent
+                icon={
+                  <Ionicons
+                    name="person"
+                    color={colors.icon}
+                    size={25}
+                    style={styles.icon}
+                  />
+                }
+                ref={unameFieldRef}
+                placeHolder={'Enter Your Full Name'}
+                headText={'Full Name'}
+                onChangeValue={setFullName}
+                value={fullName}
+                returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
+                onSubmitEditing={() => fnameFieldRef.current?.focus()}
               />
-              <Text style={styles.inputHeadTxt}>Country</Text>
-            </View>
 
-            <View style={styles.signupView}>
-              <TouchableOpacity
-                onPress={() => toggleAccept(a => !a)}
-                style={styles.checkTouch}>
-                <MaterialCommunityIcons
-                  name={
-                    accept ? 'check-circle' : 'checkbox-blank-circle-outline'
-                  }
-                  size={24}
-                  color={'#c14dbd'}
+              <TextInputComponent
+                icon={
+                  <Zocial
+                    name="email"
+                    color={colors.icon}
+                    size={25}
+                    style={styles.icon}
+                  />
+                }
+                placeHolder={'Enter Your Email'}
+                headText={'Email ID'}
+                onChangeValue={setEmail}
+                value={email}
+                ref={fnameFieldRef}
+                returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
+                onSubmitEditing={() => emailFieldRef.current?.focus()}
+              />
+
+              <TextInputComponent
+                icon={
+                  <Fontisto
+                    name="locked"
+                    color={colors.icon}
+                    size={25}
+                    style={styles.icon}
+                  />
+                }
+                rightIcon={
+                  <TouchableOpacity
+                    onPress={() => togglePassword(p => !p)}
+                    style={styles.rightIcon}>
+                    <Ionicons
+                      name={showPassword ? 'eye-off-outline' : 'eye-outline'}
+                      color={colors.icon}
+                      size={20}
+                    />
+                  </TouchableOpacity>
+                }
+                ref={emailFieldRef}
+                placeHolder={'**************'}
+                headText={'Password'}
+                onChangeValue={setPassword}
+                value={password}
+                secureTextEntry={showPassword}
+                returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
+                onSubmitEditing={() => passFieldRef.current?.focus()}
+              />
+
+              <TextInputComponent
+                icon={
+                  <FontAwesome5
+                    name="users"
+                    color={colors.icon}
+                    size={22}
+                    style={styles.icon}
+                  />
+                }
+                ref={passFieldRef}
+                placeHolder={'Enter Your Referral Name'}
+                headText={'Referral Name'}
+                onChangeValue={setReferralName}
+                value={referralName}
+                returnKeyType={'done'}
+              />
+
+              <View style={styles.dropDownView}>
+                <FontAwesome5
+                  name="globe"
+                  color={colors.icon}
+                  size={25}
+                  style={styles.icon}
                 />
-                <Text style={styles.donttxt}>I have agree with </Text>
-              </TouchableOpacity>
+                <Dropdown
+                  dropdownPosition="bottom"
+                  style={[
+                    styles.dropDown,
+                    isFocus && {borderColor: colors.primary},
+                  ]}
+                  placeholderStyle={styles.placeholderStyle}
+                  selectedTextStyle={styles.selectedTextStyle}
+                  inputSearchStyle={styles.inputSearchStyle}
+                  iconStyle={styles.iconStyle}
+                  containerStyle={styles.dropcontainerStyle}
+                  data={countries}
+                  maxHeight={300}
+                  labelField="label"
+                  valueField="value"
+                  placeholder={!isFocus ? 'Select Country' : ''}
+                  value={country}
+                  onFocus={() => setIsFocus(true)}
+                  onBlur={() => setIsFocus(false)}
+                  onChange={(item: any) => {
+                    setCountry(item?.value);
+                    setIsFocus(false);
+                  }}
+                  search={false}
+                />
+                <Text style={styles.inputHeadTxt}>Country</Text>
+              </View>
 
-              <TouchableOpacity>
-                <Text style={styles.signupTxt}>Terms and Condition</Text>
-              </TouchableOpacity>
-            </View>
+              <View style={styles.signupView}>
+                <TouchableOpacity
+                  onPress={() => toggleAccept(a => !a)}
+                  style={styles.checkTouch}>
+                  <MaterialCommunityIcons
+                    name={
+                      accept ? 'check-circle' : 'checkbox-blank-circle-outline'
+                    }
+                    size={24}
+                    color={'#c14dbd'}
+                  />
+                  <Text style={styles.donttxt}>I have agree with </Text>
+                </TouchableOpacity>
 
-            <TouchableOpacity onPress={registerSubmit}>
-              <LinearGradient
-                colors={['#853b92', '#4b0892']}
-                style={styles.loginBtn}>
-                <Text style={styles.loginBtnTxt}>SUBMIT NOW</Text>
-              </LinearGradient>
-            </TouchableOpacity>
-          </ScrollView>
+                <TouchableOpacity>
+                  <Text style={styles.signupTxt}>Terms and Condition</Text>
+                </TouchableOpacity>
+              </View>
+
+              <TouchableOpacity onPress={registerSubmit}>
+                <LinearGradient
+                  colors={['#853b92', '#4b0892']}
+                  style={styles.loginBtn}>
+                  <Text style={styles.loginBtnTxt}>SUBMIT NOW</Text>
+                </LinearGradient>
+              </TouchableOpacity>
+            </ScrollView>
+          </KeyboardAvoidingView>
         </View>
       </SafeAreaView>
     </>
@@ -301,7 +320,7 @@ const styles = StyleSheet.create({
   loginFormView: {
     marginLeft: 20,
     marginRight: 20,
-    marginBottom: 20,
+    marginBottom: 10,
   },
   inputView: {
     borderWidth: 1.5,
@@ -314,6 +333,9 @@ const styles = StyleSheet.create({
   },
   icon: {
     marginLeft: 5,
+  },
+  rightIcon: {
+    padding: 5,
   },
   inputHeadTxt: {
     position: 'absolute',

@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -146,10 +147,6 @@ const TransactionHistoryComponent = ({route}: Props) => {
 
       if (transactionResponse[0]?.status === 1) {
         setTransHistory(transactionResponse[0]?.data);
-        showToast({
-          type: 'success',
-          text1: transactionResponse[0]?.message,
-        });
       } else {
         showToast({
           type: 'error',
@@ -190,15 +187,31 @@ const TransactionHistoryComponent = ({route}: Props) => {
           <DashBoardHeaderComponent title={title} back />
           <Text style={styles.titleTxt}>Wallet Transaction History</Text>
           <Text style={styles.subtitleTxt}>{subTitle}</Text>
-          <FlatList
-            data={transHistory}
-            renderItem={renderItem}
-            style={styles.flatListCotent}
-            contentContainerStyle={{paddingBottom: 25}}
-            showsVerticalScrollIndicator={false}
-            removeClippedSubviews={false}
-            keyExtractor={(item, index) => 'key' + index}
-          />
+          {transHistory?.length > 0 ? (
+            <FlatList
+              data={transHistory}
+              renderItem={renderItem}
+              style={styles.flatListCotent}
+              contentContainerStyle={{paddingBottom: 25}}
+              showsVerticalScrollIndicator={false}
+              removeClippedSubviews={false}
+              keyExtractor={(item, index) => 'key' + index}
+            />
+          ) : (
+            <View
+              style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+              <Text
+                style={{
+                  color: colors.black,
+                  textAlign: 'center',
+                  fontWeight: 700,
+                  fontFamily: fontFamily.poppins_bold,
+                  fontSize: 20,
+                }}>
+                No Transaction Records
+              </Text>
+            </View>
+          )}
         </View>
       </SafeAreaView>
     </>
@@ -218,6 +231,7 @@ const styles = StyleSheet.create({
     color: '#8c8b8b',
     fontFamily: fontFamily.poppins_medium,
     marginLeft: 16,
+    marginBottom: 15,
   },
   walletSubContainer: {
     backgroundColor: colors.white,

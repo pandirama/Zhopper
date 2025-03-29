@@ -1,6 +1,6 @@
-/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable react-native/no-inline-styles */
-import React, {useCallback, useEffect, useState} from 'react';
+import React from 'react';
 import {
   FlatList,
   StatusBar,
@@ -13,70 +13,26 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import appStyles, {fontFamily} from '../../../utils/appStyles';
 import {colors} from '../../../utils/colors';
 import {Ionicons} from '../../../utils/IconUtils';
-import {useGetSubCategoryMutation} from '../../../api/productsAPI';
-import {useFocusEffect} from '@react-navigation/native';
-import useCommon from '../../../hooks/useCommon';
-import {getErrorMessage} from '../../../utils/common';
 import DashBoardHeaderComponent from '../../../components/DashBoardHeaderComponent';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 
-type Props = NativeStackScreenProps<any, 'SUB_CATEGORY'>;
+type Props = NativeStackScreenProps<any, 'SEE_ALL_CATEGORY'>;
 
-const SubCategoryComponent = ({route, navigation}: Props) => {
-  const {subCategory} = route?.params ?? {};
-  const {showToast, toggleBackdrop} = useCommon();
+const SeeAllCategoryComponent = ({route, navigation}: Props) => {
+  const {categories} = route?.params ?? {};
 
-  const [categories, setCategories] = useState<any>(null);
-
-  const [getSubCategory, {isLoading}] = useGetSubCategoryMutation();
-
-  useEffect(() => {
-    toggleBackdrop(isLoading);
-  }, [isLoading]);
-
-  const getSubCategories = async () => {
-    try {
-      const categoryResponse = await getSubCategory({
-        category: subCategory,
-      }).unwrap();
-      if (categoryResponse[0]?.status === 1) {
-        if (categoryResponse[0]?.message !== 'N/A') {
-          setCategories(categoryResponse[0]?.data[0]?.list);
-        }
-      } else {
-        showToast({
-          type: 'error',
-          text1: categoryResponse[0]?.message,
-        });
-      }
-    } catch (err: any) {
-      showToast({
-        type: 'error',
-        text1: getErrorMessage(err),
-      });
-    }
-  };
-
-  useFocusEffect(
-    useCallback(() => {
-      getSubCategories();
-      return () => {};
-    }, []),
-  );
-
-  const renderCategoryItem = ({item}: any) => {
+  const renderAllCategory = ({item}: any) => {
     return (
       <TouchableOpacity
         style={{
+          flex: 1,
           flexDirection: 'row',
           paddingTop: 15,
           paddingBottom: 15,
-          borderBottomWidth: 0.5,
-          borderBottomColor: colors.gray1,
         }}
         onPress={() =>
-          navigation.navigate('MERCHANT_INFO', {
-            merchantID: item?.merchant_id,
+          navigation.navigate('SUB_CATEGORY', {
+            subCategory: item?.name,
           })
         }>
         <Text
@@ -87,7 +43,7 @@ const SubCategoryComponent = ({route, navigation}: Props) => {
             flex: 1,
             paddingLeft: 20,
           }}>
-          {item['Merchant Name']}
+          {item?.name}
         </Text>
         <Ionicons
           name={'chevron-forward'}
@@ -108,21 +64,22 @@ const SubCategoryComponent = ({route, navigation}: Props) => {
         animated
       />
       <SafeAreaView
-        style={appStyles.container}
+        style={[appStyles.container, {backgroundColor: colors.status}]}
         edges={['right', 'left', 'top']}>
         <View style={appStyles.headerContainer}>
-          <DashBoardHeaderComponent title={subCategory} back />
-          {categories?.length > 0 && (
-            <View style={[appStyles.boxShadow, styles.walletSubContainer]}>
-              <FlatList
-                data={categories}
-                renderItem={renderCategoryItem}
-                showsVerticalScrollIndicator={false}
-                removeClippedSubviews={false}
-                keyExtractor={(item, index) => 'key' + index}
-              />
-            </View>
-          )}
+          <DashBoardHeaderComponent title={'Categories'} back />
+          <View style={[appStyles.boxShadow, styles.walletSubContainer]}>
+            <FlatList
+              data={categories}
+              showsVerticalScrollIndicator={false}
+              renderItem={renderAllCategory}
+              removeClippedSubviews={false}
+              keyExtractor={(item, index) => 'key' + index}
+              ItemSeparatorComponent={() => {
+                return <View style={styles.borderView} />;
+              }}
+            />
+          </View>
         </View>
       </SafeAreaView>
     </>
@@ -133,10 +90,11 @@ const styles = StyleSheet.create({
   walletSubContainer: {
     backgroundColor: colors.white,
     borderRadius: 15,
-    marginTop: 20,
+    marginTop: 10,
     paddingTop: 10,
     marginLeft: 16,
     marginRight: 16,
+    marginBottom: 70,
   },
   borderView: {
     borderWidth: 0.5,
@@ -204,4 +162,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SubCategoryComponent;
+export default SeeAllCategoryComponent;

@@ -22,6 +22,8 @@ import useCommon from '../../../hooks/useCommon';
 import {getErrorMessage} from '../../../utils/common';
 import {useChangePwdMutation} from '../../../api/profileAPI';
 import {useSelector} from 'react-redux';
+import {KeyboardAvoidingView} from 'react-native-keyboard-controller';
+import {Ionicons} from '../../../utils/IconUtils';
 
 const ChangePasswordComponent = ({navigation}: any) => {
   const {showToast, toggleBackdrop} = useCommon();
@@ -30,6 +32,9 @@ const ChangePasswordComponent = ({navigation}: any) => {
 
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+
+  const [showPassword, togglePassword] = useState(true);
+  const [showConfirmPassword, toggleConfirmPassword] = useState(true);
 
   const newFieldRef = useRef<TextInput>();
 
@@ -98,109 +103,117 @@ const ChangePasswordComponent = ({navigation}: any) => {
         edges={['right', 'left', 'top']}>
         <View style={appStyles.headerContainer}>
           <DashBoardHeaderComponent title={'Profile'} back />
-          <ScrollView showsVerticalScrollIndicator={false}>
-            <LinearGradient
-              colors={['#9b6ec6', '#b386dc', '#c79bef']}
-              style={styles.container}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  marginLeft: 15,
-                  marginBottom: 20,
-                  marginTop: 20,
-                }}>
-                <Image
-                  source={require('../../../assets/profile_user.png')}
-                  style={{width: 60, height: 60}}
-                />
+          <KeyboardAvoidingView
+            behavior={'padding'}
+            keyboardVerticalOffset={25}
+            style={{flex: 1}}>
+            <ScrollView showsVerticalScrollIndicator={false}>
+              <LinearGradient
+                colors={['#9b6ec6', '#b386dc', '#c79bef']}
+                style={styles.container}>
                 <View
-                  style={{marginLeft: 10, justifyContent: 'center', flex: 1}}>
-                  <Text
-                    style={{
-                      color: '#310855',
-                      fontSize: 16,
-                      fontFamily: fontFamily.poppins_semi_bold,
-                    }}>
-                    {userProfile?.fullname}
-                  </Text>
-                  <Text
-                    style={{
-                      color: colors.black,
-                      fontSize: 14,
-                      fontFamily: fontFamily.poppins_regular,
-                    }}>
-                    Package
-                  </Text>
-                </View>
-                <View style={{marginRight: 15}}>
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    marginLeft: 15,
+                    marginBottom: 20,
+                    marginTop: 20,
+                  }}>
                   <Image
-                    source={require('../../../assets/arrow_right.png')}
+                    source={require('../../../assets/person.png')}
                     style={{width: 60, height: 60}}
                   />
-                  <Text
-                    style={{
-                      color: colors.black,
-                      fontSize: 16,
-                      fontFamily: fontFamily.poppins_semi_bold,
-                      position: 'absolute',
-                      right: 22,
-                      top: 16,
-                    }}>
-                    Pts
-                  </Text>
-                  <View style={styles.logout}>
+                  <View
+                    style={{marginLeft: 10, justifyContent: 'center', flex: 1}}>
                     <Text
                       style={{
-                        color: colors.white,
+                        color: '#310855',
                         fontSize: 16,
+                        fontWeight: 800,
                         fontFamily: fontFamily.poppins_semi_bold,
                       }}>
-                      180
+                      {userProfile?.fullname}
+                    </Text>
+                    <Text
+                      style={{
+                        color: colors.black,
+                        fontSize: 14,
+                        fontWeight: 600,
+                        fontFamily: fontFamily.poppins_regular,
+                      }}>
+                      {userProfile?.shopper_rank}
                     </Text>
                   </View>
                 </View>
-              </View>
-            </LinearGradient>
-            <View style={styles.loginFormView}>
-              <View
-                style={{
-                  backgroundColor: '#f7f6f6',
-                  borderRadius: 10,
-                  padding: 10,
-                  marginTop: 30,
-                }}>
-                <Text style={styles.titleTxt}>Update Password</Text>
-                <Text style={styles.subtitleTxt}>Change Your Password</Text>
-                <TextInputComponent
-                  placeHolder={'Enter Your New Password'}
-                  headText={'New Password'}
-                  onChangeValue={setNewPassword}
-                  value={newPassword}
-                  secureTextEntry={true}
-                  returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
-                  onSubmitEditing={() => newFieldRef.current?.focus()}
-                />
-                <TextInputComponent
-                  ref={newFieldRef}
-                  placeHolder={'Enter Your Confirm Password'}
-                  headText={'Confirm Password'}
-                  onChangeValue={setConfirmPassword}
-                  value={confirmPassword}
-                  secureTextEntry={true}
-                  returnKeyType={'done'}
-                />
+              </LinearGradient>
+              <View style={styles.loginFormView}>
+                <View
+                  style={{
+                    backgroundColor: '#f7f6f6',
+                    borderRadius: 10,
+                    padding: 10,
+                    marginTop: 30,
+                  }}>
+                  <Text style={styles.titleTxt}>Update Password</Text>
+                  <Text style={styles.subtitleTxt}>Change Your Password</Text>
+                  <TextInputComponent
+                    placeHolder={'Enter Your New Password'}
+                    headText={'New Password'}
+                    onChangeValue={setNewPassword}
+                    value={newPassword}
+                    secureTextEntry={showPassword}
+                    rightIcon={
+                      <TouchableOpacity
+                        onPress={() => togglePassword(p => !p)}
+                        style={styles.rightIcon}>
+                        <Ionicons
+                          name={
+                            showPassword ? 'eye-off-outline' : 'eye-outline'
+                          }
+                          color={colors.icon}
+                          size={20}
+                        />
+                      </TouchableOpacity>
+                    }
+                    returnKeyType={Platform.OS === 'ios' ? 'done' : 'next'}
+                    onSubmitEditing={() => newFieldRef.current?.focus()}
+                  />
+                  <TextInputComponent
+                    ref={newFieldRef}
+                    placeHolder={'Enter Your Confirm Password'}
+                    headText={'Confirm Password'}
+                    onChangeValue={setConfirmPassword}
+                    value={confirmPassword}
+                    rightIcon={
+                      <TouchableOpacity
+                        onPress={() => toggleConfirmPassword(p => !p)}
+                        style={styles.rightIcon}>
+                        <Ionicons
+                          name={
+                            showConfirmPassword
+                              ? 'eye-off-outline'
+                              : 'eye-outline'
+                          }
+                          color={colors.icon}
+                          size={20}
+                        />
+                      </TouchableOpacity>
+                    }
+                    secureTextEntry={showConfirmPassword}
+                    returnKeyType={'done'}
+                  />
 
-                <TouchableOpacity onPress={onPasswordChange}>
-                  <LinearGradient
-                    colors={['#853b92', '#4b0892']}
-                    style={styles.loginBtn}>
-                    <Text style={styles.loginBtnTxt}>SUBMIT</Text>
-                  </LinearGradient>
-                </TouchableOpacity>
+                  <TouchableOpacity onPress={onPasswordChange}>
+                    <LinearGradient
+                      colors={['#853b92', '#4b0892']}
+                      style={styles.loginBtn}>
+                      <Text style={styles.loginBtnTxt}>SUBMIT</Text>
+                    </LinearGradient>
+                  </TouchableOpacity>
+                </View>
               </View>
-            </View>
-          </ScrollView>
+            </ScrollView>
+          </KeyboardAvoidingView>
         </View>
       </SafeAreaView>
     </>
@@ -418,6 +431,9 @@ const styles = StyleSheet.create({
     right: 50,
     top: 10,
     backgroundColor: '#4c0992',
+  },
+  rightIcon: {
+    padding: 5,
   },
 });
 
