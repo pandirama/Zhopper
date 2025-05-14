@@ -131,12 +131,12 @@ const ProductsComponent = ({navigation}: Props) => {
 
   const getMerchantLocations = async (locations: any) => {
     try {
-      const params = {
+      const payload = {
         latitude: locations?.latitude,
         longitude: locations?.longitude,
       };
 
-      const response: any = await merchantLocations(params).unwrap();
+      const response: any = await merchantLocations(payload).unwrap();
       if (response[0]?.status === 1) {
         setMerchantMarkers(response[0]?.data);
       } else {

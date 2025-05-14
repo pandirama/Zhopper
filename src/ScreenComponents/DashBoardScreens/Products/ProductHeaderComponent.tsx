@@ -78,6 +78,8 @@ const ProductHeaderComponent = ({
 }: any) => {
   const [activeDot, setActiveDot] = useState(1);
 
+  console.log(merchantMarkers);
+
   let mapView = useRef<MapView>();
 
   const goToCurrentLocation = () => {
@@ -184,8 +186,12 @@ const ProductHeaderComponent = ({
             region={currentLocation}>
             <Marker
               coordinate={{
-                latitude: currentLocation?.latitude,
-                longitude: currentLocation?.latitude,
+                latitude: currentLocation?.latitude
+                  ? currentLocation?.latitude
+                  : 0,
+                longitude: currentLocation?.latitude
+                  ? currentLocation?.latitude
+                  : 0,
               }}
               pinColor={'green'}
             />
@@ -193,8 +199,8 @@ const ProductHeaderComponent = ({
               <Marker
                 key={index}
                 coordinate={{
-                  latitude: (item && parseInt(item?.latitude, 10)) ?? 0,
-                  longitude: (item && parseInt(item?.longitude, 10)) ?? 0,
+                  latitude: (item?.latitude && parseInt(item?.latitude, 5)) ?? 0,
+                  longitude: (item?.longitude && parseInt(item?.longitude, 5)) ?? 0,
                 }}
                 pinColor={'purple'}
               />
