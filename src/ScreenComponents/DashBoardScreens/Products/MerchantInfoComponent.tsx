@@ -386,10 +386,10 @@ const styles = StyleSheet.create({
   tabBtn: {
     borderRadius: 10,
     justifyContent: 'center',
+    alignItems: 'center',
     paddingBottom: 10,
-    paddingTop: 10,
-    paddingLeft: 25,
-    paddingRight: 25,
+    height: 45,
+    width: 125,
   },
   tabTxt: {
     color: colors.white,
