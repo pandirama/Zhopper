@@ -10,7 +10,7 @@ export const productsAPI = createApi({
   endpoints: builder => ({
     getCategories: builder.query<any, void>({
       query: () => ({
-        url: PRODUCTS_URLS.CATEGORIES,
+        url: PRODUCTS_URLS.CATEGORIES_ICON,
         method: 'GET',
       }),
       transformResponse: (response: {data: any}) => response,

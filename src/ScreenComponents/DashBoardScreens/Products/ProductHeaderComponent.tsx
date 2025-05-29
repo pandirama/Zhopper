@@ -1,7 +1,6 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-shadow */
 /* eslint-disable react-native/no-inline-styles */
-import React, {memo, useEffect, useRef, useState} from 'react';
+import React, {memo, useState} from 'react';
 import {
   Dimensions,
   Image,
@@ -75,23 +74,27 @@ const ProductHeaderComponent = ({
   getMerchantLocations,
   setSearchTerm,
   searchTerm,
+  navigation,
 }: any) => {
   const [activeDot, setActiveDot] = useState(1);
 
-  console.log(merchantMarkers);
-
-  let mapView = useRef<MapView>();
-
-  const goToCurrentLocation = () => {
-    let initialRegion = {...currentLocation};
-    initialRegion.latitudeDelta = 0.005;
-    initialRegion.longitudeDelta = 0.005;
-    mapView?.animateToRegion(initialRegion, 2000);
+  const initialRegion = {
+    latitude: currentLocation?.latitude,
+    longitude: currentLocation?.longitude,
+    latitudeDelta: 0.005,
+    longitudeDelta: 0.005,
   };
 
-  useEffect(() => {
-    goToCurrentLocation();
-  }, [currentLocation]);
+  const markerCoordinate = {
+    latitude: currentLocation?.latitude,
+    longitude: currentLocation?.longitude,
+  };
+
+  const handleMarkerPress = (id: any) => {
+    navigation.navigate('MERCHANT_INFO', {
+      merchantID: id,
+    });
+  };
 
   return (
     <View>
@@ -173,40 +176,33 @@ const ProductHeaderComponent = ({
           alignItems: 'center',
           marginTop: 20,
         }}>
-        <View style={styles.map}>
-          <MapView
-            style={styles.map}
-            zoomEnabled={true}
-            ref={ref => {
-              mapView = ref;
-            }}
-            showsUserLocation={true}
-            onMapReady={goToCurrentLocation}
-            loadingEnabled
-            region={currentLocation}>
-            <Marker
-              coordinate={{
-                latitude: currentLocation?.latitude
-                  ? currentLocation?.latitude
-                  : 0,
-                longitude: currentLocation?.latitude
-                  ? currentLocation?.latitude
-                  : 0,
-              }}
-              pinColor={'green'}
-            />
-            {merchantMarkers?.map((item: any, index: number) => (
-              <Marker
-                key={index}
-                coordinate={{
-                  latitude: (item?.latitude && parseInt(item?.latitude, 5)) ?? 0,
-                  longitude: (item?.longitude && parseInt(item?.longitude, 5)) ?? 0,
-                }}
-                pinColor={'purple'}
-              />
-            ))}
-          </MapView>
-        </View>
+        {currentLocation?.latitude && currentLocation?.latitude && (
+          <View style={styles.map}>
+            <MapView
+              style={styles.map}
+              zoomEnabled={true}
+              showsUserLocation={true}
+              loadingEnabled
+              initialRegion={initialRegion}>
+              <Marker coordinate={markerCoordinate} />
+              {merchantMarkers?.map((item: any, index: number) => {
+                const markerCoordi = {
+                  latitude: parseFloat(item?.latitude),
+                  longitude: parseFloat(item?.longitude),
+                };
+                return (
+                  <Marker
+                    key={index}
+                    coordinate={markerCoordi}
+                    pinColor={'blue'}
+                    title={item?.['Merchant Name']}
+                    onPress={() => handleMarkerPress(item?.merchant_id)}
+                  />
+                );
+              })}
+            </MapView>
+          </View>
+        )}
 
         <TouchableOpacity
           style={{
@@ -223,7 +219,7 @@ const ProductHeaderComponent = ({
             right: 18,
           }}
           onPress={() => {
-            getMerchantLocations();
+            getMerchantLocations(markerCoordinate);
           }}>
           <Image source={require('../../../assets/location_map.png')} />
           <Text

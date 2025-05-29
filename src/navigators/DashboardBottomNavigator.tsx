@@ -27,6 +27,7 @@ import TransactionHistoryComponent from '../ScreenComponents/DashBoardScreens/Wa
 import SubCategoryComponent from '../ScreenComponents/DashBoardScreens/Products/SubCategoryComponent';
 import MerchantInfoComponent from '../ScreenComponents/DashBoardScreens/Products/MerchantInfoComponent';
 import SeeAllCategoryComponent from '../ScreenComponents/DashBoardScreens/Products/SeeAllCategoryComponent';
+import CBWalletHistoryComponent from '../ScreenComponents/DashBoardScreens/Wallet/CBWalletHistoryComponent';
 
 const ProductsStack = createNativeStackNavigator<any>();
 
@@ -40,6 +41,11 @@ const WalletStackNavigator = () => {
         name="TRANS_HISTORY"
         component={TransactionHistoryComponent}
       />
+      <ProductsStack.Screen
+        name="CBWALLET_HISTORY"
+        component={CBWalletHistoryComponent}
+      />
+
       <ProductsStack.Screen name="QRCODE" component={QRCodeComponent} />
       <ProductsStack.Screen name="PAYMENT" component={PaymentComponent} />
     </ProductsStack.Navigator>
@@ -153,7 +159,7 @@ const DashBoardTabBar = ({state, descriptors, navigation}: any) => {
                 selected: require('../assets/wallet_white.png'),
               };
               break;
-            case 'Referal':
+            case 'Referral':
               icon = {
                 unSelected: require('../assets/referal.png'),
                 selected: require('../assets/referal_white.png'),
@@ -217,7 +223,7 @@ const DashboardBottomNavigator = () => {
         headerShown: false,
       }}>
       <Tab.Screen name="Wallet" component={WalletStackNavigator} />
-      <Tab.Screen name="Referal" component={ReferalStackNavigator} />
+      <Tab.Screen name="Referral" component={ReferalStackNavigator} />
       <Tab.Screen name="Merchant" component={ProductsStackNavigator} />
       <Tab.Screen name="News" component={NewsStackNavigator} />
       <Tab.Screen name="Profile" component={ProfileStackNavigator} />

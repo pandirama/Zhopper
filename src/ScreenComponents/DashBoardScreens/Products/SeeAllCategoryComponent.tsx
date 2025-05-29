@@ -3,6 +3,7 @@
 import React from 'react';
 import {
   FlatList,
+  Image,
   StatusBar,
   StyleSheet,
   Text,
@@ -29,12 +30,17 @@ const SeeAllCategoryComponent = ({route, navigation}: Props) => {
           flexDirection: 'row',
           paddingTop: 15,
           paddingBottom: 15,
+          alignItems: 'center',
         }}
         onPress={() =>
           navigation.navigate('SUB_CATEGORY', {
             subCategory: item?.name,
           })
         }>
+        <Image
+          source={{uri: item?.icon}}
+          style={{width: 50, height: 50, borderRadius: 10, marginLeft: 15}}
+        />
         <Text
           style={{
             fontFamily: fontFamily.poppins_bold,

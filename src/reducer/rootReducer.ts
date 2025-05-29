@@ -10,6 +10,7 @@ import {profileAPI} from '../api/profileAPI';
 import {walletAPI} from '../api/walletAPI';
 import {productsAPI} from '../api/productsAPI';
 import {referralAPI} from '../api/referralAPI';
+import { newsAPI } from '../api/newsAPI';
 
 export const rootPersistConfig = {
   key: 'root',
@@ -32,6 +33,7 @@ export const combinedReducer = combineReducers({
   [walletAPI.reducerPath]: walletAPI.reducer,
   [productsAPI.reducerPath]: productsAPI.reducer,
   [referralAPI.reducerPath]: referralAPI.reducer,
+  [newsAPI.reducerPath]: newsAPI.reducer,
 });
 
 export const rootReducer: Reducer<RootState> = (state, action) => {

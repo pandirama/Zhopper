@@ -27,10 +27,11 @@ import QRCode from 'react-native-qrcode-svg';
 import {countries} from '../../AuthScreens/RegisterComponent';
 import {Dropdown} from 'react-native-element-dropdown';
 import {KeyboardAvoidingView} from 'react-native-keyboard-controller';
+import Modal from 'react-native-modal';
+import {Ionicons} from '../../../utils/IconUtils';
 
 const ProfileComponent = ({navigation}: any) => {
   const {showToast, toggleBackdrop} = useCommon();
-  // let svg = useRef<MutableRefObject<Svg | undefined>>(null);
   const [fullname, setFullName] = useState('');
   const [nameStatus, setNameStatus] = useState(false);
   const [email, setEmail] = useState('');
@@ -42,6 +43,7 @@ const ProfileComponent = ({navigation}: any) => {
   const [shopperRank, setShopperRank] = useState(0);
   const [rankStatus, setRankStatus] = useState(false);
   const [isFocus, setIsFocus] = useState<boolean>(false);
+  const [isVisible, setIsVisible] = useState(false);
 
   const {referralLink, userProfile} = useSelector(
     ({profileReducer}: any) => profileReducer,
@@ -107,6 +109,10 @@ const ProfileComponent = ({navigation}: any) => {
   const countryFieldRef = useRef<TextInput>();
   const userNameFieldRef = useRef<TextInput>();
   const shopperRankFieldRef = useRef<TextInput>();
+
+  const onConfirm = async () => {
+    setIsVisible(false);
+  };
 
   return (
     <>
@@ -214,10 +220,7 @@ const ProfileComponent = ({navigation}: any) => {
                           alignItems: 'center',
                           justifyContent: 'center',
                         }}>
-                        <QRCode
-                          value={referralLink}
-                          // getRef={(ref?) => (svg = ref)}
-                        />
+                        <QRCode value={referralLink} />
                       </View>
                     </View>
 
@@ -229,14 +232,7 @@ const ProfileComponent = ({navigation}: any) => {
                       }}>
                       <TouchableOpacity
                         onPress={() => {
-                          // svg.toDataURL(data => {
-                          //   const shareImageBase64 = {
-                          //     title: 'QR',
-                          //     message: 'Ehi, this is my QR code',
-                          //     url: `data:image/png;base64,${data}`,
-                          //   };
-                          // });
-                          // navigation.navigate('QRCODE')
+                          setIsVisible(true);
                         }}>
                         <LinearGradient
                           colors={['#853b92', '#4b0892']}
@@ -349,6 +345,21 @@ const ProfileComponent = ({navigation}: any) => {
             </ScrollView>
           </KeyboardAvoidingView>
         </View>
+        <Modal
+          isVisible={isVisible}
+          onBackdropPress={onConfirm}
+          animationInTiming={500}
+          animationOutTiming={700}
+          useNativeDriver={true}>
+          <View style={styles.modalContainer}>
+            <TouchableOpacity onPress={onConfirm} style={styles.closeTouch}>
+              <Ionicons name={'close'} size={25} color={'#000'} />
+            </TouchableOpacity>
+            <View style={styles.qrView}>
+              <QRCode value={referralLink} size={300} />
+            </View>
+          </View>
+        </Modal>
       </SafeAreaView>
     </>
   );
@@ -565,6 +576,21 @@ const styles = StyleSheet.create({
     right: 50,
     top: 10,
     backgroundColor: '#4c0992',
+  },
+  modalContainer: {
+    width: '100%',
+    height: 600,
+    backgroundColor: colors.white,
+    borderRadius: 15,
+  },
+  closeTouch: {
+    padding: 15,
+    alignSelf: 'flex-end',
+  },
+  qrView: {
+    alignItems: 'center',
+    flex: 1,
+    justifyContent: 'center',
   },
 });
 

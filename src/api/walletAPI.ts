@@ -40,6 +40,22 @@ export const walletAPI = createApi({
       }),
       transformResponse: (response: {data: any}) => response,
     }),
+    CBWalletTransaction: builder.mutation<any, any>({
+      query: walletParams => ({
+        url: WALLET_URLS.CBWALLET_TRANSACTION,
+        method: 'POST',
+        body: walletParams,
+      }),
+      transformResponse: (response: {data: any}) => response,
+    }),
+    claimCashBack: builder.mutation<any, any>({
+      query: walletParams => ({
+        url: WALLET_URLS.CLAIM_CASH_BACK,
+        method: 'POST',
+        body: walletParams,
+      }),
+      transformResponse: (response: {data: any}) => response,
+    }),
   }),
 });
 
@@ -48,4 +64,6 @@ export const {
   useQRPaymentMutation,
   useMerchantInfoMutation,
   useWalletTransactionMutation,
+  useCBWalletTransactionMutation,
+  useClaimCashBackMutation,
 } = walletAPI;

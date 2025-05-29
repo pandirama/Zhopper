@@ -79,7 +79,10 @@ const WalletComponent = ({navigation}: Props) => {
       }).unwrap();
 
       if (walletResponse[0]?.status === 1) {
-        setWalletBalances(walletResponse[0]?.data);
+        const res = walletResponse[0]?.data?.filter((wallet: any) => {
+          return wallet?.status_show !== 0;
+        });
+        setWalletBalances(res);
       }
     } catch (err: any) {
       showToast({
@@ -119,13 +122,44 @@ const WalletComponent = ({navigation}: Props) => {
     }, []),
   );
 
+  const showeButton = (btnChange: any) => {
+    if (btnChange?.status_scan === 1) {
+      return (
+        <TouchableOpacity
+          style={{marginTop: 10, marginBottom: 5}}
+          onPress={() => {
+            navigation.navigate('QRCODE', {
+              wallet: btnChange,
+            });
+          }}>
+          <LinearGradient colors={['#853b92', '#4b0892']} style={styles.tabBtn}>
+            <Text style={styles.tabTxt}>SCAN TO PAY</Text>
+          </LinearGradient>
+        </TouchableOpacity>
+      );
+    }
+    if (btnChange?.status_claim === 1) {
+      return (
+        <TouchableOpacity
+          style={{marginTop: 10, marginBottom: 5}}
+          onPress={() => {
+            navigation.navigate('CBWALLET_HISTORY');
+          }}>
+          <LinearGradient colors={['#853b92', '#4b0892']} style={styles.tabBtn}>
+            <Text style={styles.tabTxt}>Claim</Text>
+          </LinearGradient>
+        </TouchableOpacity>
+      );
+    }
+  };
+
   const renderItem = ({item}: any) => {
     return (
       <View
         style={[
           appStyles.boxShadow,
           {
-            flex: 1,
+            flex: 1 / 2,
             backgroundColor: colors.white,
             borderRadius: 10,
             marginRight: 10,
@@ -155,21 +189,7 @@ const WalletComponent = ({navigation}: Props) => {
           }}>
           {`${item?.currency} ${item?.balance}`}
         </Text>
-        {item?.wallet === 'SC-wallet' && (
-          <TouchableOpacity
-            style={{marginTop: 10, marginBottom: 5}}
-            onPress={() =>
-              navigation.navigate('QRCODE', {
-                wallet: item,
-              })
-            }>
-            <LinearGradient
-              colors={['#853b92', '#4b0892']}
-              style={styles.tabBtn}>
-              <Text style={styles.tabTxt}>SCAN TO PAY</Text>
-            </LinearGradient>
-          </TouchableOpacity>
-        )}
+        {showeButton(item)}
       </View>
     );
   };
@@ -192,9 +212,9 @@ const WalletComponent = ({navigation}: Props) => {
               style={styles.walletTouch}
               onPress={() => {
                 navigation.navigate('TRANS_HISTORY', {
-                  gateway: 'SC-wallet',
+                  gateway: 'RP-wallet',
                   title: 'Spend Record',
-                  subTitle: 'Spend Record -> Spending Credit Wallet',
+                  subTitle: 'Spend Record -> RP Wallet',
                 });
               }}>
               <Image
@@ -246,6 +266,29 @@ const WalletComponent = ({navigation}: Props) => {
                 style={{width: 50, height: 50}}
               />
               <Text style={styles.walletTitleTxt}>Redemption</Text>
+              <Ionicons
+                name={'chevron-forward'}
+                size={22}
+                color={colors.black}
+                style={styles.icon}
+              />
+            </TouchableOpacity>
+
+            <View style={styles.borderView} />
+            <TouchableOpacity
+              style={styles.walletTouch}
+              onPress={() => {
+                navigation.navigate('TRANS_HISTORY', {
+                  gateway: 'MM-wallet',
+                  title: 'MM Wallet',
+                  subTitle: 'MM Wallet ',
+                });
+              }}>
+              <Image
+                source={require('../../../assets/MM_wallet.png')}
+                style={{width: 42, height: 42}}
+              />
+              <Text style={styles.walletTitleTxt}>MM Wallet</Text>
               <Ionicons
                 name={'chevron-forward'}
                 size={22}
@@ -436,7 +479,7 @@ const styles = StyleSheet.create({
   },
   flatListColumn: {
     flex: 1,
-    justifyContent: 'space-evenly',
+    // justifyContent: 'space-evenly',
   },
   tabBtn: {
     height: 30,

@@ -31,9 +31,6 @@ const CommonProvider = ({children}: React.PropsWithChildren): JSX.Element => {
 
   const dispatch = useAppDispatch();
 
-  // let {userInfo} = useSelector(({authReducer}: any) => authReducer);
-  // console.log(userInfo);
-
   const toggleBackdrop = (val?: boolean) => {
     if (typeof val === 'boolean') {
       setBackdrop(val);

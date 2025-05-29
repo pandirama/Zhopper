@@ -6,6 +6,7 @@ import {
   FlatList,
   Image,
   Platform,
+  ScrollView,
   StatusBar,
   StyleSheet,
   Text,
@@ -205,6 +206,7 @@ const ProductsComponent = ({navigation}: Props) => {
       refetch()
         .then((response: any) => {
           const {data, status, message} = response;
+          console.log('data', data);
           if (data[0]?.status === 1 && status) {
             const categoryData = data[0]?.data;
             const categoryArray: any = [];
@@ -213,7 +215,7 @@ const ProductsComponent = ({navigation}: Props) => {
                 categoryArray.push({name: categoryData[key]});
               }
             }
-            setCategories(categoryArray);
+            setCategories(data[0]?.data);
           } else {
             showToast({
               type: 'error',
@@ -236,9 +238,6 @@ const ProductsComponent = ({navigation}: Props) => {
     if (index > 7) {
       return <></>;
     }
-    const findImage = imageCategories.find(imageName => {
-      return imageName?.name === item?.name;
-    });
     return (
       <TouchableOpacity
         style={{
@@ -252,7 +251,7 @@ const ProductsComponent = ({navigation}: Props) => {
           })
         }>
         <Image
-          source={findImage?.image}
+          source={{uri: item?.icon}}
           style={{width: 80, height: 80, borderRadius: 10}}
         />
 
@@ -283,69 +282,72 @@ const ProductsComponent = ({navigation}: Props) => {
         edges={['right', 'left', 'top']}>
         <View style={appStyles.headerContainer}>
           <DashBoardHeaderComponent title={'Categories'} />
-          <FlatList
-            data={categories}
-            renderItem={renderItem}
-            numColumns={4}
-            showsVerticalScrollIndicator={false}
-            columnWrapperStyle={styles.flatListColumn}
-            contentContainerStyle={styles.flatListCotent}
-            ListHeaderComponent={
-              <>
-                <ProductHeaderComponent
-                  fullname={userProfile?.fullname}
-                  currentLocation={currentLocation}
-                  merchantMarkers={merchantMarkers}
-                  getSeachMerchantLocation={getSeachMerchantLocation}
-                  getMerchantLocations={getMerchantLocations}
-                  setSearchTerm={setSearchTerm}
-                  searchTerm={searchTerm}
-                />
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    marginLeft: 10,
-                    marginRight: 10,
-                  }}>
-                  <Text
+          <ScrollView>
+            <FlatList
+              data={categories}
+              renderItem={renderItem}
+              numColumns={4}
+              showsVerticalScrollIndicator={false}
+              columnWrapperStyle={styles.flatListColumn}
+              contentContainerStyle={styles.flatListCotent}
+              ListHeaderComponent={
+                <>
+                  <ProductHeaderComponent
+                    fullname={userProfile?.fullname}
+                    currentLocation={currentLocation}
+                    merchantMarkers={merchantMarkers}
+                    getSeachMerchantLocation={getSeachMerchantLocation}
+                    getMerchantLocations={getMerchantLocations}
+                    setSearchTerm={setSearchTerm}
+                    searchTerm={searchTerm}
+                    navigation={navigation}
+                  />
+                  <View
                     style={{
-                      fontFamily: fontFamily.poppins_semi_bold,
-                      fontSize: 18,
-                      marginLeft: 5,
-                      flex: 1,
-                      color: colors.black,
+                      flexDirection: 'row',
+                      marginLeft: 10,
+                      marginRight: 10,
                     }}>
-                    Categories
-                  </Text>
-                  <TouchableOpacity
-                    style={{flexDirection: 'row'}}
-                    onPress={() =>
-                      navigation.navigate('SEE_ALL_CATEGORY', {
-                        categories: categories,
-                      })
-                    }>
                     <Text
                       style={{
-                        fontFamily: fontFamily.poppins_medium,
-                        fontSize: 14,
-                        marginRight: 2,
-                        color: '#3f00a1',
+                        fontFamily: fontFamily.poppins_semi_bold,
+                        fontSize: 18,
+                        marginLeft: 5,
+                        flex: 1,
+                        color: colors.black,
                       }}>
-                      See All
+                      Categories
                     </Text>
-                    <Feather
-                      name="arrow-up-right"
-                      color={'#3f00a1'}
-                      size={20}
-                      style={{marginRight: 15}}
-                    />
-                  </TouchableOpacity>
-                </View>
-              </>
-            }
-            removeClippedSubviews={false}
-            keyExtractor={(item, index) => 'key' + index}
-          />
+                    <TouchableOpacity
+                      style={{flexDirection: 'row'}}
+                      onPress={() =>
+                        navigation.navigate('SEE_ALL_CATEGORY', {
+                          categories: categories,
+                        })
+                      }>
+                      <Text
+                        style={{
+                          fontFamily: fontFamily.poppins_medium,
+                          fontSize: 14,
+                          marginRight: 2,
+                          color: '#3f00a1',
+                        }}>
+                        See All
+                      </Text>
+                      <Feather
+                        name="arrow-up-right"
+                        color={'#3f00a1'}
+                        size={20}
+                        style={{marginRight: 15}}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                </>
+              }
+              removeClippedSubviews={false}
+              keyExtractor={(item, index) => 'key' + index}
+            />
+          </ScrollView>
         </View>
       </SafeAreaView>
     </>

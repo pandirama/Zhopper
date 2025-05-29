@@ -1,9 +1,9 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable react/no-unstable-nested-components */
-import React from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {
-  Dimensions,
   FlatList,
   Image,
   StatusBar,
@@ -17,62 +17,66 @@ import {colors} from '../../../utils/colors';
 import DashBoardHeaderComponent from '../../../components/DashBoardHeaderComponent';
 import LinearGradient from 'react-native-linear-gradient';
 import {useSelector} from 'react-redux';
+import {useGetNewsQuery} from '../../../api/newsAPI';
+import {useFocusEffect} from '@react-navigation/native';
+import {getErrorMessage} from '../../../utils/common';
+import useCommon from '../../../hooks/useCommon';
+import {ReadMoreText} from './ReadMoreText';
 
 type Props = NativeStackScreenProps<any, 'NEWS'>;
 
-const {width} = Dimensions.get('window');
 
-const clients = [
-  {
-    icon: require('../../../assets/merchant_offer.png'),
-    title: 'Start the Year With 50% off on Foods',
-    subTitle:
-      'In eget dui augue. Donec id sapien lectus. Maecenas nulla odio, copy',
-    date: 'Jan 2025',
-  },
-  {
-    icon: require('../../../assets/pizza_catagories.png'),
-    title: '30% off on every deals only this week',
-    subTitle:
-      'In eget dui augue. Donec id sapien lectus. Maecenas nulla odio, copy 2',
-    date: 'Jan 2025',
-  },
-  {
-    icon: require('../../../assets/merchant_offer.png'),
-    title: 'Start the Year With 50% off on Foods',
-    subTitle:
-      'In eget dui augue. Donec id sapien lectus. Maecenas nulla odio, copy',
-    date: 'Jan 2025',
-  },
-  {
-    icon: require('../../../assets/pizza_catagories.png'),
-    title: '30% off on every deals only this week',
-    subTitle:
-      'In eget dui augue. Donec id sapien lectus. Maecenas nulla odio, copy 2 In eget dui augue. Donec id sapien lectus. Maecenas nulla odio, copy 2 In eget dui augue. Donec id sapien lectus. Maecenas nulla odio, copy 2',
-    date: 'Jan 2025',
-  },
-  {
-    icon: require('../../../assets/merchant_offer.png'),
-    title: 'Start the Year With 50% off on Foods',
-    subTitle:
-      'In eget dui augue. Donec id sapien lectus. Maecenas nulla odio, copy',
-    date: 'Jan 2025',
-  },
-  {
-    icon: require('../../../assets/pizza_catagories.png'),
-    title: '30% off on every deals only this week',
-    subTitle:
-      'In eget dui augue. Donec id sapien lectus. Maecenas nulla odio, copy 2',
-    date: 'Jan 2025',
-  },
-];
 
 const NewsComponent = ({}: Props) => {
+  const {showToast, toggleBackdrop} = useCommon();
+
+  const [news, setNews] = useState(null);
+
   const {userProfile} = useSelector(({profileReducer}: any) => profileReducer);
+
+  const {isFetching, refetch} = useGetNewsQuery();
+
+  useEffect(() => {
+    toggleBackdrop(isFetching);
+  }, [isFetching]);
+
+  const getNewsData = () => {
+    refetch()
+      .then((response: any) => {
+        const {data, message} = response;
+        if (data[0]?.status === 1) {
+          setNews(data[0]?.data);
+        } else {
+          showToast({
+            type: 'error',
+            text1: getErrorMessage(message),
+          });
+        }
+      })
+      .catch(error => {
+        showToast({
+          type: 'error',
+          text1: getErrorMessage(error),
+        });
+      });
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      getNewsData();
+      return () => {};
+    }, []),
+  );
 
   const renderItem = ({item}: any) => {
     return (
-      <View style={{marginLeft: 15, marginTop: 15, marginRight: 15}}>
+      <View
+        style={{
+          marginLeft: 15,
+          marginTop: 15,
+          marginRight: 15,
+          paddingBottom: 15,
+        }}>
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
           <View
             style={{
@@ -132,43 +136,10 @@ const NewsComponent = ({}: Props) => {
             {item?.title}
           </Text>
 
-          <Text
-            style={{
-              color: '#909090',
-              fontSize: 13,
-              fontFamily: fontFamily.poppins_semi_bold,
-            }}
-            numberOfLines={3}>
-            {item?.subTitle}
-          </Text>
-          <Text
-            style={{
-              color: '#5b159d',
-              fontSize: 13,
-              fontFamily: fontFamily.poppins_bold,
-              textDecorationLine: 'underline',
-            }}>
-            Read More
-          </Text>
+          <ReadMoreText text={item?.detail} banner={item?.banner} />
         </View>
         <View style={{alignItems: 'center', marginTop: 25}}>
-          <Image source={item?.icon} />
-        </View>
-        <View
-          style={{
-            borderRadius: 100,
-            backgroundColor: '#eeecef',
-            padding: 5,
-            width: 95,
-            height: 95,
-            marginLeft: 15,
-            alignItems: 'center',
-            justifyContent: 'center',
-            position: 'absolute',
-            top: 140,
-            left: width / 3.5,
-          }}>
-          <Image source={require('../../../assets/deal_icon.png')} />
+          <Image source={{uri: item?.banner}} />
         </View>
       </View>
     );
@@ -230,7 +201,7 @@ const NewsComponent = ({}: Props) => {
         <View style={appStyles.headerContainer}>
           <DashBoardHeaderComponent title={'News'} />
           <FlatList
-            data={clients}
+            data={news}
             renderItem={renderItem}
             style={{marginBottom: 10}}
             showsVerticalScrollIndicator={false}
