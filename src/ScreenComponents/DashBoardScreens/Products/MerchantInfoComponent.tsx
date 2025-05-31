@@ -281,7 +281,7 @@ export const MerchantInfoComponent = ({route}: Props) => {
                   flex: 1,
                   marginLeft: 15,
                 }}>
-                Google Maps App
+                {Platform.OS === 'ios' ? 'Apple Maps App' : 'Google Maps App'}
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -382,12 +382,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 20,
+    marginBottom: 10,
   },
   tabBtn: {
     borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingBottom: 10,
     height: 45,
     width: 125,
   },

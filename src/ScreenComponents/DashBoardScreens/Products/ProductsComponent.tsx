@@ -38,41 +38,6 @@ import ProductHeaderComponent from './ProductHeaderComponent';
 
 type Props = NativeStackScreenProps<any, 'PRODUCTS'>;
 
-const imageCategories = [
-  {
-    name: 'Leisure',
-    image: require('../../../assets/leisure_category.png'),
-  },
-  {
-    name: 'Grocery',
-    image: require('../../../assets/grocery_category.png'),
-  },
-  {
-    name: 'Beauty',
-    image: require('../../../assets/beauty_category.png'),
-  },
-  {
-    name: 'Home Care',
-    image: require('../../../assets/homecare_category.png'),
-  },
-  {
-    name: 'Professional',
-    image: require('../../../assets/professional_category.png'),
-  },
-  {
-    name: 'Education',
-    image: require('../../../assets/education_category.png'),
-  },
-  {
-    name: 'General',
-    image: require('../../../assets/general_category.png'),
-  },
-  {
-    name: 'Health',
-    image: require('../../../assets/health_category.png'),
-  },
-];
-
 const ProductsComponent = ({navigation}: Props) => {
   const {showToast, toggleBackdrop} = useCommon();
   const [searchTerm, setSearchTerm] = useState('');
@@ -206,7 +171,6 @@ const ProductsComponent = ({navigation}: Props) => {
       refetch()
         .then((response: any) => {
           const {data, status, message} = response;
-          console.log('data', data);
           if (data[0]?.status === 1 && status) {
             const categoryData = data[0]?.data;
             const categoryArray: any = [];

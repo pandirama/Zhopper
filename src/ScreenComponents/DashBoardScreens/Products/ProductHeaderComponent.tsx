@@ -127,7 +127,7 @@ const ProductHeaderComponent = ({
             {fullname}
           </Text>
         </View>
-        <View
+        <TouchableOpacity
           style={{
             borderRadius: 100,
             padding: 5,
@@ -136,9 +136,10 @@ const ProductHeaderComponent = ({
             height: 45,
             alignItems: 'center',
             justifyContent: 'center',
-          }}>
+          }}
+          onPress={() => navigation.navigate('News')}>
           <Feather name="bell" color={colors.black} size={25} />
-        </View>
+        </TouchableOpacity>
       </View>
       <View style={styles.searchView}>
         <View style={styles.searchContainer}>

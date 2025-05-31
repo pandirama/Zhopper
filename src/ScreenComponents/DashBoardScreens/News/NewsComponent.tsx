@@ -138,9 +138,6 @@ const NewsComponent = ({}: Props) => {
 
           <ReadMoreText text={item?.detail} banner={item?.banner} />
         </View>
-        <View style={{alignItems: 'center', marginTop: 25}}>
-          <Image source={{uri: item?.banner}} />
-        </View>
       </View>
     );
   };

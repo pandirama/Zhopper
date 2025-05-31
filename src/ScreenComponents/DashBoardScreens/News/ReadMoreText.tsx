@@ -1,21 +1,12 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {useState, useCallback} from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Image,
-  Dimensions,
-} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {fontFamily} from '../../../utils/appStyles';
 
 interface propsType {
   text: string;
   banner: any;
 }
-
-const {width} = Dimensions.get('window');
 
 export const ReadMoreText = (props: propsType) => {
   const [textShown, setTextShown] = useState(false);
@@ -50,22 +41,6 @@ export const ReadMoreText = (props: propsType) => {
           </Text>
         </TouchableOpacity>
       ) : null}
-      <View
-        style={{
-          borderRadius: 100,
-          backgroundColor: '#eeecef',
-          padding: 5,
-          width: 95,
-          height: 95,
-          marginLeft: 15,
-          alignItems: 'center',
-          justifyContent: 'center',
-          position: 'absolute',
-          bottom: -76,
-          left: width / 3.5,
-        }}>
-        <Image source={{uri: props.banner}} style={styles.itemLogo} />
-      </View>
     </View>
   );
 };
