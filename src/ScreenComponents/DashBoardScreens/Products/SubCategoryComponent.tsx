@@ -133,10 +133,11 @@ const styles = StyleSheet.create({
   walletSubContainer: {
     backgroundColor: colors.white,
     borderRadius: 15,
-    marginTop: 20,
+    marginTop: 10,
     paddingTop: 10,
-    marginLeft: 16,
-    marginRight: 16,
+    marginLeft: 10,
+    marginRight: 10,
+    marginBottom: 70,
   },
   borderView: {
     borderWidth: 0.5,

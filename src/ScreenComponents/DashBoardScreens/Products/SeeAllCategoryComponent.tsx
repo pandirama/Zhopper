@@ -98,8 +98,8 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     marginTop: 10,
     paddingTop: 10,
-    marginLeft: 16,
-    marginRight: 16,
+    marginLeft: 10,
+    marginRight: 10,
     marginBottom: 70,
   },
   borderView: {
