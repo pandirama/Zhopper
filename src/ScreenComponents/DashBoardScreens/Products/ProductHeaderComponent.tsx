@@ -16,6 +16,7 @@ import Carousel from 'react-native-reanimated-carousel';
 import _ from 'lodash';
 import {Feather} from '../../../utils/IconUtils';
 import MapView, {Marker} from 'react-native-maps';
+import { useTranslation } from 'react-i18next';
 
 type PaginateProp = {
   count: number;
@@ -76,6 +77,7 @@ const ProductHeaderComponent = ({
   searchTerm,
   navigation,
 }: any) => {
+  const {t} = useTranslation();
   const [activeDot, setActiveDot] = useState(1);
 
   const initialRegion = {
@@ -114,7 +116,7 @@ const ProductHeaderComponent = ({
               marginLeft: 5,
               color: colors.black,
             }}>
-            Welcome Back
+           {t('WELCOME_BACK')}
           </Text>
           <Text
             style={{
@@ -146,7 +148,7 @@ const ProductHeaderComponent = ({
           <Feather name="search" color={'#b2b2b2'} size={20} />
           <TextInput
             style={styles.input}
-            placeholder="Search  Fashion Accessories...."
+            placeholder={t('SEARCH_FASHION_ACCESSORIES')}
             placeholderTextColor="#A9A9A9"
             value={searchTerm}
             onChangeText={text => setSearchTerm(text)}
@@ -230,7 +232,7 @@ const ProductHeaderComponent = ({
               marginLeft: 5,
               color: colors.black,
             }}>
-            Explore Nearby Places
+            {t('EXPLORE_NEARBY_PLACES')}
           </Text>
         </TouchableOpacity>
       </View>

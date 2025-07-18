@@ -35,10 +35,12 @@ import {
   promptForEnableLocationIfNeeded,
 } from 'react-native-android-location-enabler';
 import ProductHeaderComponent from './ProductHeaderComponent';
+import { useTranslation } from 'react-i18next';
 
 type Props = NativeStackScreenProps<any, 'PRODUCTS'>;
 
 const ProductsComponent = ({navigation}: Props) => {
+  const {t} = useTranslation();
   const {showToast, toggleBackdrop} = useCommon();
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -245,7 +247,7 @@ const ProductsComponent = ({navigation}: Props) => {
         style={[appStyles.container, {backgroundColor: colors.background}]}
         edges={['right', 'left', 'top']}>
         <View style={appStyles.headerContainer}>
-          <DashBoardHeaderComponent title={'Categories'} />
+          <DashBoardHeaderComponent title={t('CATEGORIES')} />
           <ScrollView>
             <FlatList
               data={categories}
@@ -280,7 +282,7 @@ const ProductsComponent = ({navigation}: Props) => {
                         flex: 1,
                         color: colors.black,
                       }}>
-                      Categories
+                      {t('CATEGORIES')}
                     </Text>
                     <TouchableOpacity
                       style={{flexDirection: 'row'}}
@@ -296,7 +298,7 @@ const ProductsComponent = ({navigation}: Props) => {
                           marginRight: 2,
                           color: '#3f00a1',
                         }}>
-                        See All
+                        {t('SEE_ALL')}
                       </Text>
                       <Feather
                         name="arrow-up-right"

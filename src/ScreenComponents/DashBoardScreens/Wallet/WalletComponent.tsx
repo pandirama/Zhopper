@@ -29,10 +29,12 @@ import {
 import {profileAction} from '../../../reducer/profile/profileSlice';
 import {useAppDispatch} from '../../../store';
 import LinearGradient from 'react-native-linear-gradient';
+import { useTranslation } from 'react-i18next';
 
 type Props = NativeStackScreenProps<any, 'WALLET'>;
 
 const WalletComponent = ({navigation}: Props) => {
+  const { t } = useTranslation();
   const {showToast, toggleBackdrop} = useCommon();
   const dispatch = useAppDispatch();
 
@@ -133,7 +135,7 @@ const WalletComponent = ({navigation}: Props) => {
             });
           }}>
           <LinearGradient colors={['#853b92', '#4b0892']} style={styles.tabBtn}>
-            <Text style={styles.tabTxt}>SCAN TO PAY</Text>
+            <Text style={styles.tabTxt}>{t('SCAN_TO_PAY')}</Text>
           </LinearGradient>
         </TouchableOpacity>
       );
@@ -146,7 +148,7 @@ const WalletComponent = ({navigation}: Props) => {
             navigation.navigate('CBWALLET_HISTORY');
           }}>
           <LinearGradient colors={['#853b92', '#4b0892']} style={styles.tabBtn}>
-            <Text style={styles.tabTxt}>Claim</Text>
+            <Text style={styles.tabTxt}>{t('CLAIM')}</Text>
           </LinearGradient>
         </TouchableOpacity>
       );
@@ -205,7 +207,7 @@ const WalletComponent = ({navigation}: Props) => {
           marginRight: 10,
           backgroundColor: '#f7f6f6',
         }}>
-        <Text style={styles.titleTxt}>Recent Transaction</Text>
+        <Text style={styles.titleTxt}>{t('RECENT_TRANSACTION')}</Text>
         <View style={styles.walletContainer}>
           <View style={[appStyles.boxShadow, styles.walletSubContainer]}>
             <TouchableOpacity
@@ -213,15 +215,15 @@ const WalletComponent = ({navigation}: Props) => {
               onPress={() => {
                 navigation.navigate('TRANS_HISTORY', {
                   gateway: 'RP-wallet',
-                  title: 'Spend Record',
-                  subTitle: 'Spend Record -> RP Wallet',
+                  title: t('SPEND_RECORD'),
+                  subTitle: `${t('SPEND_RECORD')} -> RP ${t('WALLET')}`,
                 });
               }}>
               <Image
                 source={require('../../../assets/record_icon.png')}
                 style={{width: 50, height: 50}}
               />
-              <Text style={styles.walletTitleTxt}>Spend Record</Text>
+              <Text style={styles.walletTitleTxt}>{t('SPEND_RECORD')}</Text>
               <Ionicons
                 name={'chevron-forward'}
                 size={22}
@@ -235,15 +237,15 @@ const WalletComponent = ({navigation}: Props) => {
               onPress={() => {
                 navigation.navigate('TRANS_HISTORY', {
                   gateway: 'CB-wallet',
-                  title: 'Cash Back Wallet',
-                  subTitle: 'Cash Back Wallet -> Cash Back Wallet',
+                  title: t('CASH_BACK_WALLET'),
+                  subTitle: `${t('CASH_BACK_WALLET')} -> ${t('CASH_BACK_WALLET')}`,
                 });
               }}>
               <Image
                 source={require('../../../assets/cb_wallet_icon.png')}
                 style={{width: 50, height: 50}}
               />
-              <Text style={styles.walletTitleTxt}>Cash Back Wallet</Text>
+              <Text style={styles.walletTitleTxt}>{t('CASH_BACK_WALLET')}</Text>
               <Ionicons
                 name={'chevron-forward'}
                 size={22}
@@ -257,15 +259,15 @@ const WalletComponent = ({navigation}: Props) => {
               onPress={() => {
                 navigation.navigate('TRANS_HISTORY', {
                   gateway: 'SRP-wallet',
-                  title: 'Redemption',
-                  subTitle: 'Redemption -> SRP Wallet',
+                  title: t('REDEMPTION'),
+                  subTitle: `${t('REDEMPTION')} -> SRP ${t('WALLET')}`,
                 });
               }}>
               <Image
                 source={require('../../../assets/redemption_icon.png')}
                 style={{width: 50, height: 50}}
               />
-              <Text style={styles.walletTitleTxt}>Redemption</Text>
+              <Text style={styles.walletTitleTxt}>{t('REDEMPTION')}</Text>
               <Ionicons
                 name={'chevron-forward'}
                 size={22}
@@ -280,15 +282,15 @@ const WalletComponent = ({navigation}: Props) => {
               onPress={() => {
                 navigation.navigate('TRANS_HISTORY', {
                   gateway: 'MM-wallet',
-                  title: 'MM Wallet',
-                  subTitle: 'MM Wallet ',
+                  title: `MM ${t('WALLET')}`,
+                  subTitle: `MM ${t('WALLET')}`,
                 });
               }}>
               <Image
                 source={require('../../../assets/MM_wallet.png')}
                 style={{width: 42, height: 42}}
               />
-              <Text style={styles.walletTitleTxt}>MM Wallet</Text>
+              <Text style={styles.walletTitleTxt}>MM {t('WALLET')}</Text>
               <Ionicons
                 name={'chevron-forward'}
                 size={22}
@@ -314,7 +316,7 @@ const WalletComponent = ({navigation}: Props) => {
         style={appStyles.container}
         edges={['right', 'left', 'top']}>
         <View style={appStyles.headerContainer}>
-          <DashBoardHeaderComponent title={'Assets'} />
+          <DashBoardHeaderComponent title={t('ASSETS')} />
           <FlatList
             data={walletBalances}
             renderItem={renderItem}

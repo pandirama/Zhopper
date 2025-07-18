@@ -28,6 +28,7 @@ import SubCategoryComponent from '../ScreenComponents/DashBoardScreens/Products/
 import MerchantInfoComponent from '../ScreenComponents/DashBoardScreens/Products/MerchantInfoComponent';
 import SeeAllCategoryComponent from '../ScreenComponents/DashBoardScreens/Products/SeeAllCategoryComponent';
 import CBWalletHistoryComponent from '../ScreenComponents/DashBoardScreens/Wallet/CBWalletHistoryComponent';
+import { useTranslation } from 'react-i18next';
 
 const ProductsStack = createNativeStackNavigator<any>();
 
@@ -216,17 +217,18 @@ const DashBoardTabBar = ({state, descriptors, navigation}: any) => {
 };
 
 const DashboardBottomNavigator = () => {
+  const { t } = useTranslation();
   return (
     <Tab.Navigator
       tabBar={props => <DashBoardTabBar {...props} />}
       screenOptions={{
         headerShown: false,
       }}>
-      <Tab.Screen name="Wallet" component={WalletStackNavigator} />
-      <Tab.Screen name="Referral" component={ReferalStackNavigator} />
-      <Tab.Screen name="Merchant" component={ProductsStackNavigator} />
-      <Tab.Screen name="News" component={NewsStackNavigator} />
-      <Tab.Screen name="Profile" component={ProfileStackNavigator} />
+      <Tab.Screen name={t('WALLET')} component={WalletStackNavigator} />
+      <Tab.Screen name={t('REFERRAL')} component={ReferalStackNavigator} />
+      <Tab.Screen name={t('MERCHANT')} component={ProductsStackNavigator} />
+      <Tab.Screen name={t('NEWS')} component={NewsStackNavigator} />
+      <Tab.Screen name={t('PROFILE')} component={ProfileStackNavigator} />
     </Tab.Navigator>
   );
 };

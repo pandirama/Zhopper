@@ -21,16 +21,22 @@ import LinearGradient from 'react-native-linear-gradient';
 import {useFocusEffect} from '@react-navigation/native';
 import useCommon from '../../../hooks/useCommon';
 import {getErrorMessage} from '../../../utils/common';
-import {useGetEditProfileQuery} from '../../../api/profileAPI';
+import {
+  useGetEditProfileQuery,
+  useUpdateProfileMutation,
+} from '../../../api/profileAPI';
 import {useSelector} from 'react-redux';
 import QRCode from 'react-native-qrcode-svg';
-import {countries} from '../../AuthScreens/RegisterComponent';
+import {countries, languages} from '../../AuthScreens/RegisterComponent';
 import {Dropdown} from 'react-native-element-dropdown';
 import {KeyboardAvoidingView} from 'react-native-keyboard-controller';
 import Modal from 'react-native-modal';
 import {Ionicons} from '../../../utils/IconUtils';
+import {useTranslation} from 'react-i18next';
+import i18next from 'i18next';
 
 const ProfileComponent = ({navigation}: any) => {
+  const {t} = useTranslation();
   const {showToast, toggleBackdrop} = useCommon();
   const [fullname, setFullName] = useState('');
   const [nameStatus, setNameStatus] = useState(false);
@@ -42,6 +48,9 @@ const ProfileComponent = ({navigation}: any) => {
   const [userStatus, setUserStatus] = useState(false);
   const [shopperRank, setShopperRank] = useState(0);
   const [rankStatus, setRankStatus] = useState(false);
+  const [language, setLanguage] = useState('');
+  const [languageStatus, setLanguageStatus] = useState(false);
+
   const [isFocus, setIsFocus] = useState<boolean>(false);
   const [isVisible, setIsVisible] = useState(false);
 
@@ -55,9 +64,11 @@ const ProfileComponent = ({navigation}: any) => {
     userid: userInfo?.[0]?.userid,
   });
 
+  const [updateProfile, {isLoading}] = useUpdateProfileMutation();
+
   useEffect(() => {
-    toggleBackdrop(isFetching);
-  }, [isFetching]);
+    toggleBackdrop(isFetching || isLoading);
+  }, [isFetching || isLoading]);
 
   const getProfile = () => {
     refetch()
@@ -80,6 +91,9 @@ const ProfileComponent = ({navigation}: any) => {
             } else if (result.hasOwnProperty('shopper_rank')) {
               setShopperRank(result?.shopper_rank?.toString());
               setRankStatus(result?.status === 1 ? false : true);
+            } else if (result.hasOwnProperty('lang')) {
+              setLanguage(result?.lang?.toString());
+              setLanguageStatus(result?.status === 1 ? true : false);
             }
           });
         } else {
@@ -114,6 +128,39 @@ const ProfileComponent = ({navigation}: any) => {
     setIsVisible(false);
   };
 
+  const onUpdateProfile = async () => {
+    try {
+      const params = {
+        userid: userInfo[0]?.userid,
+        userName: userName,
+        ...(nameStatus && {fullname: fullname}),
+        ...(emailStatus && {email: email}),
+        ...(countryStatus && {country: country}),
+        ...(rankStatus && {shopper_rank: shopperRank}),
+        ...(languageStatus && {lang: language}),
+      };
+
+      const response: any = await updateProfile(params).unwrap();
+      if (response[0]?.status === 1) {
+        showToast({
+          type: 'success',
+          text1: response[0]?.message,
+        });
+        i18next.changeLanguage(language);
+      } else {
+        showToast({
+          type: 'error',
+          text1: response[0]?.message,
+        });
+      }
+    } catch (err: any) {
+      showToast({
+        type: 'error',
+        text1: getErrorMessage(err),
+      });
+    }
+  };
+
   return (
     <>
       <StatusBar
@@ -126,7 +173,7 @@ const ProfileComponent = ({navigation}: any) => {
         style={appStyles.container}
         edges={['right', 'left', 'top']}>
         <View style={appStyles.headerContainer}>
-          <DashBoardHeaderComponent title={'Profile'} />
+          <DashBoardHeaderComponent title={t('PROFILE')} />
           <KeyboardAvoidingView
             behavior={'padding'}
             keyboardVerticalOffset={25}
@@ -196,7 +243,7 @@ const ProfileComponent = ({navigation}: any) => {
                         marginTop: 15,
                         fontFamily: fontFamily.poppins_bold,
                       }}>
-                      My Referral QR Code
+                      {t('MY_REFERRAL_QR_CODE')}
                     </Text>
                     <Text
                       style={{
@@ -206,7 +253,7 @@ const ProfileComponent = ({navigation}: any) => {
                         fontFamily: fontFamily.poppins_medium,
                         marginBottom: 15,
                       }}>
-                      Share with your friend, register free account !
+                      {t('SHARE_WITH_FRIEND_REGISTER_FREE')}
                     </Text>
                   </LinearGradient>
                   <View style={{flexDirection: 'row', margin: 20}}>
@@ -250,13 +297,13 @@ const ProfileComponent = ({navigation}: any) => {
                     padding: 10,
                     marginTop: 30,
                   }}>
-                  <Text style={styles.titleTxt}>Basic Info</Text>
+                  <Text style={styles.titleTxt}>{t('BASIC_INFO')}</Text>
                   <Text style={styles.subtitleTxt}>
-                    Basic details about you
+                    {t('BASIC_DETAILS_ABOUT_YOU')}
                   </Text>
                   <TextInputComponent
-                    placeHolder={'Enter Your FullName'}
-                    headText={'Full Name'}
+                    placeHolder={t('ENTER_YOUR_FULL_NAME')}
+                    headText={t('FULL_NAME')}
                     onChangeValue={setFullName}
                     value={fullname}
                     editable={nameStatus}
@@ -265,8 +312,8 @@ const ProfileComponent = ({navigation}: any) => {
                   />
                   <TextInputComponent
                     ref={fullNameFieldRef}
-                    placeHolder={'Enter Your Email'}
-                    headText={'Email'}
+                    placeHolder={t('ENTER_YOUR_EMAIL_ID')}
+                    headText={t('EMAIL_ID')}
                     onChangeValue={setEmail}
                     value={email}
                     editable={emailStatus}
@@ -290,7 +337,7 @@ const ProfileComponent = ({navigation}: any) => {
                       maxHeight={300}
                       labelField="label"
                       valueField="value"
-                      placeholder={!isFocus ? 'Select Country' : ''}
+                      placeholder={!isFocus ? t('SELECT_COUNTRY') : ''}
                       value={country}
                       onFocus={() => setIsFocus(true)}
                       onBlur={() => setIsFocus(false)}
@@ -300,12 +347,12 @@ const ProfileComponent = ({navigation}: any) => {
                       }}
                       search={false}
                     />
-                    <Text style={styles.inputHeadTxt}>Country</Text>
+                    <Text style={styles.inputHeadTxt}>{t('COUNTRY')}</Text>
                   </View>
 
                   <TextInputComponent
-                    placeHolder={'Enter Your User Name'}
-                    headText={'user Name'}
+                    placeHolder={t('ENTER_YOUR_USERNAME')}
+                    headText={t('USER_NAME')}
                     onChangeValue={setUserName}
                     value={userName}
                     editable={userStatus}
@@ -317,7 +364,7 @@ const ProfileComponent = ({navigation}: any) => {
                   <TextInputComponent
                     ref={userNameFieldRef}
                     placeHolder={'Enter Your Shopper Rank'}
-                    headText={'Shopper Rank'}
+                    headText={t('SHOPPER_RANK')}
                     onChangeValue={setShopperRank}
                     value={shopperRank}
                     editable={rankStatus}
@@ -325,11 +372,41 @@ const ProfileComponent = ({navigation}: any) => {
                     onSubmitEditing={() => shopperRankFieldRef.current?.focus()}
                   />
 
-                  <TouchableOpacity>
+                  <View style={styles.dropDownView}>
+                    <Dropdown
+                      dropdownPosition="bottom"
+                      style={[
+                        styles.dropDown,
+                        isFocus && {borderColor: colors.primary},
+                      ]}
+                      disable={languageStatus}
+                      placeholderStyle={styles.placeholderStyle}
+                      selectedTextStyle={styles.selectedTextStyle}
+                      inputSearchStyle={styles.inputSearchStyle}
+                      iconStyle={styles.iconStyle}
+                      containerStyle={styles.dropcontainerStyle}
+                      data={languages}
+                      maxHeight={300}
+                      labelField="label"
+                      valueField="value"
+                      placeholder={!isFocus ? 'Select Language' : ''}
+                      value={language}
+                      onFocus={() => setIsFocus(true)}
+                      onBlur={() => setIsFocus(false)}
+                      onChange={(item: any) => {
+                        setLanguage(item?.value);
+                        setIsFocus(false);
+                      }}
+                      search={false}
+                    />
+                    <Text style={styles.inputHeadTxt}>Language</Text>
+                  </View>
+
+                  <TouchableOpacity onPress={onUpdateProfile}>
                     <LinearGradient
                       colors={['#853b92', '#4b0892']}
                       style={styles.loginBtn}>
-                      <Text style={styles.loginBtnTxt}>SUBMIT</Text>
+                      <Text style={styles.loginBtnTxt}>{t('SUBMIT')}</Text>
                     </LinearGradient>
                   </TouchableOpacity>
                   <TouchableOpacity
@@ -337,7 +414,9 @@ const ProfileComponent = ({navigation}: any) => {
                     <LinearGradient
                       colors={['#853b92', '#4b0892']}
                       style={styles.pwdBtn}>
-                      <Text style={styles.loginBtnTxt}>Change Password</Text>
+                      <Text style={styles.loginBtnTxt}>
+                        {t('CHANGE_PASSWORD')}
+                      </Text>
                     </LinearGradient>
                   </TouchableOpacity>
                 </View>

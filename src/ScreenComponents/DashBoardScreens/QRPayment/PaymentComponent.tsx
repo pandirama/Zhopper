@@ -25,10 +25,12 @@ import {
   useQRPaymentMutation,
 } from '../../../api/walletAPI';
 import {useFocusEffect} from '@react-navigation/native';
+import {useTranslation} from 'react-i18next';
 
 const windowWidth = Dimensions.get('window').width;
 
 const PaymentComponent = ({route}: any) => {
+  const {t} = useTranslation();
   const {wallet = {}, merchantID = ''} = route?.params ?? {};
   const {showToast, toggleBackdrop} = useCommon();
 
@@ -124,7 +126,7 @@ const PaymentComponent = ({route}: any) => {
         style={appStyles.container}
         edges={['right', 'left', 'top']}>
         <View style={appStyles.headerContainer}>
-          <DashBoardHeaderComponent title={'Payment'} back />
+          <DashBoardHeaderComponent title={t('PAYMENT')} back />
           {succeed && (
             <View
               style={{
@@ -147,7 +149,7 @@ const PaymentComponent = ({route}: any) => {
                     width: windowWidth / 1.3,
                     fontFamily: fontFamily.poppins_bold,
                   }}>
-                  Payment Successful
+                  {t('PAYMENT_SUCCESSFUL')}
                 </Text>
                 <Text
                   style={{
@@ -158,7 +160,7 @@ const PaymentComponent = ({route}: any) => {
                     width: windowWidth / 1.3,
                     fontFamily: fontFamily.poppins_medium,
                   }}>
-                  Congrates, Your Payment has made Sucessfully
+                  {t('CONGRATS_PAYMENT_SUCCESSFUL')}
                 </Text>
               </View>
             </View>
@@ -229,7 +231,7 @@ const PaymentComponent = ({route}: any) => {
                       fontFamily: fontFamily.poppins_bold,
                       marginLeft: 10,
                     }}>
-                    Make Your Payment
+                    {t('MAKE_YOUR_PAYMENT')}
                   </Text>
                   <Text
                     style={{
@@ -239,7 +241,7 @@ const PaymentComponent = ({route}: any) => {
                       marginBottom: 10,
                       marginLeft: 10,
                     }}>
-                    Simple way to make your payment
+                    {t('SIMPLE_WAY_TO_MAKE_PAYMENT')}
                   </Text>
                 </LinearGradient>
               </View>
@@ -256,7 +258,7 @@ const PaymentComponent = ({route}: any) => {
                   </Text>
                   <Text style={styles.subtitleTxt}>({merchantID})</Text>
                   <TextInputComponent
-                    headText={'Amount'}
+                    headText={t('AMOUNT')}
                     onChangeValue={setAmount}
                     value={amount}
                     inputStyle={{backgroundColor: colors.white}}
@@ -277,7 +279,9 @@ const PaymentComponent = ({route}: any) => {
                     <LinearGradient
                       colors={['#853b92', '#4b0892']}
                       style={styles.loginBtn}>
-                      <Text style={styles.loginBtnTxt}>MAKE PAYMENT</Text>
+                      <Text style={styles.loginBtnTxt}>
+                        {t('MAKE_PAYMENT')}
+                      </Text>
                     </LinearGradient>
                   </TouchableOpacity>
                 </View>

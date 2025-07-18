@@ -22,12 +22,12 @@ import {useFocusEffect} from '@react-navigation/native';
 import {getErrorMessage} from '../../../utils/common';
 import useCommon from '../../../hooks/useCommon';
 import {ReadMoreText} from './ReadMoreText';
+import { useTranslation } from 'react-i18next';
 
 type Props = NativeStackScreenProps<any, 'NEWS'>;
 
-
-
 const NewsComponent = ({}: Props) => {
+  const {t} = useTranslation();
   const {showToast, toggleBackdrop} = useCommon();
 
   const [news, setNews] = useState(null);
@@ -196,7 +196,7 @@ const NewsComponent = ({}: Props) => {
         style={appStyles.container}
         edges={['right', 'left', 'top']}>
         <View style={appStyles.headerContainer}>
-          <DashBoardHeaderComponent title={'News'} />
+          <DashBoardHeaderComponent title={t('NEWS')} />
           <FlatList
             data={news}
             renderItem={renderItem}

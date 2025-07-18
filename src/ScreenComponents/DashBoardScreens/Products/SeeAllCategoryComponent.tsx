@@ -16,10 +16,12 @@ import {colors} from '../../../utils/colors';
 import {Ionicons} from '../../../utils/IconUtils';
 import DashBoardHeaderComponent from '../../../components/DashBoardHeaderComponent';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import { useTranslation } from 'react-i18next';
 
 type Props = NativeStackScreenProps<any, 'SEE_ALL_CATEGORY'>;
 
 const SeeAllCategoryComponent = ({route, navigation}: Props) => {
+  const {t} = useTranslation();
   const {categories} = route?.params ?? {};
 
   const renderAllCategory = ({item}: any) => {
@@ -73,7 +75,7 @@ const SeeAllCategoryComponent = ({route, navigation}: Props) => {
         style={[appStyles.container, {backgroundColor: colors.status}]}
         edges={['right', 'left', 'top']}>
         <View style={appStyles.headerContainer}>
-          <DashBoardHeaderComponent title={'Categories'} back />
+          <DashBoardHeaderComponent title={t('CATEGORIES')} back />
           <View style={[appStyles.boxShadow, styles.walletSubContainer]}>
             <FlatList
               data={categories}

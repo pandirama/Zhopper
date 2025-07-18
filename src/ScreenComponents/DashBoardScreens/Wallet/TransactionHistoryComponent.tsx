@@ -21,10 +21,11 @@ import {getErrorMessage} from '../../../utils/common';
 import useCommon from '../../../hooks/useCommon';
 import {useSelector} from 'react-redux';
 import {Ionicons} from '../../../utils/IconUtils';
+import { useTranslation } from 'react-i18next';
 
 type Props = NativeStackScreenProps<any, 'TRANS_HISTORY'>;
 
-const AppCollapse = ({item}: any) => {
+const AppCollapse = ({item, t}: any) => {
   const dateTime = item?.date?.split(' ');
   const [collapsed, setCollapsed] = useState(true);
   const [animation] = useState(new Animated.Value(0));
@@ -65,15 +66,15 @@ const AppCollapse = ({item}: any) => {
         ]}>
         <View style={{flexDirection: 'row'}}>
           <View style={{flex: 1}}>
-            <Text style={styles.itemTitleTxt}>DATE</Text>
+            <Text style={styles.itemTitleTxt}>{t('DATE')}</Text>
             <Text style={styles.itemSubTitleTxt}>{dateTime[0]}</Text>
           </View>
           <View style={{flex: 1}}>
-            <Text style={styles.itemTitleTxt}>TIME</Text>
+            <Text style={styles.itemTitleTxt}>{t('TIME')}</Text>
             <Text style={styles.itemSubTitleTxt}>{dateTime[1]}</Text>
           </View>
           <View style={{flex: 1}}>
-            <Text style={styles.itemTitleTxt}>AMOUNT</Text>
+            <Text style={styles.itemTitleTxt}>{t('AMOUNT')}</Text>
             <Text
               style={
                 styles.itemSubTitleTxt
@@ -88,7 +89,7 @@ const AppCollapse = ({item}: any) => {
           }}>
           {!collapsed && (
             <View style={{marginTop: 10}}>
-              <Text style={styles.itemTitleTxt}>DESCRIPTION</Text>
+              <Text style={styles.itemTitleTxt}>{t('DESCRIPTION')}</Text>
               <Text style={styles.itemSubTitleTxt}>{item?.description}</Text>
             </View>
           )}
@@ -118,6 +119,7 @@ const AppCollapse = ({item}: any) => {
 };
 
 const TransactionHistoryComponent = ({route}: Props) => {
+  const { t } = useTranslation();
   const {gateway, title, subTitle} = route?.params ?? {};
 
   const {showToast, toggleBackdrop} = useCommon();
@@ -163,7 +165,7 @@ const TransactionHistoryComponent = ({route}: Props) => {
   );
 
   const renderItem = ({item}: any) => {
-    return <AppCollapse item={item} />;
+    return <AppCollapse item={item} t={t}/>;
   };
 
   return (
@@ -179,7 +181,7 @@ const TransactionHistoryComponent = ({route}: Props) => {
         edges={['right', 'left', 'top']}>
         <View style={appStyles.headerContainer}>
           <DashBoardHeaderComponent title={title} back />
-          <Text style={styles.titleTxt}>Wallet Transaction History</Text>
+          <Text style={styles.titleTxt}>{t('WALLET_TRANSACTION_HISTORY')}</Text>
           <Text style={styles.subtitleTxt}>{subTitle}</Text>
           {transHistory?.length > 0 ? (
             <FlatList

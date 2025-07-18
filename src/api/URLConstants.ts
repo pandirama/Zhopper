@@ -20,6 +20,7 @@ export const PROFILE_URLS = {
   REFERRAL_QR: `${BASE_URL}/api/qr`,
   EDIT_PROFILE: `${BASE_URL}/api/profile`,
   CHANGE_PASSWORD: `${BASE_URL}/api/change-password`,
+  UPDATE_PROFILE: `${BASE_URL}/api/profile-edit`,
 };
 
 export const PRODUCTS_URLS = {

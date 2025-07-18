@@ -25,6 +25,7 @@ import MapView, {Marker} from 'react-native-maps';
 import LinearGradient from 'react-native-linear-gradient';
 import ActionSheet, {ActionSheetRef} from 'react-native-actions-sheet';
 import {Ionicons} from '../../../utils/IconUtils';
+import {useTranslation} from 'react-i18next';
 
 type Props = NativeStackScreenProps<any, 'MERCHANT_INFO'>;
 
@@ -33,11 +34,12 @@ export const LONGITUDE_DELTA = 0.0421;
 
 export const MerchantInfoComponent = ({route}: Props) => {
   const {merchantID} = route?.params ?? {};
+  const {t} = useTranslation();
   const {showToast, toggleBackdrop} = useCommon();
 
   const actionSheetRef = useRef<ActionSheetRef>(null);
 
-  let mapView = useRef<MapView>(null);
+  let mapView: any = useRef<MapView>(null);
 
   const [merchantInfo, setMerchantInfo] = useState<any>([]);
 
@@ -166,7 +168,7 @@ export const MerchantInfoComponent = ({route}: Props) => {
                 </Text>
               </View>
               <View style={styles.titleView}>
-                <Text style={styles.titleTxt}>Country :</Text>
+                <Text style={styles.titleTxt}>{`${t('COUNTRY')} :`}</Text>
                 <Text style={styles.subTitleTxt}>{merchantInfo?.Country}</Text>
               </View>
               <View
@@ -176,7 +178,7 @@ export const MerchantInfoComponent = ({route}: Props) => {
                   marginLeft: 10,
                   marginRight: 10,
                 }}>
-                <Text style={styles.titleTxt}>Description :</Text>
+                <Text style={styles.titleTxt}>{`${t('DESCRIPTION')} :`}</Text>
                 <Text style={styles.subTitleTxt}>
                   {merchantInfo?.description}
                 </Text>
@@ -197,7 +199,7 @@ export const MerchantInfoComponent = ({route}: Props) => {
                     <MapView
                       style={styles.map}
                       zoomEnabled={true}
-                      ref={ref => {
+                      ref={(ref: any) => {
                         mapView = ref;
                       }}
                       toolbarEnabled={true}
@@ -323,7 +325,7 @@ export const MerchantInfoComponent = ({route}: Props) => {
                   flex: 1,
                   marginLeft: 15,
                 }}>
-                Cancel
+                {t('CANCEL')}
               </Text>
             </TouchableOpacity>
           </View>

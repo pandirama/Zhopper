@@ -8,8 +8,10 @@ import {
   useCodeScanner,
 } from 'react-native-vision-camera';
 import {request, PERMISSIONS} from 'react-native-permissions';
+import {useTranslation} from 'react-i18next';
 
 const QRScanner = (props: any) => {
+  const {t} = useTranslation();
   const [hasPermission, setHasPermission] = useState(false);
   const [refresh, setRefresh] = useState(false);
   const device = useCameraDevice('back');
@@ -81,7 +83,7 @@ const QRScanner = (props: any) => {
           onPress={() => {
             props.onRead(null);
           }}>
-          <Text style={{color: 'snow', fontSize: 14}}>Close</Text>
+          <Text style={{color: 'snow', fontSize: 14}}>{t('CLOSE')}</Text>
         </TouchableOpacity>
       </View>
     </View>

@@ -24,8 +24,10 @@ import {useChangePwdMutation} from '../../../api/profileAPI';
 import {useSelector} from 'react-redux';
 import {KeyboardAvoidingView} from 'react-native-keyboard-controller';
 import {Ionicons} from '../../../utils/IconUtils';
+import { useTranslation } from 'react-i18next';
 
 const ChangePasswordComponent = ({navigation}: any) => {
+   const {t} = useTranslation();
   const {showToast, toggleBackdrop} = useCommon();
 
   const {userProfile} = useSelector(({profileReducer}: any) => profileReducer);
@@ -102,7 +104,7 @@ const ChangePasswordComponent = ({navigation}: any) => {
         style={appStyles.container}
         edges={['right', 'left', 'top']}>
         <View style={appStyles.headerContainer}>
-          <DashBoardHeaderComponent title={'Profile'} back />
+          <DashBoardHeaderComponent title={t('PROFILE')} back />
           <KeyboardAvoidingView
             behavior={'padding'}
             keyboardVerticalOffset={25}
@@ -154,11 +156,11 @@ const ChangePasswordComponent = ({navigation}: any) => {
                     padding: 10,
                     marginTop: 30,
                   }}>
-                  <Text style={styles.titleTxt}>Update Password</Text>
-                  <Text style={styles.subtitleTxt}>Change Your Password</Text>
+                  <Text style={styles.titleTxt}>{t('UPDATE_PASSWORD')}</Text>
+                  <Text style={styles.subtitleTxt}>{t('CHANGE_YOUR_PASSWORD')}</Text>
                   <TextInputComponent
-                    placeHolder={'Enter Your New Password'}
-                    headText={'New Password'}
+                    placeHolder={t('ENTER_YOUR_NEW_PASSWORD')}
+                    headText={t('NEW_PASSWORD')}
                     onChangeValue={setNewPassword}
                     value={newPassword}
                     secureTextEntry={showPassword}
@@ -180,8 +182,8 @@ const ChangePasswordComponent = ({navigation}: any) => {
                   />
                   <TextInputComponent
                     ref={newFieldRef}
-                    placeHolder={'Enter Your Confirm Password'}
-                    headText={'Confirm Password'}
+                    placeHolder={t('ENTER_YOUR_CONFIRM_PASSWORD')}
+                    headText={t('CONFIRM_PASSWORD')}
                     onChangeValue={setConfirmPassword}
                     value={confirmPassword}
                     rightIcon={
@@ -207,7 +209,7 @@ const ChangePasswordComponent = ({navigation}: any) => {
                     <LinearGradient
                       colors={['#853b92', '#4b0892']}
                       style={styles.loginBtn}>
-                      <Text style={styles.loginBtnTxt}>SUBMIT</Text>
+                      <Text style={styles.loginBtnTxt}>{t('SUBMIT')}</Text>
                     </LinearGradient>
                   </TouchableOpacity>
                 </View>

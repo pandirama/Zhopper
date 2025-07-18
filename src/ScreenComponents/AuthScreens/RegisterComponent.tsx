@@ -46,6 +46,25 @@ export const countries = [
   },
 ];
 
+export const languages = [
+  {
+    label: 'English',
+    value: 'en',
+  },
+  {
+    label: 'Vietnam',
+    value: 'vi',
+  },
+  {
+    label: 'Indonesia',
+    value: 'in',
+  },
+  {
+    label: 'Philippines',
+    value: 'ph',
+  },
+];
+
 const RegisterComponent = ({navigation}: any) => {
   const {showToast, toggleBackdrop} = useCommon();
 

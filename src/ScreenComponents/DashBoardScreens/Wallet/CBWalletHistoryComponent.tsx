@@ -25,11 +25,12 @@ import useCommon from '../../../hooks/useCommon';
 import {useSelector} from 'react-redux';
 import {Ionicons} from '../../../utils/IconUtils';
 import LinearGradient from 'react-native-linear-gradient';
+import {useTranslation} from 'react-i18next';
 
 type Props = NativeStackScreenProps<any, 'CBWALLET_HISTORY'>;
 
-const AppCollapse = ({item, claimCashBack, index}: any) => {
-  const status = item?.status_click === 0 ? 'Claim' : 'Claimed';
+const AppCollapse = ({item, claimCashBack, index, t}: any) => {
+  const status = item?.status_click === 0 ? t('CLAIM') : t('CLAIMED');
   const [collapsed, setCollapsed] = useState(true);
   const [animation] = useState(new Animated.Value(0));
 
@@ -69,22 +70,22 @@ const AppCollapse = ({item, claimCashBack, index}: any) => {
         ]}>
         <View style={{flexDirection: 'row'}}>
           <View style={{flex: 0.5}}>
-            <Text style={styles.itemTitleTxt}>ID</Text>
+            <Text style={styles.itemTitleTxt}>{t('ID')}</Text>
             <Text style={styles.itemSubTitleTxt}>{index + 1}</Text>
           </View>
           <View style={{flex: 1}}>
-            <Text style={styles.itemTitleTxt}>CB POINT</Text>
+            <Text style={styles.itemTitleTxt}>{t('CB_POINT')}</Text>
             <Text style={styles.itemSubTitleTxt}>
               {item?.['Cash Back Point']}
             </Text>
           </View>
           <View style={{flex: 1}}>
-            <Text style={styles.itemTitleTxt}>DAILY 2%</Text>
+            <Text style={styles.itemTitleTxt}>{t('DAILY_2_PERCENT')}</Text>
             <Text style={styles.itemSubTitleTxt}>{item?.['DAILY 2%']}</Text>
           </View>
 
           <View style={{flex: 1}}>
-            <Text style={styles.itemTitleTxt}>STATUS</Text>
+            <Text style={styles.itemTitleTxt}>{t('STATUS')}</Text>
             {status === 'Claim' ? (
               <TouchableOpacity onPress={() => claimCashBack(item?.id)}>
                 <LinearGradient
@@ -106,7 +107,7 @@ const AppCollapse = ({item, claimCashBack, index}: any) => {
           }}>
           {!collapsed && (
             <View style={{marginTop: 10}}>
-              <Text style={styles.itemTitleTxt}>COLLECTED</Text>
+              <Text style={styles.itemTitleTxt}>{t('COLLECTED')}</Text>
               <Text style={styles.itemSubTitleTxt}>{item?.COLLECTED}</Text>
             </View>
           )}
@@ -136,6 +137,7 @@ const AppCollapse = ({item, claimCashBack, index}: any) => {
 };
 
 const CBWalletHistoryComponent = ({}: Props) => {
+  const {t} = useTranslation();
   const {showToast, toggleBackdrop} = useCommon();
 
   const [transHistory, setTransHistory] = useState<any>(null);
@@ -208,7 +210,12 @@ const CBWalletHistoryComponent = ({}: Props) => {
 
   const renderItem = ({item, index}: any) => {
     return (
-      <AppCollapse item={item} claimCashBack={getClaimCashBack} index={index} />
+      <AppCollapse
+        item={item}
+        claimCashBack={getClaimCashBack}
+        index={index}
+        t={t}
+      />
     );
   };
 
@@ -224,8 +231,8 @@ const CBWalletHistoryComponent = ({}: Props) => {
         style={appStyles.container}
         edges={['right', 'left', 'top']}>
         <View style={appStyles.headerContainer}>
-          <DashBoardHeaderComponent title={'Claim Cash Back'} back />
-          <Text style={styles.titleTxt}>Claim Cash Back</Text>
+          <DashBoardHeaderComponent title={t('CLAIM_CASH_BACK')} back />
+          <Text style={styles.titleTxt}>{t('CLAIM_CASH_BACK')}</Text>
           {transHistory?.length > 0 ? (
             <FlatList
               data={transHistory}
@@ -246,7 +253,7 @@ const CBWalletHistoryComponent = ({}: Props) => {
                   fontFamily: fontFamily.poppins_bold,
                   fontSize: 20,
                 }}>
-                No Transaction Records
+                {t('NO_TRANSACTION_RECORDS')}
               </Text>
             </View>
           )}

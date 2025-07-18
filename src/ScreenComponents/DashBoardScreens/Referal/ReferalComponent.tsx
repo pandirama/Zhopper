@@ -24,8 +24,10 @@ import {getErrorMessage} from '../../../utils/common';
 import {useFocusEffect} from '@react-navigation/native';
 import {useReferralMutation} from '../../../api/referralAPI';
 import Clipboard from '@react-native-clipboard/clipboard';
+import {useTranslation} from 'react-i18next';
 
 const ReferalComponent = () => {
+  const {t} = useTranslation();
   const {showToast, toggleBackdrop} = useCommon();
 
   const [referrals, setReferrals] = useState<any>(null);
@@ -135,7 +137,7 @@ const ReferalComponent = () => {
                   marginTop: 10,
                   fontFamily: fontFamily.poppins_bold,
                 }}>
-                My Referral QR Code
+                {t('MY_REFERRAL_QR_CODE')}
               </Text>
               <Text
                 style={{
@@ -145,7 +147,7 @@ const ReferalComponent = () => {
                   marginBottom: 10,
                   fontFamily: fontFamily.poppins_medium,
                 }}>
-                Share with your friend, register free account !
+                {t('SHARE_WITH_FRIEND_REGISTER_FREE')}
               </Text>
             </LinearGradient>
             <ImageBackground
@@ -186,7 +188,7 @@ const ReferalComponent = () => {
                       });
                       Clipboard.setString(referralLink);
                     }}>
-                    <Text style={styles.tabTxt}>TAB AND COPY</Text>
+                    <Text style={styles.tabTxt}>{t('TAP_AND_COPY')}</Text>
                   </TouchableOpacity>
                 </View>
               </View>
@@ -221,7 +223,7 @@ const ReferalComponent = () => {
                   fontSize: 13,
                   fontFamily: fontFamily.poppins_semi_bold,
                 }}>
-                Team
+                {t('TEAM')}
               </Text>
               <Text
                 style={{
@@ -256,7 +258,7 @@ const ReferalComponent = () => {
                   fontSize: 13,
                   fontFamily: fontFamily.poppins_semi_bold,
                 }}>
-                Direct
+                {t('DIRECT')}
               </Text>
               <Text
                 style={{
@@ -280,7 +282,7 @@ const ReferalComponent = () => {
                 marginLeft: 10,
                 fontFamily: fontFamily.poppins_semi_bold,
               }}>
-              Personal Clients
+              {t('PERSONAL_CLIENTS')}
             </Text>
           </LinearGradient>
         </View>
@@ -300,7 +302,7 @@ const ReferalComponent = () => {
         style={appStyles.container}
         edges={['right', 'left', 'top']}>
         <View style={appStyles.headerContainer}>
-          <DashBoardHeaderComponent title={'Referral'} />
+          <DashBoardHeaderComponent title={t('REFERRAL')} />
           <FlatList
             data={referrals?.data}
             renderItem={renderItem}

@@ -40,6 +40,14 @@ export const profileAPI = createApi({
       }),
       transformResponse: (response: {data: any}) => response,
     }),
+    updateProfile: builder.mutation({
+      query: passParams => ({
+        url: PROFILE_URLS.UPDATE_PROFILE,
+        method: 'POST',
+        body: passParams,
+      }),
+      transformResponse: (response: {data: any}) => response,
+    }),
   }),
 });
 
@@ -48,4 +56,5 @@ export const {
   useGetReferralQRQuery,
   useChangePwdMutation,
   useGetEditProfileQuery,
+  useUpdateProfileMutation,
 } = profileAPI;
