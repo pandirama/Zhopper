@@ -142,27 +142,27 @@ export const MerchantInfoComponent = ({route}: Props) => {
             <ScrollView
               showsVerticalScrollIndicator={false}
               contentContainerStyle={{paddingBottom: 20}}>
-              <Text style={styles.headerTxt}>Merchant Details</Text>
+              <Text style={styles.headerTxt}>{`${t('MERCHANT_DETAILS')} :`}</Text>
               <View style={styles.titleView}>
-                <Text style={styles.titleTxt}>Merchant Name :</Text>
+                <Text style={styles.titleTxt}>{`${t('MERCHANT_NAME')} :`}</Text>
                 <Text style={styles.subTitleTxt}>
                   {merchantInfo['Merchant Name']}
                 </Text>
               </View>
               <View style={styles.titleView}>
-                <Text style={styles.titleTxt}>Merchant Email :</Text>
+                <Text style={styles.titleTxt}>{`${t('MERCHANT_EMAIL')} :`}</Text>
                 <Text style={styles.subTitleTxt}>
                   {merchantInfo['Merchant Email']}
                 </Text>
               </View>
               <View style={styles.titleView}>
-                <Text style={styles.titleTxt}>Merchant Phone No. :</Text>
+                <Text style={styles.titleTxt}>{`${t('MERCHANT_PHONE_NO')}. :`}</Text>
                 <Text style={styles.subTitleTxt}>
                   {merchantInfo['Merchant Phone No.']}
                 </Text>
               </View>
               <View style={styles.titleView}>
-                <Text style={styles.titleTxt}>Shop Name :</Text>
+                <Text style={styles.titleTxt}>{`${t('SHOP_NAME')} :`}</Text>
                 <Text style={styles.subTitleTxt}>
                   {merchantInfo['Shop Name']}
                 </Text>
@@ -190,7 +190,7 @@ export const MerchantInfoComponent = ({route}: Props) => {
                   marginLeft: 10,
                   marginRight: 10,
                 }}>
-                <Text style={styles.titleTxt}>Address :</Text>
+                <Text style={styles.titleTxt}>{`${t('ADDRESS')} :`}</Text>
                 <Text style={styles.subTitleTxt}>{merchantInfo?.Address}</Text>
               </View>
               {merchantInfo?.latitude && merchantInfo?.longitude && (

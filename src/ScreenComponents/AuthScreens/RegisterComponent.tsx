@@ -50,18 +50,22 @@ export const languages = [
   {
     label: 'English',
     value: 'en',
+    APIValue: 'EN',
   },
   {
     label: 'Vietnam',
     value: 'vi',
+    APIValue: 'VN',
   },
   {
     label: 'Indonesia',
     value: 'in',
+    APIValue: 'ID',
   },
   {
     label: 'Philippines',
     value: 'ph',
+    APIValue: 'PH',
   },
 ];
 

@@ -203,7 +203,7 @@ const TransactionHistoryComponent = ({route}: Props) => {
                   fontFamily: fontFamily.poppins_bold,
                   fontSize: 20,
                 }}>
-                No Transaction Records
+                {t('NO_TRANSACTION_RECORDS')}
               </Text>
             </View>
           )}

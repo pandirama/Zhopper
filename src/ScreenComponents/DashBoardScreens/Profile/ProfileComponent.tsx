@@ -49,6 +49,7 @@ const ProfileComponent = ({navigation}: any) => {
   const [shopperRank, setShopperRank] = useState(0);
   const [rankStatus, setRankStatus] = useState(false);
   const [language, setLanguage] = useState('');
+  const [apiLanguage, setAPILanguage] = useState('');
   const [languageStatus, setLanguageStatus] = useState(false);
 
   const [isFocus, setIsFocus] = useState<boolean>(false);
@@ -92,7 +93,11 @@ const ProfileComponent = ({navigation}: any) => {
               setShopperRank(result?.shopper_rank?.toString());
               setRankStatus(result?.status === 1 ? false : true);
             } else if (result.hasOwnProperty('lang')) {
-              setLanguage(result?.lang?.toString());
+              languages.map((item: any) => {
+                if (item.APIValue === result?.lang?.toString()) {
+                  setLanguage(item?.value);
+                }
+              });
               setLanguageStatus(result?.status === 1 ? true : false);
             }
           });
@@ -135,9 +140,9 @@ const ProfileComponent = ({navigation}: any) => {
         userName: userName,
         ...(nameStatus && {fullname: fullname}),
         ...(emailStatus && {email: email}),
-        ...(countryStatus && {country: country}),
+        ...(!countryStatus && {country: country}),
         ...(rankStatus && {shopper_rank: shopperRank}),
-        ...(languageStatus && {lang: language}),
+        ...(!languageStatus && {lang: apiLanguage}),
       };
 
       const response: any = await updateProfile(params).unwrap();
@@ -284,7 +289,7 @@ const ProfileComponent = ({navigation}: any) => {
                         <LinearGradient
                           colors={['#853b92', '#4b0892']}
                           style={styles.tabBtn}>
-                          <Text style={styles.tabTxt}>TAP AND SCAN</Text>
+                          <Text style={styles.tabTxt}>{t('TAB_AND_SCAN')}</Text>
                         </LinearGradient>
                       </TouchableOpacity>
                     </View>
@@ -395,6 +400,7 @@ const ProfileComponent = ({navigation}: any) => {
                       onBlur={() => setIsFocus(false)}
                       onChange={(item: any) => {
                         setLanguage(item?.value);
+                        setAPILanguage(item?.APIValue);
                         setIsFocus(false);
                       }}
                       search={false}
