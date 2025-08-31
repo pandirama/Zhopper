@@ -271,7 +271,7 @@ const PaymentComponent = ({route}: any) => {
                           fontWeight: 500,
                           color: colors.black,
                         }}>
-                        {`${wallet?.currency} : `}
+                        {`${merchantInfos?.currency} : `}
                       </Text>
                     }
                   />
